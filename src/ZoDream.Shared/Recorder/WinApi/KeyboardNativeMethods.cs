@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
+using ZoDream.Shared.Input;
 
 namespace ZoDream.Shared.Recorder.WinApi
 {
@@ -84,11 +86,11 @@ namespace ZoDream.Shared.Recorder.WinApi
             var currentKeyboardState = keyboardState.GetNativeState();
             var isDead = false;
 
-            if (keyboardState.IsDown(Keys.ShiftKey))
-                currentKeyboardState[(byte)Keys.ShiftKey] = 0x80;
+            if (keyboardState.IsDown(Key.LeftShift))
+                currentKeyboardState[(byte)Key.LeftShift] = 0x80;
 
-            if (keyboardState.IsToggled(Keys.CapsLock))
-                currentKeyboardState[(byte)Keys.CapsLock] = 0x01;
+            if (keyboardState.IsToggled(Key.CapsLock))
+                currentKeyboardState[(byte)Key.CapsLock] = 0x01;
 
             var relevantChars = ToUnicodeEx(virtualKeyCode, scanCode, currentKeyboardState, pwszBuff, pwszBuff.Capacity,
                 fuState, dwhkl);
