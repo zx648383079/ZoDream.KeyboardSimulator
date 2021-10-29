@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.KeyboardSimulator.ViewModels;
 
 namespace ZoDream.KeyboardSimulator
 {
@@ -23,6 +24,24 @@ namespace ZoDream.KeyboardSimulator
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = ViewModel;
+        }
+
+        public MainViewModel ViewModel = new MainViewModel();
+
+        private void PlayBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Paused = false;
+        }
+
+        private void RecordBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Paused = false;
+        }
+
+        private void StopBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Paused = true;
         }
     }
 }

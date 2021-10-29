@@ -1,5 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converter="clr-namespace:ZoDream.KeyboardSimulator.Converters">
+    <converter:TrueVisibilityConverter x:Key="TrueConverter"/>
+    <converter:FalseVisibilityConverter x:Key="FalseConverter"/>
+    <converter:BoolToggleConverter x:Key="BoolConverter"/>
     <FontFamily x:Key="IconFontFamily">Segoe MDL2 Assets</FontFamily>
     <FontFamily x:Key="TextFontFamily">Microsoft YaHei</FontFamily>
     <Style x:Key="IconBtn" TargetType="Button">

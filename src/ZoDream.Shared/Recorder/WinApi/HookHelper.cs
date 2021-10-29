@@ -9,8 +9,8 @@ namespace ZoDream.Shared.Recorder.WinApi
 {
     internal class HookHelper
     {
-        private static HookProcedure _appHookProc;
-        private static HookProcedure _globalHookProc;
+        private static HookProcedure? _appHookProc;
+        private static HookProcedure? _globalHookProc;
 
         public static HookResult HookAppMouse(Callback callback)
         {
@@ -22,14 +22,20 @@ namespace ZoDream.Shared.Recorder.WinApi
             return HookApp(HookIds.WH_KEYBOARD, callback);
         }
 
-        public static HookResult HookGlobalMouse(Callback callback)
+        public static HookResult HookGlobalMouse(MouseCallback callback)
         {
-            return HookGlobal(HookIds.WH_MOUSE_LL, callback);
+            return HookGlobal(HookIds.WH_MOUSE_LL, data =>
+            {
+                return callback(DataFormat.FormatMouse(data));
+            });
         }
 
-        public static HookResult HookGlobalKeyboard(Callback callback)
+        public static HookResult HookGlobalKeyboard(KeyboardCallback callback)
         {
-            return HookGlobal(HookIds.WH_KEYBOARD_LL, callback);
+            return HookGlobal(HookIds.WH_KEYBOARD_LL, data =>
+            {
+                return callback(DataFormat.FormatKeybord(data));
+            });
         }
 
         private static HookResult HookApp(int hookId, Callback callback)

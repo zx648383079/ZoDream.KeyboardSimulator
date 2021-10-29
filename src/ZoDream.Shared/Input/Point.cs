@@ -21,12 +21,12 @@ namespace ZoDream.Shared.Input
             Y = y;
         }
 
-        public static bool operator ==(Point a, Point b)
+        public static bool operator ==(Point? a, Point? b)
         {
-            return a.X == b.X && a.Y == b.Y;
+            return a?.X == b?.X && a?.Y == b?.Y;
         }
 
-        public static bool operator !=(Point a, Point b)
+        public static bool operator !=(Point? a, Point? b)
         {
             return !(a == b);
         }

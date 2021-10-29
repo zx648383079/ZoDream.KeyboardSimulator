@@ -7,12 +7,7 @@ namespace ZoDream.Shared.Recorder.WinApi
 {
     internal class HookProcedureHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        private static bool _closing;
-
-        static HookProcedureHandle()
-        {
-            // Application.ApplicationExit += (sender, e) => { _closing = true; };
-        }
+        internal static bool Closing = false;
 
         public HookProcedureHandle()
             : base(true)
@@ -22,7 +17,7 @@ namespace ZoDream.Shared.Recorder.WinApi
         protected override bool ReleaseHandle()
         {
             //NOTE Calling Unhook during processexit causes deley
-            if (_closing) return true;
+            if (Closing) return true;
             return HookNativeMethods.UnhookWindowsHookEx(handle) != 0;
         }
     }

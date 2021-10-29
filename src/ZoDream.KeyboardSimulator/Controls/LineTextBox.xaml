@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="ZoDream.KeyboardSimulator.Controls.LineTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+             x:Name="root"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Border BorderBrush="Gray"
+                BorderThickness="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+
+                <DockPanel>
+                    <TextBlock x:Name="LineTb"
+                               Foreground="#ccc" FontSize="{Binding ElementName=root,Path=FontFamily}" MinWidth="10" TextAlignment="Right"/>
+                    <TextBox x:Name="ContentTb"  AcceptsReturn="True" AcceptsTab="True"
+                               BorderThickness="1 0 0 0"
+                             IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}"
+                             Text="{Binding ElementName=root, Path=Content,Mode=TwoWay}"
+                             FontSize="{Binding ElementName=root,Path=FontFamily}"
+                               VerticalScrollBarVisibility="Disabled"
+                             PreviewDragOver="ContentTb_PreviewDragOver"
+                             PreviewDrop="ContentTb_PreviewDrop"
+                               TextChanged="ContentTb_TextChanged">
+                    </TextBox>
+                </DockPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

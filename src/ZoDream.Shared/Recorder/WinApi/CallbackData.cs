@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ZoDream.Shared.Input;
 
 namespace ZoDream.Shared.Recorder.WinApi
 {
@@ -18,4 +19,7 @@ namespace ZoDream.Shared.Recorder.WinApi
     }
 
     internal delegate bool Callback(CallbackData data);
+
+    internal delegate bool MouseCallback(MouseEventArgs args);
+    internal delegate bool KeyboardCallback(KeyEventArgs args);
 }
