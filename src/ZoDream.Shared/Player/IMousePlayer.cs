@@ -8,7 +8,7 @@ namespace ZoDream.Shared.Player
     public interface IMousePlayer
     {
 
-        public void MouseMoveTo(int x, int y);
+        public void MouseMoveTo(double x, double y);
         public void MouseMoveTo(Point point);
 
         public void MouseDown();

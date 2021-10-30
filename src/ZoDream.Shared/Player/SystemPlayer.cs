@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Runtime.InteropServices;
+using System.Linq;
 using ZoDream.Shared.Input;
+using ZoDream.Shared.Player.WinApi;
 
 namespace ZoDream.Shared.Player
 {
@@ -9,127 +11,177 @@ namespace ZoDream.Shared.Player
     {
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void KeyDown(Key key)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddKeyDown(key).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void KeyPress(Key key)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddKeyPress(key).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void KeyPress(params Key[] keys)
         {
-            throw new NotImplementedException();
+            var builder = new InputBuilder();
+            foreach (var item in keys)
+            {
+                builder.AddKeyPress(item);
+            }
+            SendSimulatedInput(builder.ToArray());
         }
 
         public void KeyUp(Key key)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddKeyUp(key).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void ModifiedKeyStroke(IEnumerable<Key> modifierKeys, IEnumerable<Key> keys)
         {
-            throw new NotImplementedException();
+            var builder = new InputBuilder();
+            foreach (var item in modifierKeys)
+            {
+                builder.AddKeyDown(item);
+            }
+            foreach (var item in keys)
+            {
+                builder.AddKeyPress(item);
+            }
+            foreach (var item in modifierKeys.Reverse())
+            {
+                builder.AddKeyUp(item);
+            }
+
+            SendSimulatedInput(builder.ToArray());
         }
 
         public void ModifiedKeyStroke(IEnumerable<Key> modifierKeys, Key key)
         {
-            throw new NotImplementedException();
+            ModifiedKeyStroke(modifierKeys, new[] { key });
         }
 
         public void ModifiedKeyStroke(Key modifierKey, IEnumerable<Key> keys)
         {
-            throw new NotImplementedException();
+            ModifiedKeyStroke(new[] { modifierKey }, keys);
         }
 
         public void ModifiedKeyStroke(Key modifierKey, Key key)
         {
-            throw new NotImplementedException();
+            ModifiedKeyStroke(new[] { modifierKey }, new[] { key });
         }
 
         public void MouseClick()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.Left).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseDoubleClick()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.Left).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseDown()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.Left).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseHWheel(int value)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseHorizontalWheelScroll(value).ToArray();
+            SendSimulatedInput(inputList);
         }
 
-        public void MouseMoveTo(int x, int y)
+        public void MouseMoveTo(double x, double y)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)Math.Truncate(x), (int)Math.Truncate(y)).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseMoveTo(Point point)
         {
-            throw new NotImplementedException();
+            MouseMoveTo(point.X, point.Y);
         }
 
         public void MouseRightClick()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.Right).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseRightDoubleClick()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.Right).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseRightDown()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.Right).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseRightUp()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.Right).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseUp()
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.Left).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseWheel(int value)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseVerticalWheelScroll(value).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseXClick(int buttonId)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseXButtonClick(buttonId).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseXDoubleClick(int buttonId)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseXButtonDoubleClick(buttonId).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseXDown(int buttonId)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseXButtonDown(buttonId).ToArray();
+            SendSimulatedInput(inputList);
         }
 
         public void MouseXUp(int buttonId)
         {
-            throw new NotImplementedException();
+            var inputList = new InputBuilder().AddMouseXButtonUp(buttonId).ToArray();
+            SendSimulatedInput(inputList);
+        }
+
+        private void SendSimulatedInput(WinApi.Input[] inputs)
+        {
+            if (inputs.Length < 1)
+            {
+                return;
+            }
+            var successful = WinApi.InputNativeMethods.SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(WinApi.Input)));
+            if (successful != inputs.Length)
+            {
+                // 执行没有完全成功
+            }
         }
     }
 }

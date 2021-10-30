@@ -97,11 +97,11 @@ namespace ZoDream.Shared.Recorder
                 }
 
                 var isDouble = args.ClickCount > 1;
-                ToggleMouseButton(args.LeftButton, MouseButton.Left);
-                ToggleMouseButton(args.RightButton, MouseButton.Right);
-                ToggleMouseButton(args.MiddleButton, MouseButton.Middle);
-                ToggleMouseButton(args.XButton1, MouseButton.XButton1);
-                ToggleMouseButton(args.XButton2, MouseButton.XButton2);
+                ToggleMouseButton(args.LeftButton, MouseButton.Left, isDouble);
+                ToggleMouseButton(args.RightButton, MouseButton.Right, isDouble);
+                ToggleMouseButton(args.MiddleButton, MouseButton.Middle, isDouble);
+                ToggleMouseButton(args.XButton1, MouseButton.XButton1, isDouble);
+                ToggleMouseButton(args.XButton2, MouseButton.XButton2, isDouble);
 
                 if (args.Point != null && args.Point != lastPoint)
                 {
