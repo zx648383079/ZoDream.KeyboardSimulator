@@ -7,7 +7,7 @@ using ZoDream.Shared.Player.WinApi;
 
 namespace ZoDream.Shared.Player
 {
-    public class SystemPlayer : IKeyboardPlayer, IMousePlayer, IDisposable
+    public class SystemPlayer : IPlayer
     {
         public void Dispose()
         {

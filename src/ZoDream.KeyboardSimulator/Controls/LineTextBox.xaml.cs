@@ -52,7 +52,16 @@ namespace ZoDream.KeyboardSimulator.Controls
             DependencyProperty.Register("Content", typeof(string), typeof(LineTextBox), new PropertyMetadata(string.Empty));
 
 
-
+        public void InsertLine(string line)
+        {
+            var val = Content;
+            if (string.IsNullOrWhiteSpace(val))
+            {
+                Content = line;
+                return;
+            }
+            Content = $"{val}\n{line}";
+        }
 
         private void ContentTb_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -62,7 +71,8 @@ namespace ZoDream.KeyboardSimulator.Controls
                 return;
             }
             var sb = new StringBuilder();
-            for (var i = 0; i < textBox.LineCount; i++)
+            var count = textBox.LineCount;
+            for (var i = 0; i < count; i++)
             {
                 sb.AppendLine((i + 1).ToString());
             }

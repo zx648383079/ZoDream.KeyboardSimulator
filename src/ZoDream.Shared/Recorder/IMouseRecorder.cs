@@ -17,5 +17,10 @@ namespace ZoDream.Shared.Recorder
         public event MouseEventHandler? MouseDragStarted;
         public event MouseEventHandler? MouseDragFinished;
 
+        /// <summary>
+        /// 所有的鼠标事件
+        /// </summary>
+        public event MouseEventHandler? OnMouse;
+
     }
 }

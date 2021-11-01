@@ -12,5 +12,10 @@ namespace ZoDream.Shared.Recorder
         public event KeyEventHandler? KeyUp;
 
         public event KeyEventHandler? KeyPress;
+
+        /// <summary>
+        /// 所有的键盘事件
+        /// </summary>
+        public event KeyEventHandler? OnKey;
     }
 }

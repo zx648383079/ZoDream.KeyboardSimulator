@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Recorder.WinApi;
 
 namespace ZoDream.Shared.Recorder
 {
-    public class SystemRecorder : IKeyboardRecorder, IMouseRecorder, IDisposable
+    public class SystemRecorder : IRecorder
     {
         private bool paused = true;
         private bool booted = false;
@@ -21,6 +22,8 @@ namespace ZoDream.Shared.Recorder
         public event KeyEventHandler? KeyDown;
         public event KeyEventHandler? KeyUp;
         public event KeyEventHandler? KeyPress;
+        public event KeyEventHandler? OnKey;
+
         public event MouseEventHandler? MouseMove;
         public event MouseEventHandler? MouseUp;
         public event MouseEventHandler? MouseDown;
@@ -30,6 +33,7 @@ namespace ZoDream.Shared.Recorder
         public event MouseEventHandler? MouseDoubleClick;
         public event MouseEventHandler? MouseDragStarted;
         public event MouseEventHandler? MouseDragFinished;
+        public event MouseEventHandler? OnMouse;
 
         public void Start()
         {
@@ -57,6 +61,7 @@ namespace ZoDream.Shared.Recorder
         {
             if (!paused)
             {
+                OnKey?.Invoke(this, args);
                 if (args.KeyStates == ButtonState.Pressed)
                 {
                     KeyDown?.Invoke(this, args);
@@ -74,6 +79,7 @@ namespace ZoDream.Shared.Recorder
         {
             if (!paused)
             {
+                OnMouse?.Invoke(this, args);
                 if (args.WheelDelta != 0)
                 {
                     if (args.IsHorizontalWheel)

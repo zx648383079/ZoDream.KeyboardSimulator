@@ -17,6 +17,33 @@ namespace ZoDream.Shared.Parser
 
         public int Length => Content.Length;
 
+        public string? ReadLine()
+        {
+            var sb = new StringBuilder();
+            while (MoveNext())
+            {
+                var code = Current;
+                if (code == '\n')
+                {
+                    break;
+                }
+                if (code == '\r')
+                {
+                    if (NextIs('\n'))
+                    {
+                        MoveNext();
+                    }
+                    break;
+                }
+                sb.Append(code);
+            }
+            if (!CanNext && sb.Length < 1)
+            {
+                return null;
+            }
+            return sb.ToString();
+        }
+
         public char Current => Content[Position];
 
 

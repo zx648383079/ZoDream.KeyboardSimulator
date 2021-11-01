@@ -6,7 +6,8 @@ namespace ZoDream.Shared.Input
 {
     public class MouseEventArgs
     {
-        public MouseEventArgs(MouseButton button, ButtonState buttonState, int clickCount, Point point,
+        public MouseEventArgs(MouseButton button, ButtonState buttonState, int clickCount, 
+            Point point,
             short mouseDelta, int timestamp,
             bool isHorizontalWheel)
         {
@@ -14,6 +15,7 @@ namespace ZoDream.Shared.Input
             Timestamp = timestamp;
             IsHorizontalWheel = isHorizontalWheel;
             WheelDelta = mouseDelta;
+            Point = point;
             Change(button, buttonState);
         }
 
@@ -62,6 +64,26 @@ namespace ZoDream.Shared.Input
                     return XButton2;
                 }
                 return ButtonState.None;
+            }
+        }
+
+        public bool IsMove
+        {
+            get
+            {
+                return LeftButton == ButtonState.None 
+                    && MiddleButton == ButtonState.None 
+                    && RightButton == ButtonState.None 
+                    && XButton1 == ButtonState.None 
+                    && XButton2 == ButtonState.None && !HasScroll && Point != null;
+            }
+        }
+
+        public bool HasScroll
+        {
+            get
+            {
+                return WheelDelta != 0;
             }
         }
 

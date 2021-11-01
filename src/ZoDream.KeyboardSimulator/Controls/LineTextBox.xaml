@@ -15,12 +15,12 @@
 
                 <DockPanel>
                     <TextBlock x:Name="LineTb"
-                               Foreground="#ccc" FontSize="{Binding ElementName=root,Path=FontFamily}" MinWidth="10" TextAlignment="Right"/>
+                               Foreground="#ccc" FontSize="{Binding ElementName=root,Path=FontSize}" MinWidth="10" TextAlignment="Right"/>
                     <TextBox x:Name="ContentTb"  AcceptsReturn="True" AcceptsTab="True"
                                BorderThickness="1 0 0 0"
                              IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}"
                              Text="{Binding ElementName=root, Path=Content,Mode=TwoWay}"
-                             FontSize="{Binding ElementName=root,Path=FontFamily}"
+                             FontSize="{Binding ElementName=root,Path=FontSize}"
                                VerticalScrollBarVisibility="Disabled"
                              PreviewDragOver="ContentTb_PreviewDragOver"
                              PreviewDrop="ContentTb_PreviewDrop"

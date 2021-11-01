@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ZoDream.Shared.Recorder.WinApi
 {
@@ -26,7 +27,8 @@ namespace ZoDream.Shared.Recorder.WinApi
         {
             return HookGlobal(HookIds.WH_MOUSE_LL, data =>
             {
-                return callback(DataFormat.FormatMouse(data));
+                callback(DataFormat.FormatMouse(data));
+                return true;
             });
         }
 
