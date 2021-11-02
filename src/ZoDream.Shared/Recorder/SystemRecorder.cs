@@ -18,6 +18,8 @@ namespace ZoDream.Shared.Recorder
         /// </summary>
         private IList<MouseButton> singleDown = new List<MouseButton>();
         private IList<MouseButton> doubleDown = new List<MouseButton>();
+        private HookResult? MouseHande;
+        private HookResult? KeyboardHande;
 
         public event KeyEventHandler? KeyDown;
         public event KeyEventHandler? KeyUp;
@@ -53,8 +55,8 @@ namespace ZoDream.Shared.Recorder
                 return;
             }
             booted = true;
-            HookHelper.HookGlobalKeyboard(KeyboardCallback);
-            HookHelper.HookGlobalMouse(MouseCallback);
+            KeyboardHande = HookHelper.HookGlobalKeyboard(KeyboardCallback);
+            MouseHande = HookHelper.HookGlobalMouse(MouseCallback);
         }
 
         protected bool KeyboardCallback(KeyEventArgs args)
@@ -143,6 +145,8 @@ namespace ZoDream.Shared.Recorder
 
         public void Dispose()
         {
+            MouseHande?.Dispose();
+            KeyboardHande?.Dispose();
             HookProcedureHandle.Closing = true;
         }
     }

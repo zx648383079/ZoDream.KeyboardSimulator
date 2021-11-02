@@ -7,22 +7,71 @@ using ZoDream.Shared.Input;
 
 namespace ZoDream.Shared.Parser
 {
-    public class Generator
+    public class Generator: IDisposable
     {
 
         public IList<Token> TokenItems { get; set; } = new List<Token>();
 
         private DateTime lastTime = DateTime.MinValue;
 
+        private Queue<object> waitItems = new Queue<object>();
+        private bool isLoading = false;
+
         public void Reset()
         {
             TokenItems.Clear();
-            lastTime = DateTime.MinValue;
+            lastTime = DateTime.Now;
         }
 
         public void Add(KeyEventArgs e)
         {
-            var now = DateTime.Now;
+            waitItems.Enqueue(e);
+            if (isLoading)
+            {
+                return;
+            }
+            AddAsync();
+        }
+
+        private void AddAsync()
+        {
+            if (isLoading)
+            {
+                return;
+            }
+            isLoading = true;
+            while (waitItems.Count > 0)
+            {
+                var e = waitItems.Dequeue();
+                if (e == null)
+                {
+                    break;
+                }
+                if (e is KeyEventArgs)
+                {
+                    AddAsync(e as KeyEventArgs);
+                }
+                if (e is MouseEventArgs)
+                {
+                    AddAsync(e as MouseEventArgs);
+                }
+            }
+            isLoading = false;
+        }
+
+        private void AddAsync(KeyEventArgs? e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+            AddDelay(e.HappenTime);
+            Add(EventToToken(e));
+        }
+
+        private void AddDelay(DateTime? date)
+        {
+            var now = date == null ? DateTime.Now : (DateTime)date;
             if (lastTime == DateTime.MinValue)
             {
                 lastTime = now;
@@ -32,10 +81,19 @@ namespace ZoDream.Shared.Parser
                 var diff = now - lastTime;
                 if (diff.TotalMilliseconds > 100)
                 {
-                    Add(new Token(TokenType.Delay, diff.TotalMilliseconds.ToString()));
+                    Add(new Token(TokenType.Delay, ((int)diff.TotalMilliseconds).ToString()));
                 }
                 lastTime = now;
             }
+        }
+
+        private void AddAsync(MouseEventArgs? e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+            AddDelay(e.HappenTime);
             Add(EventToToken(e));
         }
 
@@ -45,21 +103,12 @@ namespace ZoDream.Shared.Parser
             {
                 return;
             }
-            var now = DateTime.Now;
-            if (lastTime == DateTime.MinValue)
+            waitItems.Enqueue(e);
+            if (isLoading)
             {
-                lastTime = now;
+                return;
             }
-            else
-            {
-                var diff = now - lastTime;
-                if (diff.TotalMilliseconds > 100)
-                {
-                    Add(new Token(TokenType.Delay, diff.TotalMilliseconds.ToString()));
-                }
-                lastTime = now;
-            }
-            Add(EventToToken(e));
+            AddAsync();
         }
 
         public void Add(string line)
@@ -286,6 +335,12 @@ namespace ZoDream.Shared.Parser
         public override string ToString()
         {
             return Render(TokenItems);
+        }
+
+        public void Dispose()
+        {
+            waitItems.Clear();
+            TokenItems.Clear();
         }
     }
 }

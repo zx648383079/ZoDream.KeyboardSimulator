@@ -16,6 +16,11 @@ namespace ZoDream.Shared.Player
         public void MouseClick();
         public void MouseDoubleClick();
 
+        public void MouseDown(MouseButton button);
+        public void MouseUp(MouseButton button);
+        public void MouseClick(MouseButton button);
+        public void MouseDoubleClick(MouseButton button);
+
         public void MouseRightDown();
         public void MouseRightUp();
         public void MouseRightClick();

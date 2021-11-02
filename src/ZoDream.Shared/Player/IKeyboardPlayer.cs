@@ -16,5 +16,6 @@ namespace ZoDream.Shared.Player
         public void ModifiedKeyStroke(IEnumerable<Key> modifierKeys, Key key);
         public void ModifiedKeyStroke(Key modifierKey, IEnumerable<Key> keys);
         public void ModifiedKeyStroke(Key modifierKey, Key key);
+        public void KeyStroke(params Key[] keys);
     }
 }

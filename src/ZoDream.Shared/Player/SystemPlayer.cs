@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Player.WinApi;
+using System.Diagnostics;
 
 namespace ZoDream.Shared.Player
 {
@@ -76,21 +77,53 @@ namespace ZoDream.Shared.Player
             ModifiedKeyStroke(new[] { modifierKey }, new[] { key });
         }
 
+        public void KeyStroke(params Key[] keys)
+        {
+            var builder = new InputBuilder();
+            foreach (var item in keys)
+            {
+                builder.AddKeyDown(item);
+            }
+            foreach (var item in keys.Reverse())
+            {
+                builder.AddKeyUp(item);
+            }
+            SendSimulatedInput(builder.ToArray());
+        }
+
         public void MouseClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.Left).ToArray();
-            SendSimulatedInput(inputList);
+            MouseClick(MouseButton.Left);
         }
 
         public void MouseDoubleClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.Left).ToArray();
-            SendSimulatedInput(inputList);
+            MouseDoubleClick(MouseButton.Left);
         }
 
         public void MouseDown()
         {
-            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.Left).ToArray();
+            MouseDown(MouseButton.Left);
+        }
+
+        public void MouseDown(MouseButton button)
+        {
+            var inputList = new InputBuilder().AddMouseButtonDown(button).ToArray();
+            SendSimulatedInput(inputList);
+        }
+        public void MouseUp(MouseButton button)
+        {
+            var inputList = new InputBuilder().AddMouseButtonUp(button).ToArray();
+            SendSimulatedInput(inputList);
+        }
+        public void MouseClick(MouseButton button)
+        {
+            var inputList = new InputBuilder().AddMouseButtonClick(button).ToArray();
+            SendSimulatedInput(inputList);
+        }
+        public void MouseDoubleClick(MouseButton button)
+        {
+            var inputList = new InputBuilder().AddMouseButtonDoubleClick(button).ToArray();
             SendSimulatedInput(inputList);
         }
 
@@ -102,8 +135,10 @@ namespace ZoDream.Shared.Player
 
         public void MouseMoveTo(double x, double y)
         {
-            var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)Math.Truncate(x), (int)Math.Truncate(y)).ToArray();
-            SendSimulatedInput(inputList);
+            Debug.WriteLine($"{x},{y}");
+            // var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)x, (int)y).ToArray();
+            // SendSimulatedInput(inputList);
+            MouseNativeMethods.MoveTo((int)x, (int)y);
         }
 
         public void MouseMoveTo(Point point)
@@ -113,32 +148,27 @@ namespace ZoDream.Shared.Player
 
         public void MouseRightClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonClick(MouseButton.Right).ToArray();
-            SendSimulatedInput(inputList);
+            MouseClick(MouseButton.Right);
         }
 
         public void MouseRightDoubleClick()
         {
-            var inputList = new InputBuilder().AddMouseButtonDoubleClick(MouseButton.Right).ToArray();
-            SendSimulatedInput(inputList);
+            MouseDoubleClick(MouseButton.Right);
         }
 
         public void MouseRightDown()
         {
-            var inputList = new InputBuilder().AddMouseButtonDown(MouseButton.Right).ToArray();
-            SendSimulatedInput(inputList);
+            MouseDown(MouseButton.Right);
         }
 
         public void MouseRightUp()
         {
-            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.Right).ToArray();
-            SendSimulatedInput(inputList);
+            MouseUp(MouseButton.Right);
         }
 
         public void MouseUp()
         {
-            var inputList = new InputBuilder().AddMouseButtonUp(MouseButton.Left).ToArray();
-            SendSimulatedInput(inputList);
+            MouseUp(MouseButton.Left);
         }
 
         public void MouseWheel(int value)

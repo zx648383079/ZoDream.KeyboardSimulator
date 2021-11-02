@@ -13,7 +13,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
     {
 
         public SystemRecorder Recorder = new SystemRecorder();
-        public SystemPlayer Player = new SystemPlayer();
+        public Compiler Compiler = new Compiler();
         public Generator Generator = new Generator();
 
         private bool paused = true;
@@ -27,7 +27,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
         public void Dispose()
         {
             Recorder.Dispose();
-            Player.Dispose();
+            Compiler.Dispose();
+            Generator.Dispose();
         }
     }
 }

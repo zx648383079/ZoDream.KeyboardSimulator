@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -69,6 +70,12 @@ namespace ZoDream.KeyboardSimulator
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Paused = false;
+            _cancellationTokenSource = new CancellationTokenSource();
+            var script = ContentTb.Content;
+            Task.Factory.StartNew(() => {
+                ViewModel.Compiler.Compile(script, _cancellationTokenSource);
+                ViewModel.Paused = true;
+            }, _cancellationTokenSource.Token);
         }
 
         private void RecordBtn_Click(object sender, RoutedEventArgs e)
@@ -83,6 +90,7 @@ namespace ZoDream.KeyboardSimulator
         {
             ViewModel.Paused = true;
             ViewModel.Recorder.Stop();
+            _cancellationTokenSource.Cancel();
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)

@@ -14,680 +14,482 @@ namespace ZoDream.Shared.Input
         //
         // 摘要:
         //     The Cancel key.
-        Cancel = 1,
+        Cancel = 0x3,
         //
         // 摘要:
         //     The Backspace key.
-        Back = 2,
+        Back = 0x8,
         //
         // 摘要:
         //     The Tab key.
-        Tab = 3,
+        Tab = 0x9,
         //
         // 摘要:
         //     The Linefeed key.
-        LineFeed = 4,
+        LineFeed = 0xA,
         //
         // 摘要:
         //     The Clear key.
-        Clear = 5,
+        Clear = 0xC,
         //
         // 摘要:
         //     The Enter key.
-        Enter = 6,
+        Enter = 0xD,
         //
         // 摘要:
         //     The Return key.
-        Return = 6,
+        Return = 0xD,
         //
         // 摘要:
         //     The Pause key.
-        Pause = 7,
+        Pause = 0x13,
         //
         // 摘要:
         //     The Caps Lock key.
-        Capital = 8,
+        Capital = 0x14,
         //
         // 摘要:
         //     The Caps Lock key.
-        CapsLock = 8,
+        CapsLock = 0x14,
         //
         // 摘要:
         //     The IME Hangul mode key.
-        HangulMode = 9,
+        HangulMode = 0x15,
         //
         // 摘要:
         //     The IME Kana mode key.
-        KanaMode = 9,
+        KanaMode = 0x15,
         //
         // 摘要:
         //     The IME Junja mode key.
-        JunjaMode = 10,
+        JunjaMode = 0x17,
         //
         // 摘要:
         //     The IME Final mode key.
-        FinalMode = 11,
+        FinalMode = 0x18,
         //
         // 摘要:
         //     The IME Hanja mode key.
-        HanjaMode = 12,
+        HanjaMode = 0x19,
         //
         // 摘要:
         //     The IME Kanji mode key.
-        KanjiMode = 12,
+        KanjiMode = 0x19,
         //
         // 摘要:
         //     The ESC key.
-        Escape = 13,
+        Escape = 0x1B,
         //
         // 摘要:
         //     The IME Convert key.
-        ImeConvert = 14,
+        ImeConvert = 0x1C,
         //
         // 摘要:
         //     The IME NonConvert key.
-        ImeNonConvert = 0xF,
+        ImeNonConvert = 0x1D,
         //
         // 摘要:
         //     The IME Accept key.
-        ImeAccept = 0x10,
+        ImeAccept = 0x1E,
         //
         // 摘要:
         //     The IME Mode change request.
-        ImeModeChange = 17,
+        ImeModeChange = 0x1F,
         //
         // 摘要:
         //     The Spacebar key.
-        Space = 18,
+        Space = 0x20,
         //
         // 摘要:
         //     The Page Up key.
-        PageUp = 19,
+        PageUp = 0x21,
         //
         // 摘要:
         //     The Page Up key.
-        Prior = 19,
+        Prior = 0x21,
         //
         // 摘要:
         //     The Page Down key.
-        Next = 20,
+        Next = 0x22,
         //
         // 摘要:
         //     The Page Down key.
-        PageDown = 20,
+        PageDown = 0x22,
         //
         // 摘要:
         //     The End key.
-        End = 21,
+        End = 0x23,
         //
         // 摘要:
         //     The Home key.
-        Home = 22,
+        Home = 0x24,
         //
         // 摘要:
         //     The Left Arrow key.
-        Left = 23,
+        Left = 0x25,
         //
         // 摘要:
         //     The Up Arrow key.
-        Up = 24,
+        Up = 0x26,
         //
         // 摘要:
         //     The Right Arrow key.
-        Right = 25,
+        Right = 0x27,
         //
         // 摘要:
         //     The Down Arrow key.
-        Down = 26,
+        Down = 0x28,
         //
         // 摘要:
         //     The Select key.
-        Select = 27,
+        Select = 0x29,
         //
         // 摘要:
         //     The Print key.
-        Print = 28,
+        Print = 0x2A,
         //
         // 摘要:
         //     The Execute key.
-        Execute = 29,
+        Execute = 0x2B,
         //
         // 摘要:
         //     The Print Screen key.
-        PrintScreen = 30,
+        PrintScreen = 0x2C,
         //
         // 摘要:
         //     The Print Screen key.
-        Snapshot = 30,
+        Snapshot = 0x2C,
         //
         // 摘要:
         //     The Insert key.
-        Insert = 0x1F,
+        Insert = 0x2D,
         //
         // 摘要:
         //     The Delete key.
-        Delete = 0x20,
+        Delete = 0x2E,
         //
         // 摘要:
         //     The Help key.
-        Help = 33,
+        Help = 0x2F,
         //
         // 摘要:
         //     The 0 (zero) key.
-        D0 = 34,
+        D0 = 0x30,
         //
         // 摘要:
         //     The 1 (one) key.
-        D1 = 35,
+        D1 = 0x31,
         //
         // 摘要:
         //     The 2 key.
-        D2 = 36,
+        D2 = 0x32,
         //
         // 摘要:
         //     The 3 key.
-        D3 = 37,
+        D3 = 0x33,
         //
         // 摘要:
         //     The 4 key.
-        D4 = 38,
+        D4 = 0x34,
         //
         // 摘要:
         //     The 5 key.
-        D5 = 39,
+        D5 = 0x35,
         //
         // 摘要:
         //     The 6 key.
-        D6 = 40,
+        D6 = 0x36,
         //
         // 摘要:
         //     The 7 key.
-        D7 = 41,
+        D7 = 0x37,
         //
         // 摘要:
         //     The 8 key.
-        D8 = 42,
+        D8 = 0x38,
         //
         // 摘要:
         //     The 9 key.
-        D9 = 43,
+        D9 = 0x39,
         //
         // 摘要:
         //     The A key.
-        A = 44,
-        //
-        // 摘要:
-        //     The B key.
-        B = 45,
-        //
-        // 摘要:
-        //     The C key.
-        C = 46,
-        //
-        // 摘要:
-        //     The D key.
-        D = 47,
-        //
-        // 摘要:
-        //     The E key.
-        E = 48,
-        //
-        // 摘要:
-        //     The F key.
-        F = 49,
-        //
-        // 摘要:
-        //     The G key.
-        G = 50,
-        //
-        // 摘要:
-        //     The H key.
-        H = 51,
-        //
-        // 摘要:
-        //     The I key.
-        I = 52,
-        //
-        // 摘要:
-        //     The J key.
-        J = 53,
-        //
-        // 摘要:
-        //     The K key.
-        K = 54,
-        //
-        // 摘要:
-        //     The L key.
-        L = 55,
-        //
-        // 摘要:
-        //     The M key.
-        M = 56,
-        //
-        // 摘要:
-        //     The N key.
-        N = 57,
-        //
-        // 摘要:
-        //     The O key.
-        O = 58,
-        //
-        // 摘要:
-        //     The P key.
-        P = 59,
-        //
-        // 摘要:
-        //     The Q key.
-        Q = 60,
-        //
-        // 摘要:
-        //     The R key.
-        R = 61,
-        //
-        // 摘要:
-        //     The S key.
-        S = 62,
-        //
-        // 摘要:
-        //     The T key.
-        T = 0x3F,
-        //
-        // 摘要:
-        //     The U key.
-        U = 0x40,
-        //
-        // 摘要:
-        //     The V key.
-        V = 65,
-        //
-        // 摘要:
-        //     The W key.
-        W = 66,
-        //
-        // 摘要:
-        //     The X key.
-        X = 67,
-        //
-        // 摘要:
-        //     The Y key.
-        Y = 68,
-        //
-        // 摘要:
-        //     The Z key.
-        Z = 69,
+        A = 0x41,
+        B = 0x42,
+        C = 0x43,
+        D = 0x44,
+        E = 0x45,
+        F = 0x46,
+        G = 0x47,
+        H = 0x48,
+        I = 0x49,
+        J = 0x4A,
+        K = 0x4B,
+        L = 0x4C,
+        M = 0x4D,
+        N = 0x4E,
+        O = 0x4F,
+        P = 0x50,
+        Q = 0x51,
+        R = 0x52,
+        S = 0x53,
+        T = 0x54,
+        U = 0x55,
+        V = 0x56,
+        W = 0x57,
+        X = 0x58,
+        Y = 0x59,
+        Z = 0x5A,
         //
         // 摘要:
         //     The left Windows logo key (Microsoft Natural Keyboard).
-        LWin = 70,
+        LWin = 0x5B,
         //
         // 摘要:
         //     The right Windows logo key (Microsoft Natural Keyboard).
-        RWin = 71,
+        RWin = 0x5C,
         //
         // 摘要:
         //     The Application key (Microsoft Natural Keyboard). Also known as the Menu key,
         //     as it displays an application-specific context menu.
-        Apps = 72,
+        Apps = 0x5D,
         //
         // 摘要:
         //     The Computer Sleep key.
-        Sleep = 73,
+        Sleep = 0x5F,
         //
         // 摘要:
         //     The 0 key on the numeric keypad.
-        NumPad0 = 74,
-        //
-        // 摘要:
-        //     The 1 key on the numeric keypad.
-        NumPad1 = 75,
-        //
-        // 摘要:
-        //     The 2 key on the numeric keypad.
-        NumPad2 = 76,
-        //
-        // 摘要:
-        //     The 3 key on the numeric keypad.
-        NumPad3 = 77,
-        //
-        // 摘要:
-        //     The 4 key on the numeric keypad.
-        NumPad4 = 78,
-        //
-        // 摘要:
-        //     The 5 key on the numeric keypad.
-        NumPad5 = 79,
-        //
-        // 摘要:
-        //     The 6 key on the numeric keypad.
-        NumPad6 = 80,
-        //
-        // 摘要:
-        //     The 7 key on the numeric keypad.
-        NumPad7 = 81,
-        //
-        // 摘要:
-        //     The 8 key on the numeric keypad.
-        NumPad8 = 82,
-        //
-        // 摘要:
-        //     The 9 key on the numeric keypad.
-        NumPad9 = 83,
+        NumPad0 = 0x60,
+        NumPad1 = 0x61,
+        NumPad2 = 0x62,
+        NumPad3 = 0x63,
+        NumPad4 = 0x64,
+        NumPad5 = 0x65,
+        NumPad6 = 0x66,
+        NumPad7 = 0x67,
+        NumPad8 = 0x68,
+        NumPad9 = 0x69,
         //
         // 摘要:
         //     The Multiply key.
-        Multiply = 84,
+        Multiply = 0x6A,
         //
         // 摘要:
         //     The Add key.
-        Add = 85,
+        Add = 0x6B,
         //
         // 摘要:
         //     The Separator key.
-        Separator = 86,
+        Separator = 0x6C,
         //
         // 摘要:
         //     The Subtract key.
-        Subtract = 87,
+        Subtract = 0x6D,
         //
         // 摘要:
         //     The Decimal key.
-        Decimal = 88,
+        Decimal = 0x6E,
         //
         // 摘要:
         //     The Divide key.
-        Divide = 89,
+        Divide = 0x6F,
         //
         // 摘要:
         //     The F1 key.
-        F1 = 90,
-        //
-        // 摘要:
-        //     The F2 key.
-        F2 = 91,
-        //
-        // 摘要:
-        //     The F3 key.
-        F3 = 92,
-        //
-        // 摘要:
-        //     The F4 key.
-        F4 = 93,
-        //
-        // 摘要:
-        //     The F5 key.
-        F5 = 94,
-        //
-        // 摘要:
-        //     The F6 key.
-        F6 = 95,
-        //
-        // 摘要:
-        //     The F7 key.
-        F7 = 96,
-        //
-        // 摘要:
-        //     The F8 key.
-        F8 = 97,
-        //
-        // 摘要:
-        //     The F9 key.
-        F9 = 98,
-        //
-        // 摘要:
-        //     The F10 key.
-        F10 = 99,
-        //
-        // 摘要:
-        //     The F11 key.
-        F11 = 100,
-        //
-        // 摘要:
-        //     The F12 key.
-        F12 = 101,
-        //
-        // 摘要:
-        //     The F13 key.
-        F13 = 102,
-        //
-        // 摘要:
-        //     The F14 key.
-        F14 = 103,
-        //
-        // 摘要:
-        //     The F15 key.
-        F15 = 104,
-        //
-        // 摘要:
-        //     The F16 key.
-        F16 = 105,
-        //
-        // 摘要:
-        //     The F17 key.
-        F17 = 106,
-        //
-        // 摘要:
-        //     The F18 key.
-        F18 = 107,
-        //
-        // 摘要:
-        //     The F19 key.
-        F19 = 108,
-        //
-        // 摘要:
-        //     The F20 key.
-        F20 = 109,
-        //
-        // 摘要:
-        //     The F21 key.
-        F21 = 110,
-        //
-        // 摘要:
-        //     The F22 key.
-        F22 = 111,
-        //
-        // 摘要:
-        //     The F23 key.
-        F23 = 112,
-        //
-        // 摘要:
-        //     The F24 key.
-        F24 = 113,
+        F1 = 0x70,
+        F2 = 0x71,
+        F3 = 0x72,
+        F4 = 0x73,
+        F5 = 0x74,
+        F6 = 0x75,
+        F7 = 0x76,
+        F8 = 0x77,
+        F9 = 0x78,
+        F10 = 0x79,
+        F11 = 0x7A,
+        F12 = 0x7B,
+        F13 = 0x7C,
+        F14 = 0x7D,
+        F15 = 0x7E,
+        F16 = 0x7F,
+        F17 = 0x80,
+        F18 = 0x81,
+        F19 = 0x82,
+        F20 = 0x83,
+        F21 = 0x84,
+        F22 = 0x85,
+        F23 = 0x86,
+        F24 = 0x87,
         //
         // 摘要:
         //     The Num Lock key.
-        NumLock = 114,
+        NumLock = 0x90,
         //
         // 摘要:
         //     The Scroll Lock key.
-        Scroll = 115,
+        Scroll = 0x91,
         //
         // 摘要:
         //     The left Shift key.
-        LeftShift = 116,
+        LeftShift = 0xA0,
         //
         // 摘要:
         //     The right Shift key.
-        RightShift = 117,
+        RightShift = 0xA1,
         //
         // 摘要:
         //     The left CTRL key.
-        LeftCtrl = 118,
+        LeftCtrl = 0xA2,
         //
         // 摘要:
         //     The right CTRL key.
-        RightCtrl = 119,
+        RightCtrl = 0xA3,
         //
         // 摘要:
         //     The left ALT key.
-        LeftAlt = 120,
+        LeftAlt = 0xA4,
         //
         // 摘要:
         //     The right ALT key.
-        RightAlt = 121,
+        RightAlt = 0xA5,
         //
         // 摘要:
         //     The Browser Back key.
-        BrowserBack = 122,
+        BrowserBack = 0xA6,
         //
         // 摘要:
         //     The Browser Forward key.
-        BrowserForward = 123,
+        BrowserForward = 0xA7,
         //
         // 摘要:
         //     The Browser Refresh key.
-        BrowserRefresh = 124,
+        BrowserRefresh = 0xA8,
         //
         // 摘要:
         //     The Browser Stop key.
-        BrowserStop = 125,
+        BrowserStop = 0xA9,
         //
         // 摘要:
         //     The Browser Search key.
-        BrowserSearch = 126,
+        BrowserSearch = 0xAA,
         //
         // 摘要:
         //     The Browser Favorites key.
-        BrowserFavorites = 0x7F,
+        BrowserFavorites = 0xAB,
         //
         // 摘要:
         //     The Browser Home key.
-        BrowserHome = 0x80,
+        BrowserHome = 0xAC,
         //
         // 摘要:
         //     The Volume Mute key.
-        VolumeMute = 129,
+        VolumeMute = 0xAD,
         //
         // 摘要:
         //     The Volume Down key.
-        VolumeDown = 130,
+        VolumeDown = 0xAE,
         //
         // 摘要:
         //     The Volume Up key.
-        VolumeUp = 131,
-        //
-        // 摘要:
-        //     The Media Next Track key.
-        MediaNextTrack = 132,
-        //
-        // 摘要:
-        //     The Media Previous Track key.
-        MediaPreviousTrack = 133,
-        //
-        // 摘要:
-        //     The Media Stop key.
-        MediaStop = 134,
-        //
-        // 摘要:
-        //     The Media Play Pause key.
-        MediaPlayPause = 135,
-        //
-        // 摘要:
-        //     The Launch Mail key.
-        LaunchMail = 136,
-        //
-        // 摘要:
-        //     The Select Media key.
-        SelectMedia = 137,
-        //
-        // 摘要:
-        //     The Launch Application1 key.
-        LaunchApplication1 = 138,
-        //
-        // 摘要:
-        //     The Launch Application2 key.
-        LaunchApplication2 = 139,
+        VolumeUp = 0xAF,
+        MediaNextTrack = 0xB0,
+        MediaPreviousTrack = 0xB1,
+        MediaStop = 0xB2,
+        MediaPlayPause = 0xB3,
+        LaunchMail = 0xB4,
+        SelectMedia = 0xB5,
+        LaunchApplication1 = 0xB6,
+        LaunchApplication2 = 0xB7,
+        OemSemicolon = 0xBA,
         //
         // 摘要:
         //     The OEM 1 key.
-        Oem1 = 140,
-        //
-        // 摘要:
-        //     The OEM Semicolon key.
-        OemSemicolon = 140,
+        Oem1 = 0xBA,
         //
         // 摘要:
         //     The OEM Addition key.
-        OemPlus = 141,
+        OemPlus = 0xBB,
         //
         // 摘要:
         //     The OEM Comma key.
-        OemComma = 142,
+        OemComma = 0xBC,
         //
         // 摘要:
         //     The OEM Minus key.
-        OemMinus = 143,
+        OemMinus = 0xBD,
         //
         // 摘要:
         //     The OEM Period key.
-        OemPeriod = 144,
+        OemPeriod = 0xBE,
         //
         // 摘要:
         //     The OEM 2 key.
-        Oem2 = 145,
+        Oem2 = 0xBF,
         //
         // 摘要:
         //     The OEM Question key.
-        OemQuestion = 145,
+        OemQuestion = 0xBF,
         //
         // 摘要:
         //     The OEM 3 key.
-        Oem3 = 146,
+        Oem3 = 0xC0,
         //
         // 摘要:
         //     The OEM Tilde key.
-        OemTilde = 146,
+        OemTilde = 0xC0,
         //
         // 摘要:
         //     The ABNT_C1 (Brazilian) key.
-        AbntC1 = 147,
+        AbntC1 = 10001,
         //
         // 摘要:
         //     The ABNT_C2 (Brazilian) key.
-        AbntC2 = 148,
+        AbntC2 = 10002,
         //
         // 摘要:
         //     The OEM 4 key.
-        Oem4 = 149,
+        Oem4 = 0xDB,
         //
         // 摘要:
         //     The OEM Open Brackets key.
-        OemOpenBrackets = 149,
+        OemOpenBrackets = 0xDB,
         //
         // 摘要:
         //     The OEM 5 key.
-        Oem5 = 150,
+        Oem5 = 0xDC,
         //
         // 摘要:
         //     The OEM Pipe key.
-        OemPipe = 150,
+        OemPipe = 0xDC,
         //
         // 摘要:
         //     The OEM 6 key.
-        Oem6 = 151,
+        Oem6 = 0xDD,
         //
         // 摘要:
         //     The OEM Close Brackets key.
-        OemCloseBrackets = 151,
+        OemCloseBrackets = 0xDD,
         //
         // 摘要:
         //     The OEM 7 key.
-        Oem7 = 152,
+        Oem7 = 0xDE,
         //
         // 摘要:
         //     The OEM Quotes key.
-        OemQuotes = 152,
+        OemQuotes = 0xDE,
         //
         // 摘要:
         //     The OEM 8 key.
-        Oem8 = 153,
+        Oem8 = 0xDF,
         //
         // 摘要:
         //     The OEM 102 key.
-        Oem102 = 154,
+        Oem102 = 0xE2,
         //
         // 摘要:
         //     The OEM Backslash key.
-        OemBackslash = 154,
+        OemBackslash = 0xE2,
         //
         // 摘要:
         //     A special key masking the real key being processed by an IME.
@@ -695,126 +497,126 @@ namespace ZoDream.Shared.Input
         //
         // 摘要:
         //     A special key masking the real key being processed as a system key.
-        System = 156,
+        System = 10003,
         //
         // 摘要:
         //     The DBE_ALPHANUMERIC key.
-        DbeAlphanumeric = 157,
+        DbeAlphanumeric = 10004,
         //
         // 摘要:
         //     The OEM ATTN key.
-        OemAttn = 157,
+        OemAttn = 10005,
         //
         // 摘要:
         //     The DBE_KATAKANA key.
-        DbeKatakana = 158,
+        DbeKatakana = 10006,
         //
         // 摘要:
         //     The OEM FINISH key.
-        OemFinish = 158,
+        OemFinish = 10006,
         //
         // 摘要:
         //     The DBE_HIRAGANA key.
-        DbeHiragana = 159,
+        DbeHiragana = 10007,
         //
         // 摘要:
         //     The OEM COPY key.
-        OemCopy = 159,
+        OemCopy = 10007,
         //
         // 摘要:
         //     The DBE_SBCSCHAR key.
-        DbeSbcsChar = 160,
+        DbeSbcsChar = 10008,
         //
         // 摘要:
         //     The OEM AUTO key.
-        OemAuto = 160,
+        OemAuto = 10008,
         //
         // 摘要:
         //     The DBE_DBCSCHAR key.
-        DbeDbcsChar = 161,
+        DbeDbcsChar = 10009,
         //
         // 摘要:
         //     The OEM ENLW key.
-        OemEnlw = 161,
+        OemEnlw = 10009,
         //
         // 摘要:
         //     The DBE_ROMAN key.
-        DbeRoman = 162,
+        DbeRoman = 10010,
         //
         // 摘要:
         //     The OEM BACKTAB key.
-        OemBackTab = 162,
+        OemBackTab = 10011,
         //
         // 摘要:
         //     The ATTN key.
-        Attn = 163,
+        Attn = 0xF6,
         //
         // 摘要:
         //     The DBE_NOROMAN key.
-        DbeNoRoman = 163,
+        DbeNoRoman = 10012,
         //
         // 摘要:
         //     The CRSEL key.
-        CrSel = 164,
+        CrSel = 0xF7,
         //
         // 摘要:
         //     The DBE_ENTERWORDREGISTERMODE key.
-        DbeEnterWordRegisterMode = 164,
+        DbeEnterWordRegisterMode = 10013,
         //
         // 摘要:
         //     The DBE_ENTERIMECONFIGMODE key.
-        DbeEnterImeConfigureMode = 165,
+        DbeEnterImeConfigureMode = 10014,
         //
         // 摘要:
         //     The EXSEL key.
-        ExSel = 165,
+        ExSel = 0xF8,
         //
         // 摘要:
         //     The DBE_FLUSHSTRING key.
-        DbeFlushString = 166,
+        DbeFlushString = 10015,
         //
         // 摘要:
         //     The ERASE EOF key.
-        EraseEof = 166,
+        EraseEof = 0xF9,
         //
         // 摘要:
         //     The DBE_CODEINPUT key.
-        DbeCodeInput = 167,
+        DbeCodeInput = 10016,
         //
         // 摘要:
         //     The PLAY key.
-        Play = 167,
+        Play = 0xFA,
         //
         // 摘要:
         //     The DBE_NOCODEINPUT key.
-        DbeNoCodeInput = 168,
+        DbeNoCodeInput = 10017,
         //
         // 摘要:
         //     The ZOOM key.
-        Zoom = 168,
+        Zoom = 0xFB,
         //
         // 摘要:
         //     The DBE_DETERMINESTRING key.
-        DbeDetermineString = 169,
+        DbeDetermineString = 10018,
         //
         // 摘要:
         //     A constant reserved for future use.
-        NoName = 169,
+        NoName = 0xFC,
         //
         // 摘要:
         //     The DBE_ENTERDLGCONVERSIONMODE key.
-        DbeEnterDialogConversionMode = 170,
+        DbeEnterDialogConversionMode = 10019,
         //
         // 摘要:
         //     The PA1 key.
-        Pa1 = 170,
+        Pa1 = 0xFD,
         //
         // 摘要:
         //     The OEM Clear key.
-        OemClear = 171,
+        OemClear = 0xFE,
         //
         // 摘要:
         //     The key is used with another key to create a single combined character.
-        DeadCharProcessed = 172
+        DeadCharProcessed = 10020
     }
 }

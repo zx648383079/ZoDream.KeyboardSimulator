@@ -14,6 +14,8 @@ namespace ZoDream.Shared.Input
 
         public bool IsExtendedKey { get; private set; }
 
+        public DateTime? HappenTime { get; private set; } = DateTime.Now;
+
         public KeyEventArgs(Key key, ButtonState keyStates)
         {
             Key = key;

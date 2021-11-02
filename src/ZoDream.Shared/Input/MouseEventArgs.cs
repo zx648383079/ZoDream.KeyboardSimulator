@@ -39,6 +39,8 @@ namespace ZoDream.Shared.Input
 
         public short WheelDelta { get; private set; }
 
+        public DateTime? HappenTime { get; private set; } = DateTime.Now;
+
         public ButtonState ButtonState
         {
             get
