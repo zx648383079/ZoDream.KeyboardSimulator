@@ -30,7 +30,7 @@ namespace ZoDream.Shared.Parser
             Compile(new Tokenizer().Parse(code));
         }
 
-        public void Compile(IEnumerable<Token> tokens)
+        public void Compile(IEnumerable<TokenStmt> tokens)
         {
             var fnItems = RenderFn(tokens);
             if (!fnItems.ContainsKey(MainEntery))
@@ -40,23 +40,27 @@ namespace ZoDream.Shared.Parser
             CompileFn(fnItems[MainEntery], ref fnItems);
         }
 
-        private bool CompileFn(IList<Token> tokens, ref IDictionary<string, IList<Token>> fnItems)
+        private bool CompileFn(IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
         {
-            foreach (var item in tokens)
+            var i = -1;
+            bool res;
+            while (i < tokens.Count - 1)
             {
+                i++;
+                var item = tokens[i];
                 if (tokenSource != null && tokenSource.IsCancellationRequested)
                 {
                     return false;
                 }
                 switch (item.Type)
                 {
-                    case TokenType.Delay:
+                    case Token.Delay:
                         Thread.Sleep(Convert.ToInt32(item.Content));
                         break;
-                    case TokenType.Call:
+                    case Token.FnCall:
                         if (fnItems.ContainsKey(item.Content))
                         {
-                            var res = CompileFn(fnItems[item.Content], ref fnItems);
+                            res = CompileFn(fnItems[item.Content], ref fnItems);
                             if (res == false)
                             {
                                 return res;
@@ -65,8 +69,15 @@ namespace ZoDream.Shared.Parser
                         }
                         CompileFn(item);
                         break;
-                    case TokenType.Exit:
+                    case Token.Exit:
                         return false;
+                    case Token.If:
+                        res = CompileIf(ref i, ref tokens, ref fnItems);
+                        if (res == false)
+                        {
+                            return res;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -74,7 +85,82 @@ namespace ZoDream.Shared.Parser
             return true;
         }
 
-        private void CompileFn(Token item)
+        private bool CompileIf(ref int i, ref IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
+        {
+            var item = tokens[i];
+            var elseStart = -1;
+            var ifEnd = -1;
+            for (int j = i + 1; j < tokens.Count; j++)
+            {
+                switch (tokens[j].Type)
+                {
+                    case Token.Else:
+                        elseStart = j;
+                        break;
+                    case Token.EndIf:
+                    case Token.EndFn:
+                    case Token.EndOfFile:
+                        ifEnd = j;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            var start = i + 1;
+            var end = elseStart - 1;
+            if (!CompileCondition(item.Content))
+            {
+                start = elseStart + 1;
+                end = ifEnd - 1;
+            }
+            if (start < 0)
+            {
+                i = end;
+                return true;
+            }
+            for (; start < end; start++)
+            {
+                item = tokens[start];
+                if (tokenSource != null && tokenSource.IsCancellationRequested)
+                {
+                    i = end;
+                    return false;
+                }
+                switch (item.Type)
+                {
+                    case Token.Delay:
+                        Thread.Sleep(Convert.ToInt32(item.Content));
+                        break;
+                    case Token.FnCall:
+                        if (fnItems.ContainsKey(item.Content))
+                        {
+                            var res = CompileFn(fnItems[item.Content], ref fnItems);
+                            if (res == false)
+                            {
+                                i = end;
+                                return res;
+                            }
+                            break;
+                        }
+                        CompileFn(item);
+                        break;
+                    case Token.Exit:
+                        i = end;
+                        return false;
+                    default:
+                        break;
+                }
+            }
+            i = end;
+            return true;
+        }
+
+        private bool CompileCondition(string content)
+        {
+            return true;
+        }
+
+        private void CompileFn(TokenStmt item)
         {
             switch (item.Content)
             {
@@ -110,24 +196,24 @@ namespace ZoDream.Shared.Parser
             }
         }
 
-        private IDictionary<string, IList<Token>> RenderFn(IEnumerable<Token> tokens)
+        private IDictionary<string, IList<TokenStmt>> RenderFn(IEnumerable<TokenStmt> tokens)
         {
             var fn = MainEntery;
-            var items = new Dictionary<string, IList<Token>>();
+            var items = new Dictionary<string, IList<TokenStmt>>();
             foreach (var token in tokens)
             {
                 switch (token.Type)
                 {
-                    case TokenType.Fn:
+                    case Token.Fn:
                         fn = token.Content;
                         break;
-                    case TokenType.End:
+                    case Token.EndFn:
                         fn = MainEntery;
                         break;
                     default:
                         if (!items.ContainsKey(fn))
                         {
-                            items.Add(fn, new List<Token>());
+                            items.Add(fn, new List<TokenStmt>());
                         }
                         items[fn].Add(token);
                         break;

@@ -10,7 +10,7 @@ namespace ZoDream.Shared.Parser
     public class Generator: IDisposable
     {
 
-        public IList<Token> TokenItems { get; set; } = new List<Token>();
+        public IList<TokenStmt> TokenItems { get; set; } = new List<TokenStmt>();
 
         private DateTime lastTime = DateTime.MinValue;
 
@@ -81,7 +81,7 @@ namespace ZoDream.Shared.Parser
                 var diff = now - lastTime;
                 if (diff.TotalMilliseconds > 100)
                 {
-                    Add(new Token(TokenType.Delay, ((int)diff.TotalMilliseconds).ToString()));
+                    Add(new TokenStmt(Token.Delay, ((int)diff.TotalMilliseconds).ToString()));
                 }
                 lastTime = now;
             }
@@ -120,9 +120,9 @@ namespace ZoDream.Shared.Parser
             Add(new Tokenizer().Parse(line));
         }
 
-        public void Add(Token token)
+        public void Add(TokenStmt token)
         {
-            if (TokenItems.Count < 1 || token.Type != TokenType.Call)
+            if (TokenItems.Count < 1 || token.Type != Token.FnCall)
             {
                 TokenItems.Add(token);
                 return;
@@ -145,7 +145,7 @@ namespace ZoDream.Shared.Parser
             TokenItems.Add(token);
         }
 
-        private void AddIfMove(Token token)
+        private void AddIfMove(TokenStmt token)
         {
             for (int i = TokenItems.Count - 1; i >= 0; i--)
             {
@@ -162,10 +162,10 @@ namespace ZoDream.Shared.Parser
             TokenItems.Add(token);
         }
 
-        private void AddIfClick(Token token)
+        private void AddIfClick(TokenStmt token)
         {
             var end = TokenItems[TokenItems.Count - 1];
-            if (end.Type != TokenType.Call || end.Parameters == null)
+            if (end.Type != Token.FnCall || end.Parameters == null)
             {
                 TokenItems.Add(token);
                 return;
@@ -203,7 +203,7 @@ namespace ZoDream.Shared.Parser
             }
         }
 
-        public void Add(IEnumerable<Token> tokens)
+        public void Add(IEnumerable<TokenStmt> tokens)
         {
             foreach (var item in tokens)
             {
@@ -212,32 +212,35 @@ namespace ZoDream.Shared.Parser
         }
 
 
-        public string Render(Token token)
+        public string Render(TokenStmt token)
         {
             switch (token.Type)
             {
-                case TokenType.Fn:
+                case Token.Fn:
                     return $"fn {token.Content}";
-                case TokenType.If:
+                case Token.If:
                     return $"if {token.Content}";
-                case TokenType.IfElse:
+                case Token.Else:
                     return $"else";
-                case TokenType.Delay:
+                case Token.EndIf:
+                    return $"endif";
+                case Token.Delay:
                     return $"Delay({token.Content})";
-                case TokenType.Call:
+                case Token.FnCall:
                     return $"{token.Content}({string.Join(',', token.Parameters)})";
-                case TokenType.Parameter:
+                case Token.Parameter:
                     return token.Content;
-                case TokenType.End:
+                case Token.EndFn:
+                case Token.EndOfFile:
                     return string.Empty;
-                case TokenType.Exit:
+                case Token.Exit:
                     return "exit";
                 default:
                     return string.Empty;
             }
         }
 
-        public string Render(IEnumerable<Token> tokens)
+        public string Render(IEnumerable<TokenStmt> tokens)
         {
             var sb = new StringBuilder();
             foreach (var item in tokens)
@@ -248,22 +251,22 @@ namespace ZoDream.Shared.Parser
         }
 
 
-        private IList<Token> EventToToken(KeyEventArgs e)
+        private IList<TokenStmt> EventToToken(KeyEventArgs e)
         {
             var fn = RenderKeyFn(e.KeyStates);
             if (string.IsNullOrEmpty(fn))
             {
-                return new List<Token>() { new Token(TokenType.Call, fn)};
+                return new List<TokenStmt>() { new TokenStmt(Token.FnCall, fn)};
             }
-            return new List<Token>() { new Token(TokenType.Call, fn, new string[] { e.Key.ToString() }) };
+            return new List<TokenStmt>() { new TokenStmt(Token.FnCall, fn, new string[] { e.Key.ToString() }) };
         }
 
-        private IList<Token> EventToToken(MouseEventArgs e)
+        private IList<TokenStmt> EventToToken(MouseEventArgs e)
         {
-            var items = new List<Token>();
+            var items = new List<TokenStmt>();
             if (e.Point != null)
             {
-                items.Add(Token.Call("Move", e.Point.X, e.Point.Y));
+                items.Add(TokenStmt.Call("Move", e.Point.X, e.Point.Y));
             }
             for (int i = 0; i < e.ClickCount; i++)
             {
@@ -290,7 +293,7 @@ namespace ZoDream.Shared.Parser
             }
             if (e.HasScroll)
             {
-                items.Add(Token.Call("Scroll", e.WheelDelta));
+                items.Add(TokenStmt.Call("Scroll", e.WheelDelta));
             }
             return items;
         }
@@ -319,17 +322,17 @@ namespace ZoDream.Shared.Parser
             return Render(EventToToken(e));
         }
 
-        private Token RenderMouseFn(ButtonState state, MouseButton button)
+        private TokenStmt RenderMouseFn(ButtonState state, MouseButton button)
         {
             if (state == ButtonState.Pressed)
             {
-                return Token.Call("MouseDown", button);
+                return TokenStmt.Call("MouseDown", button);
             }
             if (state == ButtonState.Released)
             {
-                return Token.Call("MouseUp", button);
+                return TokenStmt.Call("MouseUp", button);
             }
-            return new Token();
+            return new TokenStmt();
         }
 
         public override string ToString()

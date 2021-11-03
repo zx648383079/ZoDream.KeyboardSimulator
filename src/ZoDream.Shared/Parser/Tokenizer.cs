@@ -9,32 +9,40 @@ namespace ZoDream.Shared.Parser
     public class Tokenizer
     {
 
-        public IList<Token> Parse(string content)
+        public IList<TokenStmt> Parse(string content)
         {
-            return Parse(new CharIterator(content));
+            return Parse(new CharReader(content));
         }
 
-        public IList<Token> Parse(CharIterator source)
+        public IList<TokenStmt> Parse(CharReader source)
         {
-            var items = new List<Token>();
+            var items = new List<TokenStmt>();
             while (true)
             {
                 var line = source.ReadLine();
                 if (line == null)
                 {
-                    items.Add(new Token(TokenType.End));
+                    items.Add(new TokenStmt(Token.EndOfFile));
                     break;
                 }
                 line = line.Split("//")[0].Trim();
                 if (string.IsNullOrEmpty(line))
                 {
-                    items.Add(new Token(TokenType.End));
+                    items.Add(new TokenStmt(Token.EndFn));
                     continue;
                 }
                 if (line.StartsWith("fn "))
                 {
                     items.Add(ParseFn(line));
                     continue;
+                }
+                if (line == "else")
+                {
+                    items.Add(new TokenStmt(Token.Else));
+                }
+                if (line == "endif")
+                {
+                    items.Add(new TokenStmt(Token.EndIf));
                 }
                 if (line.StartsWith("if "))
                 {
@@ -49,7 +57,7 @@ namespace ZoDream.Shared.Parser
                 }
                 if (Regex.IsMatch(line, @"^\d+$"))
                 {
-                    items.Add(new Token(TokenType.Delay, line));
+                    items.Add(new TokenStmt(Token.Delay, line));
                     continue;
                 }
                 ParseCall(ref items, line);
@@ -57,7 +65,7 @@ namespace ZoDream.Shared.Parser
             return items;
         }
 
-        private void ParseCall(ref List<Token> items, string line)
+        private void ParseCall(ref List<TokenStmt> items, string line)
         {
             var i = line.IndexOf('(');
             if (i == -1)
@@ -80,44 +88,44 @@ namespace ZoDream.Shared.Parser
             AddCall(ref items, line.Substring(0, i), line.Substring(i + 1, j - i - 1));
         }
 
-        private void AddCall(ref List<Token> items, string fn, string param)
+        private void AddCall(ref List<TokenStmt> items, string fn, string param)
         {
             fn = fn.Trim();
             param = param.Trim();
             switch (fn.ToLower())
             {
                 case "delay":
-                    items.Add(new Token(TokenType.Delay, param));
+                    items.Add(new TokenStmt(Token.Delay, param));
                     return;
                 case "if":
                     items.Add(ParseIf(param));
                     return;
                 case "exit":
-                    items.Add(new Token(TokenType.Exit));
+                    items.Add(new TokenStmt(Token.Exit));
                     return;
                 default:
                     break;
             }
             if (string.IsNullOrWhiteSpace(param))
             {
-                items.Add(new Token(TokenType.Call, fn));
+                items.Add(new TokenStmt(Token.FnCall, fn));
                 return;
             }
             var data = param.Split(',').Select(i => i.Trim()).ToArray();
-            items.Add(new Token(TokenType.Call, fn, data.Length == 1 && data[0] == "" ? null : data));
+            items.Add(new TokenStmt(Token.FnCall, fn, data.Length == 1 && data[0] == "" ? null : data));
         }
 
-        private Token ParseFn(string line)
+        private TokenStmt ParseFn(string line)
         {
             line = line.Split("//")[0];
             var i = line.IndexOf(':');
             var fn = i > 0 ? line.Substring(3, i) : line.Substring(3);
-            return new Token(TokenType.Fn, fn.Trim());
+            return new TokenStmt(Token.Fn, fn.Trim());
         }
 
-        private Token ParseIf(string line)
+        private TokenStmt ParseIf(string line)
         {
-            return new Token(TokenType.If, line);
+            return new TokenStmt(Token.If, line);
         }
     }
 }

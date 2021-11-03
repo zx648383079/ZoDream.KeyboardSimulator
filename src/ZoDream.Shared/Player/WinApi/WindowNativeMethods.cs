@@ -24,6 +24,18 @@ namespace ZoDream.Shared.Player.WinApi
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HTCAPTION = 0x2;
 
+        public const int SM_CXDRAG = 68;
+        public const int SM_CYDRAG = 69;
+        /// <summary>
+        /// 获取屏幕宽度（像素）
+        /// </summary>
+        public const int SM_CXSCREEN = 0;
+        /// <summary>
+        /// 获取屏幕高度（像素）
+        /// </summary>
+        public const int SM_CYSCREEN = 1;
+
+
         /// <summary>
         /// 通过窗口的标题来查找窗口的句柄
         /// </summary>
@@ -234,5 +246,9 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns></returns>
         [DllImport("User32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+
+        [DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int index);
     }
 }

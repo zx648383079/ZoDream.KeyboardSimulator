@@ -5,12 +5,12 @@ using System.Text;
 
 namespace ZoDream.Shared.Parser
 {
-    public class CharIterator : IEnumerator<char>, IEnumerable<char>
+    public class CharReader : IEnumerator<char>, IEnumerable<char>
     {
 
         public readonly string Content;
         public int Position { get; set; } = -1;
-        public CharIterator(string content)
+        public CharReader(string content)
         {
             Content = content;
         }
