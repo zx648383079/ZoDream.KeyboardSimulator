@@ -145,6 +145,13 @@ namespace ZoDream.Shared.Parser
             TokenItems.Add(token);
         }
 
+        public void AddIfStmt(double x, double y, double endX, double endY, string hash)
+        {
+            Add(new TokenStmt(Token.If, hash, new string[] { x.ToString(), y.ToString(), 
+                endX.ToString(), endY.ToString() }));
+            Add(new TokenStmt(Token.EndIf));
+        }
+
         private void AddIfMove(TokenStmt token)
         {
             for (int i = TokenItems.Count - 1; i >= 0; i--)
@@ -219,7 +226,7 @@ namespace ZoDream.Shared.Parser
                 case Token.Fn:
                     return $"fn {token.Content}";
                 case Token.If:
-                    return $"if {token.Content}";
+                    return $"if {string.Join(',', token.Parameters)}={token.Content}";
                 case Token.Else:
                     return $"else";
                 case Token.EndIf:

@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ZoDream.KeyboardSimulator.Pages;
 using ZoDream.KeyboardSimulator.ViewModels;
 
 namespace ZoDream.KeyboardSimulator
@@ -96,6 +84,22 @@ namespace ZoDream.KeyboardSimulator
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.Dispose();
+        }
+
+        private void SpotBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            Thread.Sleep(500);
+            var page = new SpotWindow();
+            page.Spot += (_, x, y, endX, endY, e) =>
+            {
+                page.Close();
+                Show();
+                ViewModel.Generator.AddIfStmt(x, y, endX, endY, e);
+                AsyncOuput();
+            };
+            page.Show();
+            page.Activate();
         }
     }
 }

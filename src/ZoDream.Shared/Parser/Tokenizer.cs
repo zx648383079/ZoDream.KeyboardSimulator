@@ -125,7 +125,9 @@ namespace ZoDream.Shared.Parser
 
         private TokenStmt ParseIf(string line)
         {
-            return new TokenStmt(Token.If, line);
+            var args = line.Split('=', 2);
+            return new TokenStmt(Token.If, args.Length > 1 ? args[1].Trim() : string.Empty, 
+                args[0].Replace('(', ' ').Replace(')', ' ').Split(',').Select(i => i.Trim()).ToArray());
         }
     }
 }

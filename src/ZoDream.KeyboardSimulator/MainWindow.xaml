@@ -17,7 +17,7 @@
             <Button x:Name="PlayBtn" Click="PlayBtn_Click" Content="&#xE102;" Style="{DynamicResource IconBtn}" ToolTip="回放" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
             <Button x:Name="RecordBtn" Click="RecordBtn_Click"  Content="&#xE2AD;" Style="{DynamicResource IconBtn}" ToolTip="录制" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
             <Button x:Name="StopBtn" Click="StopBtn_Click" Content="&#xE103;" Style="{DynamicResource IconBtn}" ToolTip="停止" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
-            <Button  Content="&#xE1E3;" Style="{DynamicResource IconBtn}" ToolTip="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <Button x:Name="SpotBtn" Click="SpotBtn_Click"  Content="&#xE1E3;" Style="{DynamicResource IconBtn}" ToolTip="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
         </StackPanel>
         <control:LineTextBox x:Name="ContentTb" Grid.Row="1" 
                              IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>

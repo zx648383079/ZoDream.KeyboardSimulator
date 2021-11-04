@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using ZoDream.Shared.Input;
 
 namespace ZoDream.Shared.Recorder.WinApi
 {
-    internal static class MouseNativeMethods
+    public static class MouseNativeMethods
     {
         /// <summary>
         ///     The GetDoubleClickTime function retrieves the current double-click time for the mouse. A double-click is a series
@@ -22,5 +23,16 @@ namespace ZoDream.Shared.Recorder.WinApi
         /// </remarks>
         [DllImport("user32")]
         internal static extern int GetDoubleClickTime();
+
+
+        [DllImport("user32.dll")]
+        private static extern int GetCursorPos(ref PointStruct lpPoint);
+
+        public static Point GetMousePosition()
+        {
+            var point = new PointStruct();
+            GetCursorPos(ref point);
+            return new Point(point.X, point.Y);
+        }
     }
 }

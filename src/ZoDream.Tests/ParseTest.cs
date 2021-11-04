@@ -9,18 +9,22 @@ namespace ZoDream.Tests
         [TestMethod]
         public void TestParse()
         {
-            var str = @"fn test  //定义脚本段
-click(99,1)  //点击坐标
-300         //等待300毫秒
-drag(1,22,88,1)   //拖拽(1,22)的东西到(88,1)
- //空行表示段结束
-if (0,0,20,20)=        //判断区域是否为像素，可以简化为判断对角线的像素
-test()    //执行脚本段
-else
-exit   //退出";
+            var str = @"fn test // 定义方法
+            DoubleClick(Right) //双击鼠标右键
+            2000  // 延时2s
+            Click() //点击左键
+             // 方法结束
+            1000 //延迟1s
+            Move(20,20) // 鼠标移动到点(20,20)
+            Click()   //点击左键
+            if 0,20,40,60=md5  // 判断点(0,20)到(40,60)的直线路径上的颜色值是否为，请通过拾取按钮自动框选获取
+                test()        // 为True则执行 定义的方法test
+            endif";
             var parse = new Tokenizer();
             var items = parse.Parse(str);
             Assert.AreEqual(items.Count, 10);
         }
+
+
     }
 }

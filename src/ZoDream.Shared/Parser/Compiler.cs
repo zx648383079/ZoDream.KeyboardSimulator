@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Player;
+using ZoDream.Shared.Recorder.WinApi;
 
 namespace ZoDream.Shared.Parser
 {
@@ -108,7 +110,7 @@ namespace ZoDream.Shared.Parser
             }
             var start = i + 1;
             var end = elseStart - 1;
-            if (!CompileCondition(item.Content))
+            if (!CompileCondition(item.Parameters, item.Content))
             {
                 start = elseStart + 1;
                 end = ifEnd - 1;
@@ -155,9 +157,16 @@ namespace ZoDream.Shared.Parser
             return true;
         }
 
-        private bool CompileCondition(string content)
+        private bool CompileCondition(string[] point, string content)
         {
-            return true;
+            if (point.Length != 4)
+            {
+                return false;
+            }
+            var val = Snapshot.GetRect(Convert.ToInt32(point[0]),
+                Convert.ToInt32(point[1]),
+                Convert.ToInt32(point[2]), Convert.ToInt32(point[3]));
+            return !string.IsNullOrEmpty(val) && content == val;
         }
 
         private void CompileFn(TokenStmt item)
@@ -165,28 +174,28 @@ namespace ZoDream.Shared.Parser
             switch (item.Content)
             {
                 case "Click":
-                    Player.MouseClick((MouseButton)Enum.Parse(typeof(MouseButton), item.Parameters[0]));
+                    Player.MouseClick(FormatButton(item.Parameters[0]));
                     break;
                 case "DoubleClick":
-                    Player.MouseDoubleClick((MouseButton)Enum.Parse(typeof(MouseButton), item.Parameters[0]));
+                    Player.MouseDoubleClick(FormatButton(item.Parameters[0]));
                     break;
                 case "MouseDown":
-                    Player.MouseDown((MouseButton)Enum.Parse(typeof(MouseButton), item.Parameters[0]));
+                    Player.MouseDown(FormatButton(item.Parameters[0]));
                     break;
                 case "MouseUp":
-                    Player.MouseUp((MouseButton)Enum.Parse(typeof(MouseButton), item.Parameters[0]));
+                    Player.MouseUp(FormatButton(item.Parameters[0]));
                     break;
                 case "Move":
-                    Player.MouseMoveTo(Convert.ToDouble(item.Parameters[0]), Convert.ToDouble(item.Parameters[1]));
+                    MoveTween(item.Parameters);
                     break;
                 case "Input":
-                    Player.KeyStroke((Key)Enum.Parse(typeof(Key), item.Parameters[0]));
+                    Player.KeyStroke(FormatKey(item.Parameters[0]));
                     break;
                 case "KeyDown":
-                    Player.KeyDown((Key)Enum.Parse(typeof(Key), item.Parameters[0]));
+                    Player.KeyDown(FormatKey(item.Parameters[0]));
                     break;
                 case "KeyUp":
-                    Player.KeyUp((Key)Enum.Parse(typeof(Key), item.Parameters[0]));
+                    Player.KeyUp(FormatKey(item.Parameters[0]));
                     break;
                 case "Scroll":
                     Player.MouseWheel(Convert.ToInt32(item.Parameters[0]));
@@ -194,6 +203,71 @@ namespace ZoDream.Shared.Parser
                 default:
                     break;
             }
+        }
+
+        private void MoveTween(string[] param)
+        {
+            if (param.Length < 2)
+            {
+                return;
+            }
+            var x = Convert.ToDouble(param[0]);
+            var y = Convert.ToDouble(param[1]);
+            if (param.Length == 2)
+            {
+                Player.MouseMoveTo(x, y);
+                return;
+            }
+            var point = MouseNativeMethods.GetMousePosition();
+            var time = Convert.ToInt32(param[2]);
+            var stepTime = 15;
+            var step = time / stepTime;
+            if (step < 2)
+            {
+                Player.MouseMoveTo(x, y);
+                return;
+            }
+            var stepX = (x - point.X) / step;
+            var stepY = (y - point.Y) / step;
+            var startX = (double)point.X;
+            var startY = (double)point.Y;
+            while (true)
+            {
+                Thread.Sleep(stepTime);
+                startX += stepX;
+                startY += stepY;
+                if ((stepX < 0 && startX < x) || (stepX > 0 && startX > x))
+                {
+                    startX = x;
+                }
+                if ((stepY < 0 && startY < y) || (stepY > 0 && startY > y))
+                {
+                    startY = y;
+                }
+                Player.MouseMoveTo(startX, startY);
+                if (startX == x && startY == y)
+                {
+                    break;
+                }
+            }
+        }
+
+        private MouseButton FormatButton(string b)
+        {
+            if (string.IsNullOrWhiteSpace(b))
+            {
+                return MouseButton.Left;
+            }
+            return (MouseButton)Enum.Parse(typeof(MouseButton), b);
+        }
+
+        private Key FormatKey(string k)
+        {
+            k = k.Trim();
+            if (Regex.IsMatch(k, @"^(0x\d+)|(\d+)$")) {
+                return (Key)Convert.ToInt32(k);
+            }
+            return (Key)Enum.Parse(typeof(Key), k);
         }
 
         private IDictionary<string, IList<TokenStmt>> RenderFn(IEnumerable<TokenStmt> tokens)

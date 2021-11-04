@@ -5,6 +5,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <Authors>zodream</Authors>
+    <Company>zodream.cn</Company>
+    <Copyright>Copyright © 2021 zodream.cn</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
