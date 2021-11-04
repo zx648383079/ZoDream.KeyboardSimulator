@@ -8,7 +8,12 @@
     <Authors>zodream</Authors>
     <Company>zodream.cn</Company>
     <Copyright>Copyright © 2021 zodream.cn</Copyright>
+    <ApplicationIcon>simulator.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="simulator.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ZoDream.Shared\ZoDream.Shared.csproj" />
