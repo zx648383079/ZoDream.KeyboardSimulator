@@ -226,7 +226,7 @@ namespace ZoDream.Shared.Parser
                 case Token.Fn:
                     return $"fn {token.Content}";
                 case Token.If:
-                    return $"if {string.Join(',', token.Parameters)}={token.Content}";
+                    return $"if {string.Join(",", token.Parameters)}={token.Content}";
                 case Token.Else:
                     return $"else";
                 case Token.EndIf:
@@ -234,7 +234,7 @@ namespace ZoDream.Shared.Parser
                 case Token.Delay:
                     return $"Delay({token.Content})";
                 case Token.FnCall:
-                    return $"{token.Content}({string.Join(',', token.Parameters)})";
+                    return $"{token.Content}({string.Join(",", token.Parameters)})";
                 case Token.Parameter:
                     return token.Content;
                 case Token.EndFn:
