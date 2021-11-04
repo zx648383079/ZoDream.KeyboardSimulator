@@ -1,5 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Text.RegularExpressions;
 using ZoDream.Shared.Parser;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.Tests
 {
@@ -22,7 +25,13 @@ namespace ZoDream.Tests
             endif";
             var parse = new Tokenizer();
             var items = parse.Parse(str);
-            Assert.AreEqual(items.Count, 10);
+            Assert.AreEqual(items.Count, 13);
+        }
+
+        [TestMethod]
+        public void TestInt()
+        {
+            Assert.IsTrue(Regex.IsMatch("1111", @"^(0x[\dA-Z]+)|(\d+)$"));
         }
 
 

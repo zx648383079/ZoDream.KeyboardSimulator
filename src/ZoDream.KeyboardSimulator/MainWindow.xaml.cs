@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using ZoDream.KeyboardSimulator.Pages;
 using ZoDream.KeyboardSimulator.ViewModels;
+using ZoDream.Shared.Storage;
 
 namespace ZoDream.KeyboardSimulator
 {
@@ -101,5 +103,6 @@ namespace ZoDream.KeyboardSimulator
             page.Show();
             page.Activate();
         }
+
     }
 }

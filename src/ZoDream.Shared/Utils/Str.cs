@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ZoDream.Shared.Utils
 {
@@ -20,6 +21,20 @@ namespace ZoDream.Shared.Utils
 
             }
             return strbul.ToString();
+        }
+
+        public static int ToInt(string souce)
+        {
+            if (souce.StartsWith("0x"))
+            {
+                return Convert.ToInt32(souce.Substring(2), 16);
+            }
+            return Convert.ToInt32(souce);
+        }
+
+        public static bool IsInt(string source)
+        {
+            return Regex.IsMatch(source, @"^(0x[\dA-Za-z]+)|(\d+)$");
         }
     }
 }

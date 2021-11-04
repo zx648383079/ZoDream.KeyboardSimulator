@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Player;
 using ZoDream.Shared.Recorder.WinApi;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.Shared.Parser
 {
@@ -25,6 +27,8 @@ namespace ZoDream.Shared.Parser
 
         private IPlayer Player;
         private CancellationTokenSource? tokenSource;
+
+        private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
 
         public void Compile(string code, CancellationTokenSource? cancellationTokenSource)
         {
@@ -50,7 +54,7 @@ namespace ZoDream.Shared.Parser
             {
                 i++;
                 var item = tokens[i];
-                if (tokenSource != null && tokenSource.IsCancellationRequested)
+                if (IsCancellationRequested)
                 {
                     return false;
                 }
@@ -94,19 +98,20 @@ namespace ZoDream.Shared.Parser
             var ifEnd = -1;
             for (int j = i + 1; j < tokens.Count; j++)
             {
-                switch (tokens[j].Type)
-                {
-                    case Token.Else:
-                        elseStart = j;
-                        break;
-                    case Token.EndIf:
-                    case Token.EndFn:
-                    case Token.EndOfFile:
-                        ifEnd = j;
-                        break;
-                    default:
-                        break;
+                var t = tokens[j].Type;
+                if (t == Token.Else) {
+                    elseStart = j;
+                    continue;
                 }
+                if (t == Token.EndIf || t == Token.EndFn || t == Token.EndOfFile)
+                {
+                    ifEnd = j;
+                    break;
+                }
+            }
+            if (ifEnd < 0)
+            {
+                ifEnd = tokens.Count;
             }
             var start = i + 1;
             var end = elseStart - 1;
@@ -123,7 +128,7 @@ namespace ZoDream.Shared.Parser
             for (; start < end; start++)
             {
                 item = tokens[start];
-                if (tokenSource != null && tokenSource.IsCancellationRequested)
+                if (IsCancellationRequested)
                 {
                     i = end;
                     return false;
@@ -191,6 +196,9 @@ namespace ZoDream.Shared.Parser
                 case "Input":
                     Player.KeyStroke(FormatKey(item.Parameters[0]));
                     break;
+                case "HotKey":
+                    Player.KeyStroke(item.Parameters.Select(i => FormatKey(i)).ToArray());
+                    break;
                 case "KeyDown":
                     Player.KeyDown(FormatKey(item.Parameters[0]));
                     break;
@@ -234,6 +242,10 @@ namespace ZoDream.Shared.Parser
             while (true)
             {
                 Thread.Sleep(stepTime);
+                if (IsCancellationRequested)
+                {
+                    return;
+                }
                 startX += stepX;
                 startY += stepY;
                 if ((stepX < 0 && startX < x) || (stepX > 0 && startX > x))
@@ -264,8 +276,8 @@ namespace ZoDream.Shared.Parser
         private Key FormatKey(string k)
         {
             k = k.Trim();
-            if (Regex.IsMatch(k, @"^(0x\d+)|(\d+)$")) {
-                return (Key)Convert.ToInt32(k);
+            if (Str.IsInt(k)) {
+                return (Key)Str.ToInt(k);
             }
             return (Key)Enum.Parse(typeof(Key), k);
         }

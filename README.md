@@ -14,6 +14,8 @@
 1. if 拾取
 2. 录制
 3. 模拟执行
+4. `ctrl + O` 或拖拽文件进行打开脚本文件
+5. `ctrl + s` 进行脚本保存
 
 ## 示例
 
@@ -33,3 +35,24 @@ if 0,20,40,60=md5  // 判断点(0,20)到(40,60)的直线路径上的颜色值是
 endif
 
 ```
+
+## 语法规则
+
+|关键字|说明|示例|
+|:--:|:--|:--|
+|fn|声明方法，以空行结束|`fn name`|
+|if|条件判断，目前只支持两点间颜色判断|`if x,y,endX,endY=hash`|
+|else||
+|endif||
+|Delay|延迟,纯数字行也会执行|
+|Move(x,y[,duration])|移动鼠标,duration为移动时间||
+|MouseDown|按下鼠标, 默认`Left`，可选值`Left,Right,Middle,XButton1,XButton2`||
+|MouseUp|按下鼠标||
+|Click|单击鼠标||
+|DoubleClick|双击鼠标||
+|Scroll|滚动滑轮|`Scroll(10)`|
+|Input|输入按键||
+|HotKey|输入组合键，支持0x或数字或按键名|`HotKey(0x29, A, LeftCtrl)`|
+|KeyDown|按下键||
+|KeyUp|释放键||
+|//|只支持单行注释，忽略||

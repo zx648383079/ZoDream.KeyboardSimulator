@@ -24,7 +24,8 @@
                                VerticalScrollBarVisibility="Disabled"
                              PreviewDragOver="ContentTb_PreviewDragOver"
                              PreviewDrop="ContentTb_PreviewDrop"
-                               TextChanged="ContentTb_TextChanged">
+                               TextChanged="ContentTb_TextChanged"
+                             KeyDown="ContentTb_KeyDown">
                     </TextBox>
                 </DockPanel>
             </ScrollViewer>

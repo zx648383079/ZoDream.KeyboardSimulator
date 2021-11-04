@@ -25,7 +25,7 @@ namespace ZoDream.Shared.Parser
                     items.Add(new TokenStmt(Token.EndOfFile));
                     break;
                 }
-                line = line.Split("//")[0].Trim();
+                line = line.Split(new string[] { "//" }, StringSplitOptions.None)[0].Trim();
                 if (string.IsNullOrEmpty(line))
                 {
                     items.Add(new TokenStmt(Token.EndFn));
@@ -70,7 +70,7 @@ namespace ZoDream.Shared.Parser
             var i = line.IndexOf('(');
             if (i == -1)
             {
-                var temp = line.Split(' ', 2);
+                var temp = line.Split(new char[] { ' ' }, 2);
                 if (temp.Length == 1)
                 {
                     AddCall(ref items, line, string.Empty);
@@ -117,7 +117,7 @@ namespace ZoDream.Shared.Parser
 
         private TokenStmt ParseFn(string line)
         {
-            line = line.Split("//")[0];
+            line = line.Split(new string[] { "//" }, StringSplitOptions.None)[0];
             var i = line.IndexOf(':');
             var fn = i > 0 ? line.Substring(3, i) : line.Substring(3);
             return new TokenStmt(Token.Fn, fn.Trim());
@@ -125,7 +125,7 @@ namespace ZoDream.Shared.Parser
 
         private TokenStmt ParseIf(string line)
         {
-            var args = line.Split('=', 2);
+            var args = line.Split(new char[] { '=' }, 2);
             return new TokenStmt(Token.If, args.Length > 1 ? args[1].Trim() : string.Empty, 
                 args[0].Replace('(', ' ').Replace(')', ' ').Split(',').Select(i => i.Trim()).ToArray());
         }

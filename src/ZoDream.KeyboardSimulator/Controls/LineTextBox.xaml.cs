@@ -105,5 +105,52 @@ namespace ZoDream.KeyboardSimulator.Controls
                 ContentTb.Text = Open.Read(file);
             }
         }
+
+        private void ContentTb_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl)
+                || e.KeyboardDevice.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.KeyboardDevice.IsKeyDown(Key.S))
+                {
+                    e.Handled = true;
+                    SaveAs();
+                } else if (e.KeyboardDevice.IsKeyDown(Key.O))
+                {
+                    e.Handled = true;
+                    OpenFile();
+                }
+            }
+        }
+
+        private void OpenFile()
+        {
+            var picker = new Microsoft.Win32.OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "文件|*.txt|所有文件|*.*",
+                Title = "选择文件"
+            };
+            if (picker.ShowDialog() != true)
+            {
+                return;
+            }
+            ContentTb.Text = Open.Read(picker.FileName);
+        }
+
+        private void SaveAs()
+        {
+            var picker = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "选择保存路径",
+                Filter = "文件|*.txt|所有文件|*.*",
+                FileName = "未知脚本",
+            };
+            if (picker.ShowDialog() != true)
+            {
+                return;
+            }
+            Open.Write(picker.FileName, ContentTb.Text);
+        }
     }
 }
