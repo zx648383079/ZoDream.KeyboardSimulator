@@ -147,9 +147,7 @@ namespace ZoDream.Shared.Parser
 
         public void AddIfStmt(double x, double y, double endX, double endY, string hash)
         {
-            Add(new TokenStmt(Token.If, hash, new string[] { x.ToString(), y.ToString(), 
-                endX.ToString(), endY.ToString() }));
-            Add(new TokenStmt(Token.EndIf));
+            Add(RenderIfToken(x, y, endX, endY, hash));
         }
 
         private void AddIfMove(TokenStmt token)
@@ -218,6 +216,16 @@ namespace ZoDream.Shared.Parser
             }
         }
 
+
+        public IEnumerable<TokenStmt> RenderIfToken(double x, double y, double endX, double endY, string hash)
+        {
+            return new TokenStmt[]
+            {
+                new TokenStmt(Token.If, hash, new string[] { x.ToString(), y.ToString(),
+                endX.ToString(), endY.ToString() }),
+                new TokenStmt(Token.EndIf),
+            };
+        }
 
         public string Render(TokenStmt token)
         {

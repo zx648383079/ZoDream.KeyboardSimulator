@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using ZoDream.Shared.Player.WinApi;
@@ -62,13 +63,27 @@ namespace ZoDream.Shared.Parser
             {
                 return string.Empty;
             }
+            // Save(bitmap, x, y, endX, endY);
             var sb = new StringBuilder();
             GetRectLine(x, y, endX, endY, (i, j) =>
             {
                 var color = bitmap.GetPixel(i, j);
-                sb.Append(color.ToArgb());
+                var gray = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
+                sb.Append(gray);
             });
             return Str.MD5Encode(sb.ToString());
+        }
+
+        private static void Save(Bitmap source, int x, int y, int endX, int endY)
+        {
+            var sourceRect = new Rectangle(x, y, endX- x, endY - y);
+            var destRect = new Rectangle(0, 0, sourceRect.Width, sourceRect.Height);
+            var bitmap = new Bitmap(destRect.Width, destRect.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.DrawImage(source, destRect, sourceRect, GraphicsUnit.Pixel);
+            }
+            bitmap.Save($"{DateTime.Now.Ticks}.png");
         }
 
         public static void GetRectLine(int x, int y, int endX, int endY, Action<int, int> action)

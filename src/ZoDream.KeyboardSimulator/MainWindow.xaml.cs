@@ -68,6 +68,7 @@ namespace ZoDream.KeyboardSimulator
             }, _cancellationTokenSource.Token);
         }
 
+
         private void RecordBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Paused = false;
@@ -97,8 +98,8 @@ namespace ZoDream.KeyboardSimulator
             {
                 page.Close();
                 Show();
-                ViewModel.Generator.AddIfStmt(x, y, endX, endY, e);
-                AsyncOuput();
+                ContentTb.InsertLine(ViewModel.Generator.Render(
+                    ViewModel.Generator.RenderIfToken(x, y, endX, endY, e)));
             };
             page.Show();
             page.Activate();

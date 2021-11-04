@@ -38,19 +38,26 @@ namespace ZoDream.Shared.Parser
 
         public void Compile(IEnumerable<TokenStmt> tokens)
         {
-            var fnItems = RenderFn(tokens);
-            if (!fnItems.ContainsKey(MainEntery))
+            try
             {
-                return;
+                var fnItems = RenderFn(tokens);
+                if (!fnItems.ContainsKey(MainEntery))
+                {
+                    return;
+                }
+                CompileFn(fnItems[MainEntery], ref fnItems);
             }
-            CompileFn(fnItems[MainEntery], ref fnItems);
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private bool CompileFn(IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
         {
             var i = -1;
             bool res;
-            while (i < tokens.Count - 1)
+            while (i < tokens.Count - 2)
             {
                 i++;
                 var item = tokens[i];
@@ -114,13 +121,13 @@ namespace ZoDream.Shared.Parser
                 ifEnd = tokens.Count;
             }
             var start = i + 1;
-            var end = elseStart - 1;
+            var end = elseStart < 0 ? ifEnd : elseStart;
             if (!CompileCondition(item.Parameters, item.Content))
             {
                 start = elseStart + 1;
-                end = ifEnd - 1;
+                end = ifEnd;
             }
-            if (start < 0)
+            if (start < i)
             {
                 i = end;
                 return true;
