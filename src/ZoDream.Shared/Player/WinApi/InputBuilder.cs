@@ -109,24 +109,12 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns>This <see cref="InputBuilder"/> instance.</returns>
         public InputBuilder AddKeyDown(Key keyCode)
         {
-            var down =
-                new Input
-                {
-                    Type = (UInt32)InputType.Keyboard,
-                    Data =
-                            {
-                                Keyboard =
-                                    new KeyboardInput
-                                        {
-                                            KeyCode = (ushort) keyCode,
-                                            Scan = (ushort)(InputNativeMethods.MapVirtualKey((uint)keyCode, 0) & 0xFFU),
-                                            Flags = IsExtendedKey(keyCode) ? (uint) KeyboardFlag.ExtendedKey : 0,
-                                            Time = 0,
-                                            ExtraInfo = IntPtr.Zero
-                                        }
-                            }
-                };
-
+            var ki = RenderKey(keyCode);
+            var down = new Input
+            {
+                Type = (uint)InputType.Keyboard,
+                Keyboard = ki
+            };
             inputItems.Add(down);
             return this;
         }
@@ -138,28 +126,52 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns>This <see cref="InputBuilder"/> instance.</returns>
         public InputBuilder AddKeyUp(Key keyCode)
         {
-            var up =
-                new Input
+            var ki = RenderKeyUp(RenderKey(keyCode));
+            var up = new Input
                 {
                     Type = (uint)InputType.Keyboard,
-                    Data =
-                            {
-                                Keyboard =
-                                    new KeyboardInput
-                                        {
-                                            KeyCode = (ushort) keyCode,
-                                            Scan = (ushort)(InputNativeMethods.MapVirtualKey((uint)keyCode, 0) & 0xFFU),
-                                            Flags = (uint) (IsExtendedKey(keyCode)
-                                                                  ? KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey
-                                                                  : KeyboardFlag.KeyUp),
-                                            Time = 0,
-                                            ExtraInfo = IntPtr.Zero
-                                        }
-                            }
+                    Keyboard = ki,
                 };
-
             inputItems.Add(up);
             return this;
+        }
+
+        public KeyboardInput RenderKey(Key key, bool useScanCode = false)
+        {
+            var flag = IsExtendedKey(key) ? KeyboardFlag.ExtendedKey : 0;
+            if (useScanCode)
+            {
+                flag |= KeyboardFlag.ScanCode;
+            }
+            return new KeyboardInput
+            {
+                KeyCode = (ushort)(useScanCode ? 0 : key),
+                Scan = (ushort)(useScanCode ? InputNativeMethods.MapVirtualKey((uint)key, 0) & 0xFFU : 0),
+                Flags = (uint)flag,
+                Time = 0,
+                ExtraInfo = IntPtr.Zero
+            };
+        }
+
+        public KeyboardInput RenderKeyUp(KeyboardInput input)
+        {
+            input.Flags |= (uint)KeyboardFlag.KeyUp;
+            return input;
+        }
+
+        public Input RenderKeyUp(Input input)
+        {
+            input.Keyboard.Flags |= (uint)KeyboardFlag.KeyUp;
+            return input;
+        }
+
+        public Input[] RenderKeyUp(Input[] input)
+        {
+            foreach (var item in input)
+            {
+                RenderKeyUp(item);
+            }
+            return input;
         }
 
         /// <summary>
@@ -181,41 +193,33 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns>This <see cref="InputBuilder"/> instance.</returns>
         public InputBuilder AddCharacter(char character)
         {
-            UInt16 scanCode = character;
+            ushort scanCode = character;
 
             var down = new Input
             {
                 Type = (uint)InputType.Keyboard,
-                Data =
-                                   {
-                                       Keyboard =
-                                           new KeyboardInput
-                                               {
-                                                   KeyCode = 0,
-                                                   Scan = scanCode,
-                                                   Flags = (uint)KeyboardFlag.Unicode,
-                                                   Time = 0,
-                                                   ExtraInfo = IntPtr.Zero
-                                               }
-                                   }
+                Keyboard = new KeyboardInput
+                {
+                    KeyCode = 0,
+                    Scan = scanCode,
+                    Flags = (uint)KeyboardFlag.Unicode,
+                    Time = 0,
+                    ExtraInfo = IntPtr.Zero
+                }
             };
 
             var up = new Input
             {
                 Type = (uint)InputType.Keyboard,
-                Data =
-                                 {
-                                     Keyboard =
-                                         new KeyboardInput
-                                             {
-                                                 KeyCode = 0,
-                                                 Scan = scanCode,
-                                                 Flags =
-                                                     (uint)(KeyboardFlag.KeyUp | KeyboardFlag.Unicode),
-                                                 Time = 0,
-                                                 ExtraInfo = IntPtr.Zero
-                                             }
-                                 }
+                Keyboard = new KeyboardInput
+                {
+                    KeyCode = 0,
+                    Scan = scanCode,
+                    Flags =
+                            (uint)(KeyboardFlag.KeyUp | KeyboardFlag.Unicode),
+                    Time = 0,
+                    ExtraInfo = IntPtr.Zero
+                }
             };
 
             // Handle extended keys:
@@ -223,8 +227,8 @@ namespace ZoDream.Shared.Player.WinApi
             // we need to include the KEYEVENTF_EXTENDEDKEY flag in the Flags property. 
             if ((scanCode & 0xFF00) == 0xE000)
             {
-                down.Data.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
-                up.Data.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
+                down.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
+                up.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
             }
 
             inputItems.Add(down);
@@ -265,9 +269,9 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddRelativeMouseMovement(int x, int y)
         {
             var movement = new Input { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)MouseFlag.Move;
-            movement.Data.Mouse.X = x;
-            movement.Data.Mouse.Y = y;
+            movement.Mouse.Flags = (uint)MouseFlag.Move;
+            movement.Mouse.X = x;
+            movement.Mouse.Y = y;
 
             inputItems.Add(movement);
 
@@ -283,9 +287,9 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddAbsoluteMouseMovement(int absoluteX, int absoluteY)
         {
             var movement = new Input { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute);
-            movement.Data.Mouse.X = absoluteX;
-            movement.Data.Mouse.Y = absoluteY;
+            movement.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute);
+            movement.Mouse.X = absoluteX;
+            movement.Mouse.Y = absoluteY;
 
             inputItems.Add(movement);
 
@@ -301,9 +305,9 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddAbsoluteMouseMovementOnVirtualDesktop(int absoluteX, int absoluteY)
         {
             var movement = new Input { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
-            movement.Data.Mouse.X = absoluteX;
-            movement.Data.Mouse.Y = absoluteY;
+            movement.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
+            movement.Mouse.X = absoluteX;
+            movement.Mouse.Y = absoluteY;
 
             inputItems.Add(movement);
 
@@ -318,7 +322,7 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseButtonDown(MouseButton button)
         {
             var buttonDown = new Input { Type = (uint)InputType.Mouse };
-            buttonDown.Data.Mouse.Flags = (uint)ToMouseButtonDownFlag(button);
+            buttonDown.Mouse.Flags = (uint)ToMouseButtonDownFlag(button);
 
             inputItems.Add(buttonDown);
 
@@ -333,8 +337,8 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseXButtonDown(int xButtonId)
         {
             var buttonDown = new Input { Type = (uint)InputType.Mouse };
-            buttonDown.Data.Mouse.Flags = (uint)MouseFlag.XDown;
-            buttonDown.Data.Mouse.MouseData = (uint)xButtonId;
+            buttonDown.Mouse.Flags = (uint)MouseFlag.XDown;
+            buttonDown.Mouse.MouseData = (uint)xButtonId;
             inputItems.Add(buttonDown);
 
             return this;
@@ -348,7 +352,7 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseButtonUp(MouseButton button)
         {
             var buttonUp = new Input { Type = (uint)InputType.Mouse };
-            buttonUp.Data.Mouse.Flags = (uint)ToMouseButtonUpFlag(button);
+            buttonUp.Mouse.Flags = (uint)ToMouseButtonUpFlag(button);
             inputItems.Add(buttonUp);
 
             return this;
@@ -362,8 +366,8 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseXButtonUp(int xButtonId)
         {
             var buttonUp = new Input { Type = (uint)InputType.Mouse };
-            buttonUp.Data.Mouse.Flags = (uint)MouseFlag.XUp;
-            buttonUp.Data.Mouse.MouseData = (uint)xButtonId;
+            buttonUp.Mouse.Flags = (uint)MouseFlag.XUp;
+            buttonUp.Mouse.MouseData = (uint)xButtonId;
             inputItems.Add(buttonUp);
 
             return this;
@@ -417,8 +421,8 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseVerticalWheelScroll(int scrollAmount)
         {
             var scroll = new Input { Type = (uint)InputType.Mouse };
-            scroll.Data.Mouse.Flags = (uint)MouseFlag.VerticalWheel;
-            scroll.Data.Mouse.MouseData = (uint)scrollAmount;
+            scroll.Mouse.Flags = (uint)MouseFlag.VerticalWheel;
+            scroll.Mouse.MouseData = (uint)scrollAmount;
 
             inputItems.Add(scroll);
 
@@ -433,8 +437,8 @@ namespace ZoDream.Shared.Player.WinApi
         public InputBuilder AddMouseHorizontalWheelScroll(int scrollAmount)
         {
             var scroll = new Input { Type = (uint)InputType.Mouse };
-            scroll.Data.Mouse.Flags = (uint)MouseFlag.HorizontalWheel;
-            scroll.Data.Mouse.MouseData = (uint)scrollAmount;
+            scroll.Mouse.Flags = (uint)MouseFlag.HorizontalWheel;
+            scroll.Mouse.MouseData = (uint)scrollAmount;
 
             inputItems.Add(scroll);
 

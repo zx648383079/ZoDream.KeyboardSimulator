@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace ZoDream.Shared.Player.WinApi
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct KeyboardInput
     {
         /// <summary>

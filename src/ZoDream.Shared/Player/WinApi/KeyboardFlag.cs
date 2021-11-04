@@ -7,6 +7,7 @@ namespace ZoDream.Shared.Player.WinApi
     [Flags]
     internal enum KeyboardFlag : uint // UInt32
     {
+        KeyDown = 0x0000,
         /// <summary>
         /// KEYEVENTF_EXTENDEDKEY = 0x0001 (If specified, the scan code was preceded by a prefix byte that has the value 0xE0 (224).)
         /// </summary>

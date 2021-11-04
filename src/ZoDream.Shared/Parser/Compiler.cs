@@ -201,7 +201,7 @@ namespace ZoDream.Shared.Parser
                     MoveTween(item.Parameters);
                     break;
                 case "Input":
-                    Player.KeyStroke(FormatKey(item.Parameters[0]));
+                    Player.KeyPress(FormatKey(item.Parameters[0]));
                     break;
                 case "HotKey":
                     Player.KeyStroke(item.Parameters.Select(i => FormatKey(i)).ToArray());

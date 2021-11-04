@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ZoDream.Shared.Player.WinApi
@@ -85,7 +86,42 @@ namespace ZoDream.Shared.Player.WinApi
         /// This function does not reset the keyboard's current state. Any keys that are already pressed when the function is called might interfere with the events that this function generates. To avoid this problem, check the keyboard's state with the GetAsyncKeyState function and correct as necessary.
         /// </remarks>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint SendInput(uint numberOfInputs, Input[] inputs, int sizeOfInputStructure);
+        public static extern uint SendInput(uint numberOfInputs, [MarshalAs(UnmanagedType.LPArray), In] Input[] inputs, int sizeOfInputStructure);
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint SendInput(uint numberOfInputs, [MarshalAs(UnmanagedType.LPArray), In] Input32[] inputs, int sizeOfInputStructure);
+
+
+        public static uint SendInput(Input[] inputs)
+        {
+            if (IntPtr.Size > 4)
+            {
+                return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            }
+            return SendInput((uint)inputs.Length, inputs.Select(i => new Input32()
+            {
+                Type = i.Type,
+                Keyboard = i.Keyboard,
+                Hardware = i.Hardware,
+                Mouse = i.Mouse,
+            }).ToArray(), Marshal.SizeOf(typeof(Input32)));
+        }
+
+        public static uint SendInput(Input32[] inputs)
+        {
+            if (IntPtr.Size <= 4)
+            {
+                return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input32)));
+            }
+            return SendInput((uint)inputs.Length, inputs.Select(i => new Input()
+            {
+                Type = i.Type,
+                Keyboard = i.Keyboard,
+                Hardware = i.Hardware,
+                Mouse = i.Mouse,
+            }).ToArray(), Marshal.SizeOf(typeof(Input)));
+        }
 
         /// <summary>
         /// The GetMessageExtraInfo function retrieves the extra message information for the current thread. Extra message information is an application- or driver-defined value associated with the current thread's message queue. 

@@ -1,18 +1,55 @@
-﻿namespace ZoDream.Shared.Player.WinApi
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace ZoDream.Shared.Player.WinApi
 {
-    public struct Input
+    [StructLayout(LayoutKind.Explicit)]
+    public struct Input32
     {
-        /// <summary>
-        /// Specifies the type of the input event. This member can be one of the following values. 
-        /// <see cref="InputType.Mouse"/> - The event is a mouse event. Use the mi structure of the union.
-        /// <see cref="InputType.Keyboard"/> - The event is a keyboard event. Use the ki structure of the union.
-        /// <see cref="InputType.Hardware"/> - Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.
-        /// </summary>
+        [FieldOffset(0)]
         public uint Type;
 
         /// <summary>
-        /// The data structure that contains information about the simulated Mouse, Keyboard or Hardware event.
+        /// The <see cref="MOUSEINPUT"/> definition.
         /// </summary>
-        public InputData Data;
+        [FieldOffset(4)]
+        public MouseInput Mouse;
+
+        /// <summary>
+        /// The <see cref="KEYBDINPUT"/> definition.
+        /// </summary>
+        [FieldOffset(4)]
+        public KeyboardInput Keyboard;
+
+        /// <summary>
+        /// The <see cref="HARDWAREINPUT"/> definition.
+        /// </summary>
+        [FieldOffset(4)]
+        public HardwareInput Hardware;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct Input
+    {
+        [FieldOffset(0)]
+        public uint Type;
+
+        /// <summary>
+        /// The <see cref="MOUSEINPUT"/> definition.
+        /// </summary>
+        [FieldOffset(8)]
+        public MouseInput Mouse;
+
+        /// <summary>
+        /// The <see cref="KEYBDINPUT"/> definition.
+        /// </summary>
+        [FieldOffset(8)]
+        public KeyboardInput Keyboard;
+
+        /// <summary>
+        /// The <see cref="HARDWAREINPUT"/> definition.
+        /// </summary>
+        [FieldOffset(8)]
+        public HardwareInput Hardware;
     }
 }

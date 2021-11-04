@@ -1,5 +1,8 @@
-﻿namespace ZoDream.Shared.Player.WinApi
+﻿using System.Runtime.InteropServices;
+
+namespace ZoDream.Shared.Player.WinApi
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct HardwareInput
     {
         /// <summary>

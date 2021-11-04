@@ -5,6 +5,7 @@ using System.Linq;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Player.WinApi;
 using System.Diagnostics;
+using System.Threading;
 
 namespace ZoDream.Shared.Player
 {
@@ -23,8 +24,14 @@ namespace ZoDream.Shared.Player
 
         public void KeyPress(Key key)
         {
-            var inputList = new InputBuilder().AddKeyPress(key).ToArray();
+            //var inputList = new InputBuilder().AddKeyPress(key).ToArray();
+            //SendSimulatedInput(inputList);
+            var builder = new InputBuilder();
+            var inputList = builder.AddKeyDown(key).ToArray();
             SendSimulatedInput(inputList);
+            Thread.Sleep(150);
+            SendSimulatedInput(builder.RenderKeyUp(inputList));
+
         }
 
         public void KeyPress(params Key[] keys)
@@ -135,7 +142,6 @@ namespace ZoDream.Shared.Player
 
         public void MouseMoveTo(double x, double y)
         {
-            Debug.WriteLine($"{x},{y}");
             // var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)x, (int)y).ToArray();
             // SendSimulatedInput(inputList);
             MouseNativeMethods.MoveTo((int)x, (int)y);
@@ -207,7 +213,7 @@ namespace ZoDream.Shared.Player
             {
                 return;
             }
-            var successful = WinApi.InputNativeMethods.SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(WinApi.Input)));
+            var successful = InputNativeMethods.SendInput(inputs);
             if (successful != inputs.Length)
             {
                 // 执行没有完全成功

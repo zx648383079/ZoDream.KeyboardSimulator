@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace ZoDream.Shared.Player.WinApi
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct MouseInput
     {
         /// <summary>

@@ -79,7 +79,7 @@ namespace ZoDream.Shared.Parser
             else
             {
                 var diff = now - lastTime;
-                if (diff.TotalMilliseconds > 100)
+                if (diff.TotalMilliseconds > 150)
                 {
                     Add(new TokenStmt(Token.Delay, ((int)diff.TotalMilliseconds).ToString()));
                 }
