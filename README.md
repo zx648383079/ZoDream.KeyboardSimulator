@@ -20,6 +20,7 @@
 ## 待实现功能
 
 1. 自定义录制事件
+2. 模拟按键针对游戏无效，可行方法：通过驱动中转
 
 ## 示例
 
@@ -55,8 +56,9 @@ endif
 |Click|单击鼠标||
 |DoubleClick|双击鼠标||
 |Scroll|滚动滑轮|`Scroll(10)`|
-|Input|输入按键||
-|HotKey|输入组合键，支持0x或数字或按键名|`HotKey(0x29, A, LeftCtrl)`|
-|KeyDown|按下键||
-|KeyUp|释放键||
+|HotKey|输入组合键，支持0x或数字或按键名，数字为`VK`|`HotKey(0xA2,0x41)` 等于`HotKey(LeftCtrl,A)` |
+|Input|输入按键，数字为直接作为 `scancode` 输入|`Input(A)` 等于 `Input(0x30)`|
+|KeyDown|按下键，数字为直接作为 `scancode` 输入||
+|KeyUp|释放键，数字为直接作为 `scancode` 输入||
+|Focus|选择进程，设置为焦点|`Focus(进程名)`|
 |//|只支持单行注释，忽略||

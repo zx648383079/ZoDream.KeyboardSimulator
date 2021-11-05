@@ -28,6 +28,7 @@ namespace ZoDream.Shared.Player
             //}
             var inputList = new InputBuilder().AddKeyDown(key).ToArray();
             SendSimulatedInput(inputList);
+            // KeyboardNativeMethods.KeyDown(key);
         }
 
         public void KeyPress(Key key)
@@ -66,6 +67,7 @@ namespace ZoDream.Shared.Player
             //}
             var inputList = new InputBuilder().AddKeyUp(key).ToArray();
             SendSimulatedInput(inputList);
+            // KeyboardNativeMethods.KeyUp(key);
         }
 
         public void KeyDown(ushort key)
