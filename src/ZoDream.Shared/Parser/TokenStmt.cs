@@ -13,6 +13,8 @@ namespace ZoDream.Shared.Parser
 
         public string[]? Parameters { get; set; }
 
+        public int Line { get; set; } = -1;
+
         public TokenStmt() : this(Token.EndFn)
         {
 

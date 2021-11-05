@@ -6,31 +6,44 @@ using ZoDream.Shared.Input;
 using ZoDream.Shared.Player.WinApi;
 using System.Diagnostics;
 using System.Threading;
+using System.Drawing;
 
 namespace ZoDream.Shared.Player
 {
     public class SystemPlayer : IPlayer
     {
+
+        private IntPtr windowHandle = IntPtr.Zero;
+
         public void Dispose()
         {
-            
         }
 
         public void KeyDown(Key key)
         {
+            //if (windowHandle != IntPtr.Zero)
+            //{
+            //    WindowNativeMethods.PostMessage(windowHandle, WindowNativeMethods.WM_KEYDOWN, (uint)key, 0);
+            //    return;
+            //}
             var inputList = new InputBuilder().AddKeyDown(key).ToArray();
             SendSimulatedInput(inputList);
         }
 
         public void KeyPress(Key key)
         {
-            //var inputList = new InputBuilder().AddKeyPress(key).ToArray();
-            //SendSimulatedInput(inputList);
-            var builder = new InputBuilder();
-            var inputList = builder.AddKeyDown(key).ToArray();
+            //if (windowHandle != IntPtr.Zero)
+            //{
+            //    KeyDown(key);
+            //    KeyUp(key);
+            //    return;
+            //}
+            var inputList = new InputBuilder().AddKeyPress(key).ToArray();
             SendSimulatedInput(inputList);
-            Thread.Sleep(150);
-            SendSimulatedInput(builder.RenderKeyUp(inputList));
+            //var builder = new InputBuilder();
+            //var inputList = builder.AddKeyDown(key).ToArray();
+            //SendSimulatedInput(inputList);
+            //SendSimulatedInput(builder.RenderKeyUp(inputList));
 
         }
 
@@ -45,6 +58,28 @@ namespace ZoDream.Shared.Player
         }
 
         public void KeyUp(Key key)
+        {
+            //if (windowHandle != IntPtr.Zero)
+            //{
+            //    WindowNativeMethods.PostMessage(windowHandle, WindowNativeMethods.WM_KEYUP, (uint)key, 0);
+            //    return;
+            //}
+            var inputList = new InputBuilder().AddKeyUp(key).ToArray();
+            SendSimulatedInput(inputList);
+        }
+
+        public void KeyDown(ushort key)
+        {
+            var inputList = new InputBuilder().AddKeyDown(key).ToArray();
+            SendSimulatedInput(inputList);
+        }
+        public void KeyPress(ushort key)
+        {
+            var inputList = new InputBuilder().AddKeyDown(key).AddKeyUp(key).ToArray();
+            SendSimulatedInput(inputList);
+
+        }
+        public void KeyUp(ushort key)
         {
             var inputList = new InputBuilder().AddKeyUp(key).ToArray();
             SendSimulatedInput(inputList);
@@ -142,9 +177,12 @@ namespace ZoDream.Shared.Player
 
         public void MouseMoveTo(double x, double y)
         {
-            // var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)x, (int)y).ToArray();
-            // SendSimulatedInput(inputList);
-            MouseNativeMethods.MoveTo((int)x, (int)y);
+            var rc = WindowNativeMethods.VirtualScreen;
+            var fx = x * (0xFFFF / rc.Width);
+            var fy = y * (0xFFFF / rc.Height);
+            var inputList = new InputBuilder().AddAbsoluteMouseMovement((int)fx, (int)fy).ToArray();
+            SendSimulatedInput(inputList);
+            // MouseNativeMethods.MoveTo((int)x, (int)y);
         }
 
         public void MouseMoveTo(Point point)
@@ -218,6 +256,26 @@ namespace ZoDream.Shared.Player
             {
                 // 执行没有完全成功
             }
+        }
+
+        public void Focus(string windowName)
+        {
+            windowHandle = WindowNativeMethods.FindWindow(null, windowName);
+            if (windowHandle == IntPtr.Zero)
+            {
+                throw new Exception($"Can not get Window: {windowName}");
+            }
+            WindowNativeMethods.SetForegroundWindow(windowHandle);
+        }
+
+        public ushort GetScanKey(Key key)
+        {
+            return (ushort)InputNativeMethods.MapVirtualKey((uint)key, (uint)MappingType.VK_TO_VSC);
+        }
+
+        public void LostFocus()
+        {
+            windowHandle = IntPtr.Zero;
         }
     }
 }

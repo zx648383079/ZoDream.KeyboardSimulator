@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.Recorder.WinApi;
+using System.Drawing;
 
 namespace ZoDream.Shared.Recorder
 {

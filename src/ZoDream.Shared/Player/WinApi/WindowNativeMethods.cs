@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -20,6 +21,17 @@ namespace ZoDream.Shared.Player.WinApi
         private const int MEM_RELEASE = 0x8000;
         private const int MEM_DECOMMIT = 0x4000;
         private const int PROCESS_ALL_ACCESS = 0x1F0FFF;
+        // WindowMessage 参数
+        public const int WM_KEYDOWN = 0X100;
+        public const int WM_KEYUP = 0X101;
+        public const int WM_SYSCHAR = 0X106;
+        public const int WM_SYSKEYUP = 0X105;
+        public const int WM_SYSKEYDOWN = 0X104;
+        public const int WM_CHAR = 0X102;
+        public const int WM_DOWN = 0X0028;
+        public const int WM_ENTER = 0X000D;
+        public const int WM_CLOSE = 0X0010;
+        public const int WM_QUIT = 0X0012;
 
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HTCAPTION = 0x2;
@@ -43,7 +55,7 @@ namespace ZoDream.Shared.Player.WinApi
         /// <param name="lpWindowName"></param>
         /// <returns></returns>
         [DllImport("user32.dll", EntryPoint = "FindWindow")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        public static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
         /// <summary>
         /// 在DLL库中的发送消息函数
         /// </summary>
@@ -58,6 +70,8 @@ namespace ZoDream.Shared.Player.WinApi
         [DllImport("user32.dll", EntryPoint = "SendMessage")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, ref CopyDataStruct lParam);
 
+        [DllImport("user32.dll", EntryPoint = "PostMessage")]
+        public static extern bool PostMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
         /// <summary>
         /// 获取焦点
         /// </summary>
@@ -250,5 +264,22 @@ namespace ZoDream.Shared.Player.WinApi
 
         [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int index);
+
+        private static Rectangle? _virtualScreen;
+        public static Rectangle VirtualScreen
+        {
+            get
+            {
+
+                if (_virtualScreen == null)
+                {
+                    var width = GetSystemMetrics(WindowNativeMethods.SM_CXSCREEN);
+                    var height = GetSystemMetrics(WindowNativeMethods.SM_CYSCREEN);
+                    _virtualScreen = new Rectangle(0, 0,
+                        width, height);
+                }
+                return (Rectangle)_virtualScreen;
+            }
+        }
     }
 }

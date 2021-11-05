@@ -27,6 +27,7 @@ namespace ZoDream.Shared.Parser
 
         private IPlayer Player;
         private CancellationTokenSource? tokenSource;
+        public event TokenChangedEventHandler? TokenChanged;
 
         private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
 
@@ -38,19 +39,12 @@ namespace ZoDream.Shared.Parser
 
         public void Compile(IEnumerable<TokenStmt> tokens)
         {
-            try
+            var fnItems = RenderFn(tokens);
+            if (!fnItems.ContainsKey(MainEntery))
             {
-                var fnItems = RenderFn(tokens);
-                if (!fnItems.ContainsKey(MainEntery))
-                {
-                    return;
-                }
-                CompileFn(fnItems[MainEntery], ref fnItems);
+                return;
             }
-            catch (Exception ex)
-            {
-
-            }
+            CompileFn(fnItems[MainEntery], ref fnItems);
         }
 
         private bool CompileFn(IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
@@ -65,6 +59,7 @@ namespace ZoDream.Shared.Parser
                 {
                     return false;
                 }
+                TokenChanged?.Invoke(this, item);
                 switch (item.Type)
                 {
                     case Token.Delay:
@@ -140,6 +135,7 @@ namespace ZoDream.Shared.Parser
                     i = end;
                     return false;
                 }
+                TokenChanged?.Invoke(this, item);
                 switch (item.Type)
                 {
                     case Token.Delay:
@@ -183,37 +179,59 @@ namespace ZoDream.Shared.Parser
 
         private void CompileFn(TokenStmt item)
         {
+            string key = item.Parameters != null && item.Parameters.Length > 0 ? item.Parameters[0] : string.Empty;
             switch (item.Content)
             {
                 case "Click":
-                    Player.MouseClick(FormatButton(item.Parameters[0]));
+                    Player.MouseClick(FormatButton(key));
                     break;
                 case "DoubleClick":
-                    Player.MouseDoubleClick(FormatButton(item.Parameters[0]));
+                    Player.MouseDoubleClick(FormatButton(key));
                     break;
                 case "MouseDown":
-                    Player.MouseDown(FormatButton(item.Parameters[0]));
+                    Player.MouseDown(FormatButton(key));
                     break;
                 case "MouseUp":
-                    Player.MouseUp(FormatButton(item.Parameters[0]));
+                    Player.MouseUp(FormatButton(key));
                     break;
                 case "Move":
                     MoveTween(item.Parameters);
                     break;
                 case "Input":
-                    Player.KeyPress(FormatKey(item.Parameters[0]));
+                    if (Str.IsInt(key))
+                    {
+                        Player.KeyPress(FormatScanKey(key));
+                        break;
+                    }
+                    Player.KeyPress(FormatKey(key));
                     break;
                 case "HotKey":
                     Player.KeyStroke(item.Parameters.Select(i => FormatKey(i)).ToArray());
                     break;
                 case "KeyDown":
-                    Player.KeyDown(FormatKey(item.Parameters[0]));
+                    if (Str.IsInt(key))
+                    {
+                        Player.KeyDown(FormatScanKey(key));
+                        break;
+                    }
+                    Player.KeyDown(FormatKey(key));
                     break;
                 case "KeyUp":
-                    Player.KeyUp(FormatKey(item.Parameters[0]));
+                    if (Str.IsInt(key))
+                    {
+                        Player.KeyUp(FormatScanKey(key));
+                        break;
+                    }
+                    Player.KeyUp(FormatKey(key));
                     break;
                 case "Scroll":
-                    Player.MouseWheel(Convert.ToInt32(item.Parameters[0]));
+                    Player.MouseWheel(Convert.ToInt32(key));
+                    break;
+                case "Focus":
+                    Player.Focus(key);
+                    break;
+                case "LostFocus":
+                    Player.LostFocus();
                     break;
                 default:
                     break;
@@ -278,6 +296,16 @@ namespace ZoDream.Shared.Parser
                 return MouseButton.Left;
             }
             return (MouseButton)Enum.Parse(typeof(MouseButton), b);
+        }
+
+        private ushort FormatScanKey(string k)
+        {
+            k = k.Trim();
+            if (Str.IsInt(k))
+            {
+                return (ushort)Str.ToInt(k);
+            }
+            return Player.GetScanKey((Key)Enum.Parse(typeof(Key), k));
         }
 
         private Key FormatKey(string k)

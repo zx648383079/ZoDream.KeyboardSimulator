@@ -10,7 +10,14 @@ namespace ZoDream.Shared.Input
         //
         // 摘要:
         //     No key pressed.
-        None = 0,
+        None = 0x0,
+        KeyCode = 0xFFFF,
+        Modifiers = -65536,
+        Button = 0x1,
+        RButton = 0x2,
+        MButton = 0x4,
+        XButton1 = 0x5,
+        XButton2 = 0x6,
         //
         // 摘要:
         //     The Cancel key.

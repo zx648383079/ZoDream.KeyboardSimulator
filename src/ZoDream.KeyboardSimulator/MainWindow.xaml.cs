@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,6 +20,7 @@ namespace ZoDream.KeyboardSimulator
             DataContext = ViewModel;
             ViewModel.Recorder.OnKey += Recorder_OnKey;
             ViewModel.Recorder.OnMouse += Recorder_OnMouse;
+            ViewModel.Compiler.TokenChanged += Compiler_TokenChanged;
         }
 
         public MainViewModel ViewModel = new MainViewModel();
@@ -57,14 +59,26 @@ namespace ZoDream.KeyboardSimulator
             AsyncOuput();
         }
 
+        private void Compiler_TokenChanged(object sender, Shared.Parser.TokenStmt value)
+        {
+            ViewModel.ShowMessage($"Run Line: {value.Line}");
+        }
+
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Paused = false;
             _cancellationTokenSource = new CancellationTokenSource();
             var script = ContentTb.Content;
             Task.Factory.StartNew(() => {
-                ViewModel.Compiler.Compile(script, _cancellationTokenSource);
-                ViewModel.Paused = true;
+                try
+                {
+                    ViewModel.Compiler.Compile(script, _cancellationTokenSource);
+                    ViewModel.Paused = true;
+                }
+                catch (System.Exception ex)
+                {
+                    ViewModel.ShowMessage(ex.Message);
+                }
             }, _cancellationTokenSource.Token);
         }
 
@@ -72,6 +86,7 @@ namespace ZoDream.KeyboardSimulator
         private void RecordBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Paused = false;
+            ViewModel.Generator.Option = OptionTb.Value;
             ViewModel.Generator.Reset();
             ViewModel.Generator.Add(ContentTb.Content);
             ViewModel.Recorder.Start();
@@ -105,5 +120,9 @@ namespace ZoDream.KeyboardSimulator
             page.Activate();
         }
 
+        private void OptionBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.OptionVisible = !ViewModel.OptionVisible;
+        }
     }
 }

@@ -10,23 +10,9 @@ namespace ZoDream.Shared.Parser
 {
     public static class Snapshot
     {
+        public static Rectangle VirtualScreen => WindowNativeMethods.VirtualScreen;
 
-        private static Rectangle? _virtualScreen;
-        public static Rectangle VirtualScreen
-        {
-            get
-            {
-                
-                if (_virtualScreen == null)
-                {
-                    var width = WindowNativeMethods.GetSystemMetrics(WindowNativeMethods.SM_CXSCREEN);
-                    var height = WindowNativeMethods.GetSystemMetrics(WindowNativeMethods.SM_CYSCREEN);
-                    _virtualScreen = new Rectangle(0, 0,
-                        width, height);
-                }
-                return (Rectangle)_virtualScreen;
-            }
-        }
+
 
         /// <summary>
         /// 获取屏幕截图
@@ -36,7 +22,7 @@ namespace ZoDream.Shared.Parser
         {
             try
             {
-                var rc = VirtualScreen;
+                var rc = WindowNativeMethods.VirtualScreen;
                 var bitmap = new Bitmap(rc.Width, rc.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 using (Graphics memoryGrahics = Graphics.FromImage(bitmap))

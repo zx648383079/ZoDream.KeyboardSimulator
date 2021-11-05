@@ -102,7 +102,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 {
                     return;
                 }
-                ContentTb.Text = Open.Read(file);
+                Content = Open.Read(file);
             }
         }
 
@@ -135,7 +135,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            ContentTb.Text = Open.Read(picker.FileName);
+            Content = Open.Read(picker.FileName);
         }
 
         private void SaveAs()

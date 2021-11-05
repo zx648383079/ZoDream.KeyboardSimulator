@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace ZoDream.Shared.Input
@@ -31,7 +32,7 @@ namespace ZoDream.Shared.Input
 
         public int ClickCount { get; private set; } = 1;
 
-        public Point? Point { get; private set; }
+        public Point Point { get; private set; }
 
         public int Timestamp { get; private set; }
 

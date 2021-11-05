@@ -109,7 +109,7 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns>This <see cref="InputBuilder"/> instance.</returns>
         public InputBuilder AddKeyDown(Key keyCode)
         {
-            var ki = RenderKey(keyCode);
+            var ki = RenderKey(keyCode, false);
             var down = new Input
             {
                 Type = (uint)InputType.Keyboard,
@@ -126,7 +126,7 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns>This <see cref="InputBuilder"/> instance.</returns>
         public InputBuilder AddKeyUp(Key keyCode)
         {
-            var ki = RenderKeyUp(RenderKey(keyCode));
+            var ki = RenderKeyUp(RenderKey(keyCode, false), false);
             var up = new Input
                 {
                     Type = (uint)InputType.Keyboard,
@@ -136,26 +136,63 @@ namespace ZoDream.Shared.Player.WinApi
             return this;
         }
 
+        public InputBuilder AddKeyUp(ushort key)
+        {
+            var down = new Input
+            {
+                Type = (uint)InputType.Keyboard,
+                Keyboard = new KeyboardInput
+                {
+                    KeyCode = 0,
+                    Scan = (ushort)(key & 0xff),
+                    Flags = (uint)(KeyboardFlag.KeyUp | KeyboardFlag.ScanCode),
+                    Time = 0,
+                    ExtraInfo = InputNativeMethods.GetMessageExtraInfo()
+                }
+            };
+            inputItems.Add(down);
+            return this;
+        }
+
+        public InputBuilder AddKeyDown(ushort key)
+        {
+            var down = new Input
+            {
+                Type = (uint)InputType.Keyboard,
+                Keyboard = new KeyboardInput
+                {
+                    KeyCode = 0,
+                    Scan = (ushort)(key & 0xff),
+                    Flags = (uint)(KeyboardFlag.KeyDown | KeyboardFlag.ScanCode),
+                    Time = 0,
+                    ExtraInfo = InputNativeMethods.GetMessageExtraInfo()
+                }
+            };
+            inputItems.Add(down);
+            return this;
+        }
+
         public KeyboardInput RenderKey(Key key, bool useScanCode = false)
         {
-            var flag = IsExtendedKey(key) ? KeyboardFlag.ExtendedKey : 0;
+            var flag = (uint)(IsExtendedKey(key) ? KeyboardFlag.ExtendedKey : 0);
             if (useScanCode)
             {
-                flag |= KeyboardFlag.ScanCode;
+                flag |= (uint)KeyboardFlag.ScanCode;
             }
             return new KeyboardInput
             {
                 KeyCode = (ushort)(useScanCode ? 0 : key),
-                Scan = (ushort)(useScanCode ? InputNativeMethods.MapVirtualKey((uint)key, 0) & 0xFFU : 0),
-                Flags = (uint)flag,
+                Scan = (ushort)(useScanCode ? InputNativeMethods.MapVirtualKey((uint)key, 
+                (uint)MappingType.VK_TO_VSC) & 0xFFU : 0),
+                Flags = flag,
                 Time = 0,
                 ExtraInfo = IntPtr.Zero
             };
         }
 
-        public KeyboardInput RenderKeyUp(KeyboardInput input)
+        public KeyboardInput RenderKeyUp(KeyboardInput input, bool useScanCode = true)
         {
-            input.Flags |= (uint)KeyboardFlag.KeyUp;
+            input.Flags = (uint)KeyboardFlag.KeyUp | (uint)(useScanCode ? KeyboardFlag.ScanCode : 0);
             return input;
         }
 

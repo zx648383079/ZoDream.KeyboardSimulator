@@ -12,6 +12,10 @@ namespace ZoDream.Shared.Player
         public void KeyPress(params Key[] keys);
         public void KeyUp(Key key);
 
+        public void KeyDown(ushort key);
+        public void KeyPress(ushort key);
+        public void KeyUp(ushort key);
+
         public void ModifiedKeyStroke(IEnumerable<Key> modifierKeys, IEnumerable<Key> keys);
         public void ModifiedKeyStroke(IEnumerable<Key> modifierKeys, Key key);
         public void ModifiedKeyStroke(Key modifierKey, IEnumerable<Key> keys);

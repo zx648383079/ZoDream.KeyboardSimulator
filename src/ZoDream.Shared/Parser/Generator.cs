@@ -17,6 +17,8 @@ namespace ZoDream.Shared.Parser
         private Queue<object> waitItems = new Queue<object>();
         private bool isLoading = false;
 
+        public ParserOption Option { get; set; } = new();
+
         public void Reset()
         {
             TokenItems.Clear();
@@ -79,7 +81,7 @@ namespace ZoDream.Shared.Parser
             else
             {
                 var diff = now - lastTime;
-                if (diff.TotalMilliseconds > 150)
+                if (diff.TotalMilliseconds > Option.MaxSpace)
                 {
                     Add(new TokenStmt(Token.Delay, ((int)diff.TotalMilliseconds).ToString()));
                 }
@@ -99,7 +101,7 @@ namespace ZoDream.Shared.Parser
 
         public void Add(MouseEventArgs e)
         {
-            if (e.IsMove)
+            if (e.IsMove && !Option.HasMove)
             {
                 return;
             }

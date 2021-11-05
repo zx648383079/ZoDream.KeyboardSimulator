@@ -139,5 +139,15 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKeyEx(uint uCode, uint uMapType, IntPtr dwhkl);
+
+        [DllImport("user32.dll", CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto, SetLastError = true)]
+        internal extern static IntPtr LoadKeyboardLayout(string keyboardLayoutID, uint flags);
+        [DllImport("user32.dll", CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto, SetLastError = true)]
+        internal extern static bool UnloadKeyboardLayout(IntPtr handle);
+        [DllImport("user32.dll", CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Auto, SetLastError = true)]
+        internal extern static IntPtr GetKeyboardLayout(IntPtr threadId);
     }
 }
