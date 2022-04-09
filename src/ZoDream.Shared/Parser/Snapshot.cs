@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
 using ZoDream.Shared.Player.WinApi;
+using ZoDream.Shared.Recorder.WinApi;
 using ZoDream.Shared.Utils;
 
 namespace ZoDream.Shared.Parser
@@ -28,6 +30,25 @@ namespace ZoDream.Shared.Parser
                 using (Graphics memoryGrahics = Graphics.FromImage(bitmap))
                 {
                     memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, CopyPixelOperation.SourceCopy);
+                }
+
+                return bitmap;
+            }
+            catch (Exception ex)
+            {
+            }
+            return null;
+        }
+
+        public static Bitmap? GetScreenSnapshot(int x, int y, int width, int height)
+        {
+            try
+            {
+                var bitmap = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                using (Graphics memoryGrahics = Graphics.FromImage(bitmap))
+                {
+                    memoryGrahics.CopyFromScreen(x, y, 0, 0, new Size(width, height), CopyPixelOperation.SourceCopy);
                 }
 
                 return bitmap;

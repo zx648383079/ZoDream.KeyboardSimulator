@@ -14,7 +14,7 @@ namespace ZoDream.Shared.Parser
 
         private DateTime lastTime = DateTime.MinValue;
 
-        private Queue<object> waitItems = new Queue<object>();
+        private readonly Queue<object> waitItems = new Queue<object>();
         private bool isLoading = false;
 
         public ParserOption Option { get; set; } = new();
@@ -111,15 +111,6 @@ namespace ZoDream.Shared.Parser
                 return;
             }
             AddAsync();
-        }
-
-        public void Add(string line)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                return;
-            }
-            Add(new Tokenizer().Parse(line));
         }
 
         public void Add(TokenStmt token)
@@ -234,13 +225,13 @@ namespace ZoDream.Shared.Parser
             switch (token.Type)
             {
                 case Token.Fn:
-                    return $"fn {token.Content}";
+                    return $"function {token.Content}";
                 case Token.If:
-                    return $"if {string.Join(",", token.Parameters)}={token.Content}";
+                    return $"if({string.Join(",", token.Parameters)}={token.Content})\nthen";
                 case Token.Else:
                     return $"else";
                 case Token.EndIf:
-                    return $"endif";
+                    return $"end";
                 case Token.Delay:
                     return $"Delay({token.Content})";
                 case Token.FnCall:

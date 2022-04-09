@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZoDream.Shared.Parser
+namespace ZoDream.Language.Reader
 {
     public class CharReader : IEnumerator<char>, IEnumerable<char>
     {

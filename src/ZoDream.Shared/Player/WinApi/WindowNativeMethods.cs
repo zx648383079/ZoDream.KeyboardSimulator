@@ -54,7 +54,7 @@ namespace ZoDream.Shared.Player.WinApi
         /// <param name="lpClassName"></param>
         /// <param name="lpWindowName"></param>
         /// <returns></returns>
-        [DllImport("user32.dll", EntryPoint = "FindWindow")]
+        [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
         /// <summary>
         /// 在DLL库中的发送消息函数
@@ -64,25 +64,81 @@ namespace ZoDream.Shared.Player.WinApi
         /// <param name="wParam">第一个消息参数</param>
         /// <param name="lParam">第二个消息参数</param>
         /// <returns></returns>
-        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        [DllImport("user32.dll")]
         public static extern int SendMessage(int hWnd, int Msg, int wParam, ref CopyDataStruct lParam);
 
-        [DllImport("user32.dll", EntryPoint = "SendMessage")]
+        [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, ref CopyDataStruct lParam);
 
-        [DllImport("user32.dll", EntryPoint = "PostMessage")]
+        [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
         /// <summary>
         /// 获取焦点
         /// </summary>
         /// <param name="hwnd"></param>
-        [DllImport("user32.dll", EntryPoint = "SetForegroundWindow", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern void SetForegroundWindow(IntPtr hwnd);
         /// <summary>
         /// 最大化窗口-3，最小化窗口-2，正常大小窗口-1；
         /// </summary>
-        [DllImport("user32.dll", EntryPoint = "ShowWindow", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int ShowWindow(IntPtr hwnd, int nCmdShow);
+        /// <summary>
+        /// 获取程序窗口尺寸，包括标题栏，左右下边框等
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="lpRect"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, ref Rect lpRect);
+
+        /// <summary>
+        /// 获取程序窗口尺寸，去掉了标题栏，左右下边框等之后仅仅是个大小，返回值的左上角永远为0，0）
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="lpRect"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetClientRect(IntPtr hWnd, ref Rect lpRect);
+
+        [DllImport("user32.dll")]
+        public extern static IntPtr GetDC(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        public extern static int ReleaseDC(IntPtr hwnd, IntPtr hdc);
+
+        [DllImport("gdi32.dll")]
+        public extern static uint GetPixel(IntPtr hdc, int x, int y);
+
+        /// <summary>
+        /// 获取窗口句柄
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public extern static IntPtr WindowFromPoint(Recorder.WinApi.PointStruct point);
+
+        /// <summary>
+        /// 获取窗口标题
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="sb"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public extern static int GetWindowText(IntPtr hwnd, StringBuilder sb, int maxCount);
+        /// <summary>
+        /// 获取窗口类名
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="sb"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public extern static int GetClassName(IntPtr hwnd, StringBuilder sb, int maxCount);
         /// <summary>
         /// 得到目标进程句柄的函数
         /// </summary>
@@ -91,7 +147,6 @@ namespace ZoDream.Shared.Player.WinApi
         /// <returns></returns>
         [DllImport("user32.dll")]
         public extern static int GetWindowThreadProcessId(int hwnd, ref int lpdwProcessId);
-
         /// <summary>
         /// 得到目标进程句柄的函数
         /// </summary>
@@ -280,6 +335,14 @@ namespace ZoDream.Shared.Player.WinApi
                 }
                 return (Rectangle)_virtualScreen;
             }
+        }
+
+        public static Color GetPixelColor(int x, int y)
+        {
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            var pixel = GetPixel(hdc, x, y);
+            ReleaseDC(IntPtr.Zero, hdc);
+            return Color.FromArgb((int)(pixel & 0x000000FF), (int)(pixel & 0x0000FF00) >> 8, (int)(pixel & 0x00FF0000) >> 16);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace ZoDream.Shared.Storage
+namespace ZoDream.Language.Storage
 {
     /// <summary>   
     /// 用于取得一个文本文件的编码方式(Encoding)。   

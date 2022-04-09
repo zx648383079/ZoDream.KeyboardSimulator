@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoDream.Shared", "ZoDream.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZoDream.Tests", "ZoDream.Tests\ZoDream.Tests.csproj", "{25135FC9-4868-4BCD-A8D2-BCD5F1F0A73A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoDream.Language", "ZoDream.Language\ZoDream.Language.csproj", "{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{25135FC9-4868-4BCD-A8D2-BCD5F1F0A73A}.Release|x64.Build.0 = Release|Any CPU
 		{25135FC9-4868-4BCD-A8D2-BCD5F1F0A73A}.Release|x86.ActiveCfg = Release|Any CPU
 		{25135FC9-4868-4BCD-A8D2-BCD5F1F0A73A}.Release|x86.Build.0 = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|x64.Build.0 = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Debug|x86.Build.0 = Debug|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|x64.ActiveCfg = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|x64.Build.0 = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{021D5BD4-445D-43DF-8FA0-0B495AB42DAC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

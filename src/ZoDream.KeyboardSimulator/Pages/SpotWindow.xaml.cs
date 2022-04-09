@@ -25,7 +25,7 @@ namespace ZoDream.KeyboardSimulator.Pages
         {
             InitializeComponent();
             screenSnapshot = Snapshot.GetScreenSnapshot();
-            var bmp = ToBitmapSource(screenSnapshot);
+            var bmp = Utils.Image.ToBitmapSource(screenSnapshot);
             bmp.Freeze();
             this.MainBox.Background = new ImageBrush(bmp);
         }
@@ -33,30 +33,6 @@ namespace ZoDream.KeyboardSimulator.Pages
         private System.Drawing.Bitmap screenSnapshot;
 
         public event SpotEventHandler Spot;
-
-        /// <summary>
-        /// 转化
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <returns></returns>
-        public BitmapSource ToBitmapSource(System.Drawing.Bitmap bmp)
-        {
-            if (bmp == null)
-            {
-                return null;
-            }
-            BitmapSource returnSource;
-            try
-            {
-                returnSource = Imaging.CreateBitmapSourceFromHBitmap(bmp.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            }
-            catch
-            {
-                returnSource = null;
-            }
-            return returnSource;
-
-        }
 
         internal System.Drawing.Bitmap CopyFromScreenSnapshot(Rect region)
         {

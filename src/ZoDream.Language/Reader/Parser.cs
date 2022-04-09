@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ZoDream.Shared.Parser.ATS;
-using ZoDream.Shared.Parser.ATS.Declarations;
+using ZoDream.Language.ATS;
+using ZoDream.Language.ATS.Declarations;
 
-namespace ZoDream.Shared.Parser
+namespace ZoDream.Language.Reader
 {
-    public class Parser: Lexer
+    public class Parser : Lexer
     {
         protected Program? Program;
 

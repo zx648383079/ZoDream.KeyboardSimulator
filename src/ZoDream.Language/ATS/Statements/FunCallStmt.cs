@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZoDream.Shared.Parser.ATS.Statements
+namespace ZoDream.Language.ATS.Statements
 {
     public class FunCallStmt: IPStmt
     {

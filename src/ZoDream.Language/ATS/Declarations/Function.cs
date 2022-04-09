@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZoDream.Shared.Parser.ATS.Declarations
+namespace ZoDream.Language.ATS.Declarations
 {
     public class Function
     {

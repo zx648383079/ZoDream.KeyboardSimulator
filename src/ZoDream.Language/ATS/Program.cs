@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ZoDream.Shared.Parser.ATS.Declarations;
+using ZoDream.Language.ATS.Declarations;
 
-namespace ZoDream.Shared.Parser.ATS
+namespace ZoDream.Language.ATS
 {
     public class Program
     {

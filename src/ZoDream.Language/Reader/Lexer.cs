@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ZoDream.Shared.Parser
+namespace ZoDream.Language.Reader
 {
     public class Lexer
     {
@@ -167,7 +165,8 @@ namespace ZoDream.Shared.Parser
             while (Reader.MoveNext())
             {
                 var code = Reader.Current;
-                if (code == '\\') {
+                if (code == '\\')
+                {
                     count++;
                     break;
                 }
@@ -325,7 +324,8 @@ namespace ZoDream.Shared.Parser
             var isEnd = false;
             while (Reader.MoveNext())
             {
-                if (Reader.Current == '*' && Reader.NextIs('/')) {
+                if (Reader.Current == '*' && Reader.NextIs('/'))
+                {
                     Reader.MoveNext();
                     break;
                 }

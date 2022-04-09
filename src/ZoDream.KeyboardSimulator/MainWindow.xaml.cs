@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using ZoDream.KeyboardSimulator.Pages;
 using ZoDream.KeyboardSimulator.ViewModels;
-using ZoDream.Shared.Storage;
+using ZoDream.Language.Storage;
 
 namespace ZoDream.KeyboardSimulator
 {
@@ -45,10 +45,10 @@ namespace ZoDream.KeyboardSimulator
                 {
                     return;
                 }
-                this.Dispatcher.Invoke(() =>
-                {
-                    ContentTb.Content = ViewModel.Generator.ToString();
-                });
+                //this.Dispatcher.Invoke(() =>
+                //{
+                //    ContentTb.Content = ViewModel.Generator.ToString();
+                //});
             }, _cancellationTokenSource.Token);
             
         }
@@ -88,7 +88,6 @@ namespace ZoDream.KeyboardSimulator
             ViewModel.Paused = false;
             ViewModel.Generator.Option = OptionTb.Value;
             ViewModel.Generator.Reset();
-            ViewModel.Generator.Add(ContentTb.Content);
             ViewModel.Recorder.Start();
         }
 
@@ -97,6 +96,7 @@ namespace ZoDream.KeyboardSimulator
             ViewModel.Paused = true;
             ViewModel.Recorder.Stop();
             _cancellationTokenSource.Cancel();
+            ContentTb.InsertLine(ViewModel.Generator.ToString());
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
@@ -118,6 +118,12 @@ namespace ZoDream.KeyboardSimulator
             };
             page.Show();
             page.Activate();
+        }
+
+        private void FindBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var page = new FindWindow();
+            page.Show();
         }
 
         private void OptionBtn_Click(object sender, RoutedEventArgs e)

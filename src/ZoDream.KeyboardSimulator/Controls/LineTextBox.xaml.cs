@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ZoDream.Shared.Storage;
+using ZoDream.Language.Storage;
 
 namespace ZoDream.KeyboardSimulator.Controls
 {
@@ -89,7 +89,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             e.Handled = true;
         }
 
-        private void ContentTb_PreviewDrop(object sender, DragEventArgs e)
+        private async void ContentTb_PreviewDrop(object sender, DragEventArgs e)
         {
             if (IsReadOnly)
             {
@@ -102,7 +102,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 {
                     return;
                 }
-                Content = Open.Read(file);
+                Content = await ZoDream.Language.Storage.File.ReadAsync(file);
             }
         }
 
@@ -123,7 +123,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             }
         }
 
-        private void OpenFile()
+        private async void OpenFile()
         {
             var picker = new Microsoft.Win32.OpenFileDialog
             {
@@ -135,10 +135,10 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            Content = Open.Read(picker.FileName);
+            Content = await ZoDream.Language.Storage.File.ReadAsync(picker.FileName);
         }
 
-        private void SaveAs()
+        private async void SaveAs()
         {
             var picker = new Microsoft.Win32.SaveFileDialog
             {
@@ -150,7 +150,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            Open.Write(picker.FileName, ContentTb.Text);
+            await ZoDream.Language.Storage.File.WriteAsync(picker.FileName, ContentTb.Text);
         }
     }
 }

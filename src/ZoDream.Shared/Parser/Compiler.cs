@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Neo.IronLua;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,8 +15,6 @@ namespace ZoDream.Shared.Parser
 {
     public class Compiler: IDisposable
     {
-        const string MainEntery = "main";
-
         public Compiler()
         {
             Player = new SystemPlayer();
@@ -27,6 +27,8 @@ namespace ZoDream.Shared.Parser
 
         private IPlayer Player;
         private CancellationTokenSource? tokenSource;
+        private int BaseX = 0;
+        private int BaseY = 0;
         public event TokenChangedEventHandler? TokenChanged;
 
         private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
@@ -34,211 +36,93 @@ namespace ZoDream.Shared.Parser
         public void Compile(string code, CancellationTokenSource? cancellationTokenSource)
         {
             tokenSource = cancellationTokenSource;
-            Compile(new Tokenizer().Parse(code));
+            using var lua = new Lua();
+            dynamic g = lua.CreateEnvironment<LuaGlobal>();
+            // 注册方法 g.print = new Action<object>();
+            g.FindWindow = new Func<string, string, IntPtr>(FindWindow);
+            g.FocusWindow = new Action<IntPtr>(FocusWindow);
+            g.GetWindowRect = new Func<IntPtr, int[]>(GetWindowRect);
+            g.SetBasePosition = new Action<int, int>(SetBasePosition);
+            g.MoveTo = new Action<int, int>(MoveTo);
+            g.Move = new Action<int, int>(MoveTo);
+            g.MoveTween = new Action<object[]>(MoveTween);
+            g.Click = new Action<int>(Click);
+            g.Input = new Action<string>(Input);
+            g.Delay = new Action<int>(Delay);
+            g.Scroll = new Action<int>(Scroll);
+            g.GetPixelColor = new Func<int, int, string>(GetPixelColor);
+            g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
+            var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions() { DebugEngine = LuaExceptionDebugger.Default });
+            try
+            {
+                g.dochunk(chunk); // execute the chunk
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Expception: {0}", e.Message);
+                var d = LuaExceptionData.GetData(e); // get stack trace
+                Console.WriteLine("StackTrace: {0}", d.FormatStackTrace(0, false));
+            }
         }
 
-        public void Compile(IEnumerable<TokenStmt> tokens)
+        private void Scroll(int diff)
         {
-            var fnItems = RenderFn(tokens);
-            if (!fnItems.ContainsKey(MainEntery))
-            {
-                return;
-            }
-            CompileFn(fnItems[MainEntery], ref fnItems);
+            Player.MouseWheel(diff);
         }
 
-        private bool CompileFn(IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
+        private string GetPixelColor(int x, int y)
         {
-            var i = -1;
-            bool res;
-            while (i < tokens.Count - 2)
-            {
-                i++;
-                var item = tokens[i];
-                if (IsCancellationRequested)
-                {
-                    return false;
-                }
-                TokenChanged?.Invoke(this, item);
-                switch (item.Type)
-                {
-                    case Token.Delay:
-                        Thread.Sleep(Convert.ToInt32(item.Content));
-                        break;
-                    case Token.FnCall:
-                        if (fnItems.ContainsKey(item.Content))
-                        {
-                            res = CompileFn(fnItems[item.Content], ref fnItems);
-                            if (res == false)
-                            {
-                                return res;
-                            }
-                            break;
-                        }
-                        CompileFn(item);
-                        break;
-                    case Token.Exit:
-                        return false;
-                    case Token.If:
-                        res = CompileIf(ref i, ref tokens, ref fnItems);
-                        if (res == false)
-                        {
-                            return res;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return true;
+            var color = Player.GetPixelColor(x, y);
+            return ColorTranslator.ToHtml(color).Substring(1);
         }
 
-        private bool CompileIf(ref int i, ref IList<TokenStmt> tokens, ref IDictionary<string, IList<TokenStmt>> fnItems)
+        private bool IsPixelColor(int x, int y, string color)
         {
-            var item = tokens[i];
-            var elseStart = -1;
-            var ifEnd = -1;
-            for (int j = i + 1; j < tokens.Count; j++)
-            {
-                var t = tokens[j].Type;
-                if (t == Token.Else) {
-                    elseStart = j;
-                    continue;
-                }
-                if (t == Token.EndIf || t == Token.EndFn || t == Token.EndOfFile)
-                {
-                    ifEnd = j;
-                    break;
-                }
-            }
-            if (ifEnd < 0)
-            {
-                ifEnd = tokens.Count;
-            }
-            var start = i + 1;
-            var end = elseStart < 0 ? ifEnd : elseStart;
-            if (!CompileCondition(item.Parameters, item.Content))
-            {
-                start = elseStart + 1;
-                end = ifEnd;
-            }
-            if (start < i)
-            {
-                i = end;
-                return true;
-            }
-            for (; start < end; start++)
-            {
-                item = tokens[start];
-                if (IsCancellationRequested)
-                {
-                    i = end;
-                    return false;
-                }
-                TokenChanged?.Invoke(this, item);
-                switch (item.Type)
-                {
-                    case Token.Delay:
-                        Thread.Sleep(Convert.ToInt32(item.Content));
-                        break;
-                    case Token.FnCall:
-                        if (fnItems.ContainsKey(item.Content))
-                        {
-                            var res = CompileFn(fnItems[item.Content], ref fnItems);
-                            if (res == false)
-                            {
-                                i = end;
-                                return res;
-                            }
-                            break;
-                        }
-                        CompileFn(item);
-                        break;
-                    case Token.Exit:
-                        i = end;
-                        return false;
-                    default:
-                        break;
-                }
-            }
-            i = end;
-            return true;
+            return GetPixelColor(x, y).ToLower() == color.ToLower();
         }
 
-        private bool CompileCondition(string[] point, string content)
+        private void Click(int count = 1)
         {
-            if (point.Length != 4)
-            {
-                return false;
-            }
-            var val = Snapshot.GetRect(Convert.ToInt32(point[0]),
-                Convert.ToInt32(point[1]),
-                Convert.ToInt32(point[2]), Convert.ToInt32(point[3]));
-            return !string.IsNullOrEmpty(val) && content == val;
+            Player.MouseClick(count);
         }
 
-        private void CompileFn(TokenStmt item)
+        private void Delay(int time)
         {
-            string key = item.Parameters != null && item.Parameters.Length > 0 ? item.Parameters[0] : string.Empty;
-            switch (item.Content)
-            {
-                case "Click":
-                    Player.MouseClick(FormatButton(key));
-                    break;
-                case "DoubleClick":
-                    Player.MouseDoubleClick(FormatButton(key));
-                    break;
-                case "MouseDown":
-                    Player.MouseDown(FormatButton(key));
-                    break;
-                case "MouseUp":
-                    Player.MouseUp(FormatButton(key));
-                    break;
-                case "Move":
-                    MoveTween(item.Parameters);
-                    break;
-                case "Input":
-                    if (Str.IsInt(key))
-                    {
-                        Player.KeyPress(FormatScanKey(key));
-                        break;
-                    }
-                    Player.KeyPress(FormatKey(key));
-                    break;
-                case "HotKey":
-                    Player.KeyStroke(item.Parameters.Select(i => FormatKey(i)).ToArray());
-                    break;
-                case "KeyDown":
-                    if (Str.IsInt(key))
-                    {
-                        Player.KeyDown(FormatScanKey(key));
-                        break;
-                    }
-                    Player.KeyDown(FormatKey(key));
-                    break;
-                case "KeyUp":
-                    if (Str.IsInt(key))
-                    {
-                        Player.KeyUp(FormatScanKey(key));
-                        break;
-                    }
-                    Player.KeyUp(FormatKey(key));
-                    break;
-                case "Scroll":
-                    Player.MouseWheel(Convert.ToInt32(key));
-                    break;
-                case "Focus":
-                    Player.Focus(key);
-                    break;
-                case "LostFocus":
-                    Player.LostFocus();
-                    break;
-                default:
-                    break;
-            }
+            Thread.Sleep(time);
         }
 
-        private void MoveTween(string[] param)
+        private void Input(string key)
+        {
+            Player.KeyPress(FormatKey(key));
+        }
+
+        private IntPtr FindWindow(string cls, string name)
+        {
+            return Player.FindWindow(cls, name);
+        }
+
+        private void FocusWindow(IntPtr hwn)
+        {
+            Player.FocusWindow(hwn);
+        }
+
+        private int[] GetWindowRect(IntPtr hwn)
+        {
+            return Player.GetWindowRect(hwn);
+        }
+
+        private void SetBasePosition(int x, int y)
+        {
+            BaseX = x;
+            BaseY = y;
+        }
+
+        private void MoveTo(int x, int y)
+        {
+            Player.MouseMoveTo(x + BaseX, y + BaseY);
+        }
+
+        private void MoveTween(object[] param)
         {
             if (param.Length < 2)
             {
@@ -315,32 +199,6 @@ namespace ZoDream.Shared.Parser
                 return (Key)Str.ToInt(k);
             }
             return (Key)Enum.Parse(typeof(Key), k);
-        }
-
-        private IDictionary<string, IList<TokenStmt>> RenderFn(IEnumerable<TokenStmt> tokens)
-        {
-            var fn = MainEntery;
-            var items = new Dictionary<string, IList<TokenStmt>>();
-            foreach (var token in tokens)
-            {
-                switch (token.Type)
-                {
-                    case Token.Fn:
-                        fn = token.Content;
-                        break;
-                    case Token.EndFn:
-                        fn = MainEntery;
-                        break;
-                    default:
-                        if (!items.ContainsKey(fn))
-                        {
-                            items.Add(fn, new List<TokenStmt>());
-                        }
-                        items[fn].Add(token);
-                        break;
-                }
-            }
-            return items;
         }
 
         public void Dispose()

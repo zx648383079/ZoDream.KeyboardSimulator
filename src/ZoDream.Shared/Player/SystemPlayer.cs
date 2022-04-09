@@ -140,6 +140,20 @@ namespace ZoDream.Shared.Player
             MouseClick(MouseButton.Left);
         }
 
+        public void MouseClick(int count)
+        {
+            if (count < 1)
+            {
+                return;
+            }
+            var builder = new InputBuilder();
+            for (int i = 0; i < count; i++)
+            {
+                builder.AddMouseButtonClick(MouseButton.Left);
+            }
+            SendSimulatedInput(builder.ToArray());
+        }
+
         public void MouseDoubleClick()
         {
             MouseDoubleClick(MouseButton.Left);
@@ -270,6 +284,25 @@ namespace ZoDream.Shared.Player
             WindowNativeMethods.SetForegroundWindow(windowHandle);
         }
 
+        public IntPtr FindWindow(string? clsName, string windowName)
+        {
+            return windowHandle = WindowNativeMethods.FindWindow(clsName, windowName);
+        }
+        public void FocusWindow(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero)
+            {
+                throw new Exception($"Can not get Window");
+            }
+            WindowNativeMethods.SetForegroundWindow(hwnd);
+        }
+        public int[] GetWindowRect(IntPtr hwnd)
+        {
+            var rect = new Rect();
+            WindowNativeMethods.GetWindowRect(hwnd, ref rect);
+            return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
+        }
+
         public ushort GetScanKey(Key key)
         {
             return (ushort)InputNativeMethods.MapVirtualKey((uint)key, (uint)MappingType.VK_TO_VSC);
@@ -278,6 +311,11 @@ namespace ZoDream.Shared.Player
         public void LostFocus()
         {
             windowHandle = IntPtr.Zero;
+        }
+
+        public Color GetPixelColor(int x, int y)
+        {
+            return WindowNativeMethods.GetPixelColor(x, y);
         }
     }
 }

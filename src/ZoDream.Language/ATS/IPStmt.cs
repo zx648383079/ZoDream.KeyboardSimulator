@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZoDream.Shared.Parser.ATS
+namespace ZoDream.Language.ATS
 {
-    public interface IPExpr
+    public interface IPStmt
     {
     }
 }

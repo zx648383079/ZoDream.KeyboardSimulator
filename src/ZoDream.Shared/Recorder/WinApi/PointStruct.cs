@@ -12,7 +12,7 @@ namespace ZoDream.Shared.Recorder.WinApi
     ///     http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/rectangl_0tiq.asp
     /// </remarks>
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PointStruct
+    public struct PointStruct
     {
         /// <summary>
         ///     Specifies the X-coordinate of the point.

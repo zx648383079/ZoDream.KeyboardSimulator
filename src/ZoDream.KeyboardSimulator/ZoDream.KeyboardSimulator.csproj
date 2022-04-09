@@ -6,6 +6,7 @@
 	  <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
     <Authors>zodream</Authors>
     <Company>zodream.cn</Company>
     <Copyright>Copyright © 2021 zodream.cn</Copyright>
