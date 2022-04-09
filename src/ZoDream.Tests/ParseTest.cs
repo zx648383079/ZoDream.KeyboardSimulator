@@ -24,9 +24,13 @@ namespace ZoDream.Tests
             if 0,20,40,60=md5  // 判断点(0,20)到(40,60)的直线路径上的颜色值是否为，请通过拾取按钮自动框选获取
                 test()        // 为True则执行 定义的方法test
             endif";
-            var parse = new Tokenizer();
-            var items = parse.Parse(str);
-            Assert.AreEqual(items.Count, 13);
+            var parse = new Lexer();
+            parse.Open(str);
+            for (int i = 0; i < 100; i++)
+            {
+                parse.NextToken();
+            }
+            Assert.AreEqual(parse.NextToken(), Token.Fn);
         }
 
         [TestMethod]

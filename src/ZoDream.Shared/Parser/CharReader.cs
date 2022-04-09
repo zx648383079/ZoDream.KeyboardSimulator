@@ -111,6 +111,11 @@ namespace ZoDream.Shared.Parser
             return Content.Substring(position, length);
         }
 
+        public string ReadRangeSeek(int start, int end)
+        {
+            return ReadSeek(start, end - start + 1);
+        }
+
         public bool NextIs(params char[] items)
         {
             if (!CanNext)
