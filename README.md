@@ -11,54 +11,53 @@
 
  ## 已完成功能
 
-1. if 拾取
+1. 拾取
 2. 录制
 3. 模拟执行
 4. `ctrl + O` 或拖拽文件进行打开脚本文件
 5. `ctrl + s` 进行脚本保存
+6. 基于`Lua`实现脚本功能
 
-## 待实现功能
-
-1. 自定义录制事件
-2. 模拟按键针对游戏无效，可行方法：通过驱动中转
 
 ## 示例
 
-```c#
-fn test // 定义方法
-DoubleClick(Right) //双击鼠标右键
-2000  // 延时2s
-Click() //点击左键
- // 方法结束
-1000 //延迟1s
-Delay(1000) //延迟1s
-Move(20,20) // 鼠标移动到点(20,20)
-Click()   //点击左键
-Move(0,0,2000)   // 鼠标从当前坐标用2s匀速移动到点(0,0)
-if 0,20,40,60=md5  // 判断点(0,20)到(40,60)的直线路径上的颜色值是否为，请通过拾取按钮自动框选获取
-    test()        // 为True则执行 定义的方法test
-endif
+```lua
 
+local hwn = FindWindow("UnityWndClass", "Game")
+FocusWindow(hwn)
+Delay(100)
+local rect = GetClientRect(hwn)
+SetBasePosition(rect[0], rect[1])
+MoveTo(1111, 801)
+Delay(1000)
+if (!IsPixelColor(0, 0, "ffffff"))
+then
+    Click()
+end
 ```
 
 ## 语法规则
 
-|关键字|说明|示例|
-|:--:|:--|:--|
-|fn|声明方法，以空行结束|`fn name`|
-|if|条件判断，目前只支持两点间颜色判断|`if x,y,endX,endY=hash`|
-|else||
-|endif||
-|Delay|延迟,纯数字行也会执行|
-|Move(x,y[,duration])|移动鼠标,duration为移动时间||
-|MouseDown|按下鼠标, 默认`Left`，可选值`Left,Right,Middle,XButton1,XButton2`||
-|MouseUp|按下鼠标||
-|Click|单击鼠标||
-|DoubleClick|双击鼠标||
-|Scroll|滚动滑轮|`Scroll(10)`|
-|HotKey|输入组合键，支持0x或数字或按键名，数字为`VK`|`HotKey(0xA2,0x41)` 等于`HotKey(LeftCtrl,A)` |
-|Input|输入按键，数字为直接作为 `scancode` 输入|`Input(A)` 等于 `Input(0x30)`|
-|KeyDown|按下键，数字为直接作为 `scancode` 输入||
-|KeyUp|释放键，数字为直接作为 `scancode` 输入||
-|Focus|选择进程，设置为焦点|`Focus(进程名)`|
-|//|只支持单行注释，忽略||
+请参考 [`lua`](http://www.lua.org/) 文档
+
+|添加方法|说明|示例|
+|:--|:--|:--|
+|FindWindow(string className, string windowName): IntPtr|获取窗口句柄||
+|FocusWindow(IntPtr hwnd)|激活窗口|
+|GetWindowRect(IntPtr hwnd): int[left,top,width,height]|获取窗口的坐标，包括标题栏及外边框|
+|GetClientRect(IntPtr hwnd): int[left,top,width,height]|获取窗口的坐标,不包括标题栏及外边框|
+|SetBasePosition(int x, int y)|设置全局坐标，影响其他方法的 `x、y`|
+|MoveTo(int x, int y)|移动鼠标到，受全局坐标影响|
+|Move(int x, int y)|同上|
+|MoveTween(int x, int y, int step)|慢慢移动到|
+|Click(int count)|左击几次鼠标||
+|Delay(int milliseconds)|延迟多少毫秒|
+|MouseDown(string button)|按下鼠标, 默认`Left`，可选值`Left,Right,Middle,XButton1,XButton2`||
+|MouseUp(string button)|按下鼠标||
+|Scroll(int offset)|滚动滑轮|`Scroll(10)`|
+|HotKey(...string[] keys)|输入组合键，支持0x或数字或按键名，数字为`VK`|`HotKey(0xA2,0x41)` 等于`HotKey(LeftCtrl,A)` |
+|Input(string key)|输入按键，数字为直接作为 `scancode` 输入|`Input(A)` 等于 `Input(0x30)`|
+|KeyDown(string key)|按下键，数字为直接作为 `scancode` 输入||
+|KeyUp(string key)|释放键，数字为直接作为 `scancode` 输入||
+|GetPixelColor(int x, int y)|获取某一点的颜色值|`GetPixelColor(0,0) => ff00cc`
+|IsPixelColor(int x, int y, string color)|判断某一点的颜色值是否是|`IsPixelColor(0,0, "ff00cc"`|

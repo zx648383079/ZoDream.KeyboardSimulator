@@ -7,8 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ZoDream.Shared.Input;
+using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.Player;
-using ZoDream.Shared.Recorder.WinApi;
 using ZoDream.Shared.Utils;
 
 namespace ZoDream.Shared.Parser
@@ -53,6 +53,7 @@ namespace ZoDream.Shared.Parser
             {".", Key.OemPeriod },
             {"/", Key.Divide },
             {"`", Key.OemTilde },
+            {"Esc", Key.Escape },
         };
 
         private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
@@ -72,10 +73,15 @@ namespace ZoDream.Shared.Parser
             g.Move = new Action<int, int>(MoveTo);
             g.MoveTween = new Action<object[]>(MoveTween);
             g.Click = new Action<int>(Click);
+            g.MouseDown = new Action<string>(MouseDown);
+            g.MouseUp = new Action<string>(MouseUp);
             g.KeyPress = new Action<string>(Input);
+            g.KeyDown = new Action<string>(KeyDown);
+            g.KeyUp = new Action<string>(KeyUp);
             g.Input = new Action<string>(Input);
             g.Delay = new Action<int>(Delay);
             g.Scroll = new Action<int>(Scroll);
+            g.HotKey = new Action<string[]>(HotKey);
             g.GetPixelColor = new Func<int, int, string>(GetPixelColor);
             g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
             var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions() { DebugEngine = LuaExceptionDebugger.Default });
@@ -86,25 +92,50 @@ namespace ZoDream.Shared.Parser
             catch (Exception e)
             {
                 Console.WriteLine("Expception: {0}", e.Message);
-                var d = LuaExceptionData.GetData(e); // get stack trace
-                Console.WriteLine("StackTrace: {0}", d.FormatStackTrace(0, false));
+                throw e;
             }
         }
 
         private void Scroll(int diff)
         {
+
             Player.MouseWheel(diff);
+        }
+
+        private void MouseDown(string button)
+        {
+            Player.MouseDown(FormatButton(button));
+        }
+
+        private void MouseUp(string button)
+        {
+            Player.MouseUp(FormatButton(button));
+        }
+
+        private void KeyDown(string key)
+        {
+            Player.KeyDown(FormatKey(key));
+        }
+
+        private void KeyUp(string key)
+        {
+            Player.KeyUp(FormatKey(key));
+        }
+
+        private void HotKey(string[] keys)
+        {
+            Player.KeyStroke(keys.Select(k => FormatKey(k)).ToArray());
         }
 
         private string GetPixelColor(int x, int y)
         {
-            var color = Player.GetPixelColor(x, y);
+            var color = Player.GetPixelColor(x + BaseX, y + BaseY);
             return ColorTranslator.ToHtml(color).Substring(1);
         }
 
         private bool IsPixelColor(int x, int y, string color)
         {
-            return GetPixelColor(x, y).ToLower() == color.ToLower();
+            return GetPixelColor(x, y).ToLower() == color.Replace("#", "").ToLower();
         }
 
         private void Click(int count = 1)

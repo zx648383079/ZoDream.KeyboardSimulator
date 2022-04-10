@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using ZoDream.Shared.Input;
-using ZoDream.Shared.Recorder.WinApi;
 using System.Drawing;
+using ZoDream.Shared.OS.WinApi.Helpers;
 
 namespace ZoDream.Shared.Recorder
 {

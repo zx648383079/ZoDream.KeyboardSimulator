@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Unloaded="Window_Unloaded"
-        Title="拾取" Height="450" Width="400">
+        Title="拾取" Height="450" Width="500" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="HeaderTb" TargetType="TextBlock">
@@ -35,7 +36,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="100"/>
+                                <RowDefinition Height="150"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
@@ -45,11 +46,11 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Image x:Name="PreviewImage"/>
+                            <Image x:Name="PreviewImage" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"/>
                             <TextBlock Grid.Row="1" Text="相对坐标" Style="{StaticResource HeaderTb}"/>
-                            <TextBox x:Name="BaseTb" TextChanged="BaseTb_TextChanged" Grid.Row="1" Grid.Column="1"/>
+                            <ctl:RectInput x:Name="BaseTb" ValueChanged="BaseTb_ValueChanged" Grid.Row="1" Grid.Column="1"/>
                             <TextBlock Text="当前坐标" Grid.Row="2" Style="{StaticResource HeaderTb}"/>
-                            <TextBox x:Name="CurrentTb" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
+                            <ctl:RectInput x:Name="CurrentTb" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
                             <TextBlock Text="颜色" Grid.Row="3" Style="{StaticResource HeaderTb}"/>
                             <TextBox x:Name="ColorTb" IsReadOnly="True"  Grid.Row="3" Grid.Column="1"/>
                             <TextBlock Text="R" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
@@ -92,9 +93,44 @@
                             <TextBlock Text="窗口名称" Grid.Row="3" Style="{StaticResource HeaderTb}"/>
                             <TextBox x:Name="NameTb" IsReadOnly="True"  Grid.Row="3" Grid.Column="1"/>
                             <TextBlock Text="窗口坐标" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
-                            <TextBox x:Name="PointTb" IsReadOnly="True"  Grid.Row="4" Grid.Column="1"/>
-                            <TextBlock Text="窗口尺寸" Grid.Row="5" Style="{StaticResource HeaderTb}"/>
-                            <TextBox x:Name="SizeTb" IsReadOnly="True" Grid.Row="5" Grid.Column="1"/>
+                            <ctl:RectInput x:Name="WindowRectTb" Column="4" IsReadOnly="True"  Grid.Row="4" Grid.Column="1"/>
+                            <TextBlock Text="内窗坐标" Grid.Row="5" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="ClientRectTb" Column="4" IsReadOnly="True"  Grid.Row="5" Grid.Column="1"/>
+                            <TextBlock Text="窗口尺寸" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="SizeTb" IsReadOnly="True" Grid.Row="6" Grid.Column="1"/>
+                        </Grid>
+                    </GroupBox>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="坐标转换">
+                <ScrollViewer>
+                    <GroupBox Header="坐标转换">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="原坐标系统" Style="{StaticResource HeaderTb}"/>
+                            <TextBlock Text="Left,Top,Width,Height" Grid.Column="1" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="CvtOldTb" Column="4" Grid.Row="1" Grid.ColumnSpan="2"/>
+                            <TextBlock Text="现坐标系统" Grid.Row="2" Style="{StaticResource HeaderTb}"/>
+                            <TextBlock Text="Left,Top,Width,Height" Grid.Row="2" Grid.Column="1" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="CvtNewTb" Column="4" Grid.Row="3" Grid.ColumnSpan="2"/>
+                            <TextBlock Text="原坐标" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="CvtOldPointTb" ValueChanged="CvtOldPointTb_ValueChanged" Grid.Row="4" Grid.Column="1"/>
+                            <Button x:Name="CvtBtn" Content="转换" Click="CvtBtn_Click" Grid.Row="5"/>
+                            <TextBlock Text="新坐标" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="CvtNewPointTb" IsReadOnly="True" Grid.Row="6" Grid.Column="1"/>
                         </Grid>
                     </GroupBox>
                 </ScrollViewer>

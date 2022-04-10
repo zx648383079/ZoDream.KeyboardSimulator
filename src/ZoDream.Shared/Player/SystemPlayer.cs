@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Linq;
 using ZoDream.Shared.Input;
-using ZoDream.Shared.Player.WinApi;
 using System.Diagnostics;
 using System.Threading;
 using System.Drawing;
+using ZoDream.Shared.OS.WinApi;
+using ZoDream.Shared.OS.WinApi.Models;
+using ZoDream.Shared.OS.WinApi.Helpers;
 
 namespace ZoDream.Shared.Player
 {
@@ -261,7 +263,7 @@ namespace ZoDream.Shared.Player
             SendSimulatedInput(inputList);
         }
 
-        private void SendSimulatedInput(WinApi.Input[] inputs)
+        private void SendSimulatedInput(InputStruct[] inputs)
         {
             if (inputs.Length < 1)
             {
@@ -298,21 +300,20 @@ namespace ZoDream.Shared.Player
         }
         public int[] GetWindowRect(IntPtr hwnd)
         {
-            var rect = new Rect();
+            var rect = new RectStruct();
             WindowNativeMethods.GetWindowRect(hwnd, ref rect);
-            return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
+            return new int[] { rect.Left, rect.Top, rect.Right - rect.Left, rect.Bottom - rect.Top };
         }
 
         public int[] GetClientRect(IntPtr hwnd)
         {
-            var rect = new Rect();
-            WindowNativeMethods.GetClientRect(hwnd, ref rect);
+            var rect = WindowNativeMethods.GetClientRect(hwnd);
             return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
         }
 
         public ushort GetScanKey(Key key)
         {
-            return (ushort)InputNativeMethods.MapVirtualKey((uint)key, (uint)MappingType.VK_TO_VSC);
+            return (ushort)InputNativeMethods.MapVirtualKey((uint)key, (uint)MapKeyType.VK_TO_VSC);
         }
 
         public void LostFocus()

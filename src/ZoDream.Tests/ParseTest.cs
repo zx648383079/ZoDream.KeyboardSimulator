@@ -2,8 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Text.RegularExpressions;
 using ZoDream.Shared.Input;
+using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.Parser;
-using ZoDream.Shared.Player.WinApi;
 using ZoDream.Shared.Utils;
 
 namespace ZoDream.Tests

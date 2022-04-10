@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
-using ZoDream.Shared.Player.WinApi;
-using ZoDream.Shared.Recorder.WinApi;
+using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.Utils;
 
 namespace ZoDream.Shared.Parser

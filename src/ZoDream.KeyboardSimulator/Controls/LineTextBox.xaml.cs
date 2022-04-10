@@ -128,7 +128,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             var picker = new Microsoft.Win32.OpenFileDialog
             {
                 Multiselect = true,
-                Filter = "文件|*.txt|所有文件|*.*",
+                Filter = "脚本文件|*.lua|所有文件|*.*",
                 Title = "选择文件"
             };
             if (picker.ShowDialog() != true)
@@ -143,7 +143,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             var picker = new Microsoft.Win32.SaveFileDialog
             {
                 Title = "选择保存路径",
-                Filter = "文件|*.txt|所有文件|*.*",
+                Filter = "脚本文件|*.lua|所有文件|*.*",
                 FileName = "未知脚本",
             };
             if (picker.ShowDialog() != true)
