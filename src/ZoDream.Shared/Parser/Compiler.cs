@@ -30,6 +30,30 @@ namespace ZoDream.Shared.Parser
         private int BaseX = 0;
         private int BaseY = 0;
         public event TokenChangedEventHandler? TokenChanged;
+        private IDictionary<string, Key> KeyMaps = new Dictionary<string, Key>()
+        {
+            {"0", Key.D0 },
+            {"1", Key.D1 },
+            {"2", Key.D2 },
+            {"3", Key.D3 },
+            {"4", Key.D4 },
+            {"5", Key.D5 },
+            {"6", Key.D6 },
+            {"7", Key.D7 },
+            {"8", Key.D8 },
+            {"9", Key.D9 },
+            {"-", Key.OemMinus },
+            {"=", Key.OemPlus },
+            {"[", Key.OemOpenBrackets },
+            {"]", Key.OemCloseBrackets },
+            {";", Key.OemSemicolon },
+            {"'", Key.OemQuotes },
+            {"\\", Key.OemBackslash },
+            {",", Key.OemComma },
+            {".", Key.OemPeriod },
+            {"/", Key.Divide },
+            {"`", Key.OemTilde },
+        };
 
         private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
 
@@ -196,6 +220,10 @@ namespace ZoDream.Shared.Parser
         private Key FormatKey(string k)
         {
             k = k.Trim();
+            if (KeyMaps.ContainsKey(k))
+            {
+                return KeyMaps[k];
+            }
             if (Str.IsInt(k)) {
                 return (Key)Str.ToInt(k);
             }
