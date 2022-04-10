@@ -4,24 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator"
-        xmlns:control="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+        xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         mc:Ignorable="d"
         Title="Keyboard Simulator" Height="450" Width="800" WindowStartupLocation="CenterScreen"
         Unloaded="Window_Unloaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="PlayBtn" Click="PlayBtn_Click" Content="&#xE102;" Style="{DynamicResource IconBtn}" ToolTip="回放" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <Button x:Name="RecordBtn" Click="RecordBtn_Click"  Content="&#xE2AD;" Style="{DynamicResource IconBtn}" ToolTip="录制" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <Button x:Name="StopBtn" Click="StopBtn_Click" Content="&#xE103;" Style="{DynamicResource IconBtn}" ToolTip="停止" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
-            <Button x:Name="SpotBtn" Click="FindBtn_Click"  Content="&#xE1E3;" Style="{DynamicResource IconBtn}" ToolTip="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <Button x:Name="OptionBtn" Click="OptionBtn_Click" Content="&#xE115;" Style="{DynamicResource IconBtn}" ToolTip="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <ctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="回放" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <ctl:IconButton x:Name="RecordBtn" Click="RecordBtn_Click" Icon="&#xE2AD;" Label="录制" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <ctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
+            <ctl:IconButton x:Name="SpotBtn" Click="FindBtn_Click" Icon="&#xE1E3;" Label="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <ctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
         </StackPanel>
-        <control:LineTextBox x:Name="ContentTb" Grid.Row="1" 
+        <ctl:LineTextBox x:Name="ContentTb" Grid.Row="1" 
                              IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>
         <TextBlock Grid.Row="2" Text="{Binding Message}" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
     </Grid>

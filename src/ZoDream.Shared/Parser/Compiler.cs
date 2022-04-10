@@ -70,7 +70,7 @@ namespace ZoDream.Shared.Parser
             g.MoveTo = new Action<int, int>(MoveTo);
             g.Move = new Action<int, int>(MoveTo);
             g.MoveTween = new Action<object[]>(MoveTween);
-            g.Click = new Action<int>(Click);
+            g.Click = new Action<object>(Click);
             g.MouseDown = new Action<string>(MouseDown);
             g.MouseUp = new Action<string>(MouseUp);
             g.KeyPress = new Action<string>(Input);
@@ -196,13 +196,24 @@ namespace ZoDream.Shared.Parser
             return GetPixelColor(x, y).ToLower() == color.Replace("#", "").ToLower();
         }
 
-        private void Click(int count = 1)
+        private void Click(object button)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            Player.MouseClick(count);
+            if (button is int)
+            {
+                Player.MouseClick((int)button);
+                return;
+            }
+            var b = button.ToString();
+            if (Str.IsInt(b))
+            {
+                Player.MouseClick(Convert.ToInt32(b));
+                return;
+            }
+            Player.MouseClick(FormatButton(b));
         }
 
         private void Delay(int time)

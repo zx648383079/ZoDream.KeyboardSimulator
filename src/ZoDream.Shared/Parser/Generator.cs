@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ZoDream.Shared.Input;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.Shared.Parser
 {
@@ -230,9 +231,9 @@ namespace ZoDream.Shared.Parser
             switch (token.Type)
             {
                 case Token.Fn:
-                    return $"function {token.Content}";
+                    return $"function {token.Content}()";
                 case Token.If:
-                    return $"if({string.Join(",", token.Parameters)}={token.Content})\nthen";
+                    return $"if({RenderParameter(token.Parameters)}={token.Content})\nthen";
                 case Token.Else:
                     return $"else";
                 case Token.EndIf:
@@ -240,7 +241,8 @@ namespace ZoDream.Shared.Parser
                 case Token.Delay:
                     return $"Delay({token.Content})";
                 case Token.FnCall:
-                    return $"{token.Content}({string.Join(",", token.Parameters)})";
+
+                    return $"{token.Content}({RenderParameter(token.Parameters)})";
                 case Token.Parameter:
                     return token.Content;
                 case Token.EndFn:
@@ -251,6 +253,15 @@ namespace ZoDream.Shared.Parser
                 default:
                     return string.Empty;
             }
+        }
+
+        public string RenderParameter(params string[]? items)
+        {
+            if (items == null)
+            {
+                return string.Empty;
+            }
+            return string.Join(",", items.Select(i => Str.IsInt(i) ? i : $"\"{i}\""));
         }
 
         public string Render(IEnumerable<TokenStmt> tokens)

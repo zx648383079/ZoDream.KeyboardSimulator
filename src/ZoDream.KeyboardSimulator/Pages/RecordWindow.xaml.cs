@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -59,25 +60,20 @@ namespace ZoDream.KeyboardSimulator.Pages
 
         private void Recorder_OnKey(object sender, Shared.Input.KeyEventArgs e)
         {
-            if (IsPaused)
-            {
-                return;
-            }
             Generator.Add(e);
         }
 
         private void Recorder_OnMouse(object sender, Shared.Input.MouseEventArgs e)
         {
-            if (IsPaused)
-            {
-                return;
-            }
             Generator.Add(e);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
         }
 
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
@@ -90,6 +86,7 @@ namespace ZoDream.KeyboardSimulator.Pages
 
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
+            Recorder?.Stop();
             IsPaused = true;
             OnFinish?.Invoke(this, Generator.ToString());
             Generator.Reset();
@@ -98,12 +95,15 @@ namespace ZoDream.KeyboardSimulator.Pages
         private void PauseBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPaused = true;
+            Recorder?.Stop();
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
             IsPaused = false;
+            InitRecorder();
             Generator.ResetTime();
+            Recorder?.Start();
         }
     }
 
