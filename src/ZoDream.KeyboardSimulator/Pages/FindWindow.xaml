@@ -46,11 +46,21 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Image x:Name="PreviewImage" Grid.ColumnSpan="2" Width="150" HorizontalAlignment="Left"/>
+                            <Grid Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="PreviewImage"/>
+                                <ctl:SwitchInput x:Name="AutoLoadTb" Grid.Column="1"
+                                                 Value="True"
+                                                 VerticalAlignment="Bottom"
+                                                 ValueChanged="AutoLoadTb_ValueChanged" OnLabel="自动获取" OffLabel="手动输入"/>
+                            </Grid>
                             <TextBlock Grid.Row="1" Text="相对坐标" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="BaseTb" ValueChanged="BaseTb_ValueChanged" Grid.Row="1" Grid.Column="1"/>
                             <TextBlock Text="当前坐标" Grid.Row="2" Style="{StaticResource HeaderTb}"/>
-                            <ctl:RectInput x:Name="CurrentTb" IsReadOnly="True" Grid.Row="2" Grid.Column="1"/>
+                            <ctl:RectInput x:Name="CurrentTb" ValueChanged="CurrentTb_ValueChanged" Grid.Row="2" Grid.Column="1"/>
                             <TextBlock Text="颜色" Grid.Row="3" Style="{StaticResource HeaderTb}"/>
                             <TextBox x:Name="ColorTb" IsReadOnly="True"  Grid.Row="3" Grid.Column="1"/>
                             <TextBlock Text="R" Grid.Row="4" Style="{StaticResource HeaderTb}"/>

@@ -10,7 +10,10 @@
     <Grid>
         <TextBox x:Name="ValueTb" MinLines="1"
                  VerticalContentAlignment="Center"
-                 IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}" 
-                 TextChanged="ValueTb_TextChanged" KeyDown="ValueTb_KeyDown"/>
+                 IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}"
+                 InputLanguageManager.InputLanguage="en-US"
+                 InputLanguageManager.RestoreInputLanguage="True"
+                 TextChanged="ValueTb_TextChanged" KeyDown="ValueTb_KeyDown"
+                 LostFocus="ValueTb_LostFocus"/>
     </Grid>
 </UserControl>

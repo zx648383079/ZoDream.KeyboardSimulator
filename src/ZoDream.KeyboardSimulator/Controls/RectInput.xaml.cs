@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ZoDream.KeyboardSimulator.Events;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.KeyboardSimulator.Controls
 {
@@ -39,7 +41,7 @@ namespace ZoDream.KeyboardSimulator.Controls
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(int[]), typeof(RectInput), new PropertyMetadata(Array.Empty<int>(), (d, e) =>
             {
-                (d as RectInput)!.UpdateValue((int[])e.NewValue, false);
+                (d as RectInput)!.UpdateValue((int[])e.NewValue, false, false);
             }));
 
         public int Column
@@ -90,7 +92,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 {
                     return (int)i;
                 }
-                return Convert.ToInt32(i);
+                return Str.ToInt((string)i);
             }).ToArray());
         }
 
@@ -125,19 +127,28 @@ namespace ZoDream.KeyboardSimulator.Controls
             UpdateValue(items, true);
         }
 
-        private void UpdateValue(int[]? items, bool update)
+        private void UpdateValue(int[]? items, bool update, bool updateText = true)
         {
             var real = GetIntArr(items, Column);
             if (update)
             {
                 Value = real;
             }
-            ValueTb.Text = string.Join(Separator, real);
-            ValueTb.SelectionStart = ValueTb.Text.Length;
+            if (updateText)
+            {
+                ValueTb.Text = string.Join(Separator, real);
+                ValueTb.SelectionStart = ValueTb.Text.Length;
+            }
+            
         }
 
 
         private void ValueTb_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateFromText();
+        }
+
+        private void UpdateFromText(bool update = false)
         {
             TokenSource.Cancel();
             TokenSource = new CancellationTokenSource();
@@ -151,8 +162,8 @@ namespace ZoDream.KeyboardSimulator.Controls
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     var items = ValueTb.Text.Split(new string[] { Separator }, StringSplitOptions.None)
-                    .Select(i => string.IsNullOrWhiteSpace(i) ? 0 : Convert.ToInt32(i.Trim())).ToArray();
-                    UpdateValue(items);
+                        .Select(i => Str.ToInt(i)).ToArray();
+                    UpdateValue(items, true, update);
                     ValueChanged?.Invoke(this, Value);
                 });
             }, TokenSource.Token);
@@ -178,6 +189,11 @@ namespace ZoDream.KeyboardSimulator.Controls
                     ValueTb.SelectionStart = i + Separator.Length;
                 }
             }
+        }
+
+        private void ValueTb_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateFromText(true);
         }
     }
 }

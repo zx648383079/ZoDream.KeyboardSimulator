@@ -25,11 +25,23 @@ namespace ZoDream.Shared.Utils
 
         public static int ToInt(string souce)
         {
-            if (souce.StartsWith("0x"))
+            if (string.IsNullOrWhiteSpace(souce))
             {
-                return Convert.ToInt32(souce.Substring(2), 16);
+                return 0;
             }
-            return Convert.ToInt32(souce);
+            souce = souce.Trim();
+            try
+            {
+                if (souce.StartsWith("0x"))
+                {
+                    return Convert.ToInt32(souce.Substring(2), 16);
+                }
+                return Convert.ToInt32(souce);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
         }
 
         public static bool IsInt(string source)

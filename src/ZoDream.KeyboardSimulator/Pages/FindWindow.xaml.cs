@@ -121,15 +121,23 @@ namespace ZoDream.KeyboardSimulator.Pages
                 return;
             }
             LastPoint = point;
-            var screenSnapshot = GetScreenSnapshot(point.X, point.Y, 20, 20, 150, 150);
+            LoadPointColor(point.X, point.Y);
+        }
+
+        private void LoadPointColor(int x, int y, bool update = true)
+        {
+            var screenSnapshot = GetScreenSnapshot(x, y, 20, 20, 150, 150);
             if (screenSnapshot != null)
             {
                 var bmp = Utils.Image.ToBitmapSource(screenSnapshot);
                 bmp.Freeze();
                 PreviewImage.Source = bmp;
             }
-            CurrentTb.SetIntArr(point.X-BasePoint.X, point.Y - BasePoint.Y);
-            var color = WindowNativeMethods.GetPixelColor(point.X, point.Y);
+            if (update)
+            {
+                CurrentTb.SetIntArr(x - BasePoint.X, y - BasePoint.Y);
+            }
+            var color = WindowNativeMethods.GetPixelColor(x, y);
             ColorTb.Text = System.Drawing.ColorTranslator.ToHtml(color);
             RTb.Text = color.R.ToString();
             GTb.Text = color.G.ToString();
@@ -161,6 +169,12 @@ namespace ZoDream.KeyboardSimulator.Pages
                 }
                 bitmap.Dispose();
                 DrawCursorImageToScreenImage(ref g, a => (a - x) * distWidth / width, b => (b-y) * distHeight/ height);
+                var w = 1 * distWidth / width;
+                g.DrawRectangle(new System.Drawing.Pen(System.Drawing.Color.Red, 1),
+                    (cursorX - x) * distWidth / width - w/2,
+                    (cursorY - y) * distHeight / height - w / 2,
+                    w, w
+                    );
                 return target;
             }
             catch (Exception ex)
@@ -255,6 +269,22 @@ namespace ZoDream.KeyboardSimulator.Pages
             };
             page.Show();
             page.Activate();
+        }
+
+        private void AutoLoadTb_ValueChanged(object sender, bool value)
+        {
+            IsLoading = value;
+        }
+
+        private void CurrentTb_ValueChanged(object sender, int[] value)
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+            var point = CurrentTb.GetIntArr(2);
+            var basePoint = BaseTb.GetIntArr(2);
+            LoadPointColor(point[0] + basePoint[0], point[1] + basePoint[1], false);
         }
     }
 }
