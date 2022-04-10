@@ -26,7 +26,7 @@ namespace ZoDream.Shared.Parser
         }
 
         private IPlayer Player;
-        private CancellationTokenSource? tokenSource;
+        private CancellationToken CancelToken = default;
         private int BaseX = 0;
         private int BaseY = 0;
         public event TokenChangedEventHandler? TokenChanged;
@@ -56,11 +56,9 @@ namespace ZoDream.Shared.Parser
             {"Esc", Key.Escape },
         };
 
-        private bool IsCancellationRequested => tokenSource != null && tokenSource.IsCancellationRequested;
-
-        public void Compile(string code, CancellationTokenSource? cancellationTokenSource)
+        public void Compile(string code, CancellationToken token = default)
         {
-            tokenSource = cancellationTokenSource;
+            CancelToken = token;
             using var lua = new Lua();
             dynamic g = lua.CreateEnvironment<LuaGlobal>();
             // 注册方法 g.print = new Action<object>();
@@ -84,7 +82,10 @@ namespace ZoDream.Shared.Parser
             g.HotKey = new Action<string[]>(HotKey);
             g.GetPixelColor = new Func<int, int, string>(GetPixelColor);
             g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
-            var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions() { DebugEngine = LuaExceptionDebugger.Default });
+            g.IsRectColor = new Func<int, int, int, int, string, bool>(IsRectColor);
+            var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions() { 
+                DebugEngine = new LuaCancelTokenDebug(token)
+            });
             try
             {
                 g.dochunk(chunk); // execute the chunk
@@ -96,80 +97,165 @@ namespace ZoDream.Shared.Parser
             }
         }
 
+        private bool IsRectColor(int x, int y, int endX, int endY, string color)
+        {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
+            return Snapshot.GetRect(x, y, endX, endY) == color;
+        }
+
         private void Scroll(int diff)
         {
-
-            Player.MouseWheel(diff);
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
+            var j = 0;
+            Tween.Invoke(0, diff, 120, (_, i) =>
+            {
+                if (CancelToken.IsCancellationRequested)
+                {
+                    throw new LuaCancelTokenException();
+                }
+                if (i == 0)
+                {
+                    return;
+                }
+                if (j > 0)
+                {
+                    Thread.Sleep(100);
+                }
+                Player.MouseWheel(i);
+                j++;
+            });
         }
 
         private void MouseDown(string button)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.MouseDown(FormatButton(button));
         }
 
         private void MouseUp(string button)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.MouseUp(FormatButton(button));
         }
 
         private void KeyDown(string key)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.KeyDown(FormatKey(key));
         }
 
         private void KeyUp(string key)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.KeyUp(FormatKey(key));
         }
 
         private void HotKey(string[] keys)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }   
             Player.KeyStroke(keys.Select(k => FormatKey(k)).ToArray());
         }
 
         private string GetPixelColor(int x, int y)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             var color = Player.GetPixelColor(x + BaseX, y + BaseY);
             return ColorTranslator.ToHtml(color).Substring(1);
         }
 
         private bool IsPixelColor(int x, int y, string color)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             return GetPixelColor(x, y).ToLower() == color.Replace("#", "").ToLower();
         }
 
         private void Click(int count = 1)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.MouseClick(count);
         }
 
         private void Delay(int time)
         {
             Thread.Sleep(time);
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
         }
 
         private void Input(string key)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.KeyPress(FormatKey(key));
         }
 
         private IntPtr FindWindow(string cls, string name)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             return Player.FindWindow(cls, name);
         }
 
         private void FocusWindow(IntPtr hwn)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.FocusWindow(hwn);
         }
 
         private int[] GetWindowRect(IntPtr hwn)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             return Player.GetWindowRect(hwn);
         }
 
         private int[] GetClientRect(IntPtr hwn)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             return Player.GetClientRect(hwn);
         }
 
@@ -177,15 +263,27 @@ namespace ZoDream.Shared.Parser
         {
             BaseX = x;
             BaseY = y;
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
         }
 
         private void MoveTo(int x, int y)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             Player.MouseMoveTo(x + BaseX, y + BaseY);
         }
 
         private void MoveTween(object[] param)
         {
+            if (CancelToken.IsCancellationRequested)
+            {
+                throw new LuaCancelTokenException();
+            }
             if (param.Length < 2)
             {
                 return;
@@ -213,9 +311,9 @@ namespace ZoDream.Shared.Parser
             while (true)
             {
                 Thread.Sleep(stepTime);
-                if (IsCancellationRequested)
+                if (CancelToken.IsCancellationRequested)
                 {
-                    return;
+                    throw new LuaCancelTokenException();
                 }
                 startX += stepX;
                 startY += stepY;
@@ -269,7 +367,6 @@ namespace ZoDream.Shared.Parser
 
         public void Dispose()
         {
-            tokenSource?.Dispose();
             Player.Dispose();
         }
     }

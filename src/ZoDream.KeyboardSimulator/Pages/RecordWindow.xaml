@@ -1,0 +1,25 @@
+﻿<Window x:Class="ZoDream.KeyboardSimulator.Pages.RecordWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
+        mc:Ignorable="d"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Title="录制" Height="60" Width="200" WindowStyle="None" Topmost="True" 
+        ShowInTaskbar="False" ResizeMode="NoResize" Background="#ccd5f0">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <Button x:Name="PlayBtn" Content="&#xE102;" Click="PlayBtn_Click" Style="{StaticResource IconBtn}"/>
+            <Button x:Name="PauseBtn" Content="&#xE103;" Visibility="Collapsed" Click="PauseBtn_Click" Style="{StaticResource IconBtn}"/>
+            <Button x:Name="StopBtn" Content="&#xE15B;" Visibility="Collapsed" Click="StopBtn_Click" Style="{StaticResource IconBtn}"/>
+        </StackPanel>
+        <Button x:Name="CloseBtn" Content="&#xE894;" Click="CloseBtn_Click" Style="{StaticResource IconBtn}" Grid.Column="3"/>
+    </Grid>
+</Window>

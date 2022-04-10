@@ -13,9 +13,9 @@ namespace ZoDream.KeyboardSimulator.ViewModels
     public class MainViewModel: BindableBase, IDisposable
     {
 
-        public SystemRecorder Recorder = new();
         public Compiler Compiler = new();
-        public Generator Generator = new();
+
+        public ParserOption Option = new();
 
         private bool paused = true;
 
@@ -24,22 +24,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             get => paused;
             set {
                 Set(ref paused, value);
-                if (!value)
-                {
-                    OptionVisible = false;
-                }
             }
         }
-
-        private bool optionVisible = false;
-
-        public bool OptionVisible
-        {
-            get => optionVisible;
-            set => Set(ref optionVisible, value);
-        }
-
-
 
         private CancellationTokenSource messageToken = new();
         private string message = string.Empty;
@@ -70,9 +56,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
 
         public void Dispose()
         {
-            Recorder.Dispose();
             Compiler.Dispose();
-            Generator.Dispose();
         }
     }
 }

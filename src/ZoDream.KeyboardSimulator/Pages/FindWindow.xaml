@@ -63,6 +63,29 @@
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="拾取区域">
+                <ScrollViewer>
+                    <GroupBox Header="拾取区域颜色">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="区域" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="RectTb" Column="4" IsReadOnly="True" Grid.Column="1"/>
+                            <TextBlock Text="颜色hash" Grid.Row="1" Style="{StaticResource HeaderTb}"/>
+                            <TextBox x:Name="RectHashTb" IsReadOnly="True"  Grid.Row="1" Grid.Column="1"/>
+                            <Button x:Name="RectSpotBtn" Content="拾取" Grid.Row="2" Click="RectSpotBtn_Click"/>
+                        </Grid>
+                    </GroupBox>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Header="拾取窗口">
                 <ScrollViewer>
                     <GroupBox Header="拾取窗口">

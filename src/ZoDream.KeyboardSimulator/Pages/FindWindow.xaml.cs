@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -238,6 +239,22 @@ namespace ZoDream.KeyboardSimulator.Pages
         private void CvtOldPointTb_ValueChanged(object sender, int[] _)
         {
             ConvertPoint();
+        }
+
+        private void RectSpotBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            Thread.Sleep(500);
+            var page = new SpotWindow();
+            page.Spot += (_, x, y, endX, endY, e) =>
+            {
+                page.Close();
+                Show();
+                RectTb.SetIntArr(x, y, endX, endY);
+                RectHashTb.Text = e;
+            };
+            page.Show();
+            page.Activate();
         }
     }
 }

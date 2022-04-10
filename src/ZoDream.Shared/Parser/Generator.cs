@@ -22,6 +22,11 @@ namespace ZoDream.Shared.Parser
         public void Reset()
         {
             TokenItems.Clear();
+            ResetTime();
+        }
+
+        public void ResetTime()
+        {
             lastTime = DateTime.Now;
         }
 

@@ -60,7 +60,10 @@ namespace ZoDream.Shared.Parser
 
         public static string GetRect(int x, int y, int endX, int endY)
         {
-            return GetRect(GetScreenSnapshot(), x, y, endX, endY);
+            var minX = Math.Min(x, endX);
+            var minY = Math.Min(y, endY);
+            return GetRect(GetScreenSnapshot(minX, minY, Math.Max(x, endX) - minX, 
+                Math.Max(y, endY) - minY), x - minX, y - minY, endX - minX, endY - minY);
         }
 
         public static string GetRect(Bitmap? bitmap, int x, int y, int endX, int endY)
