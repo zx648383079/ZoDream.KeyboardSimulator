@@ -66,6 +66,7 @@ namespace ZoDream.Shared.Parser
             g.FindWindow = new Func<string, string, IntPtr>(FindWindow);
             g.FocusWindow = new Action<IntPtr>(FocusWindow);
             g.GetWindowRect = new Func<IntPtr, int[]>(GetWindowRect);
+            g.GetClientRect = new Func<IntPtr, int[]>(GetClientRect);
             g.SetBasePosition = new Action<int, int>(SetBasePosition);
             g.MoveTo = new Action<int, int>(MoveTo);
             g.Move = new Action<int, int>(MoveTo);
@@ -134,6 +135,11 @@ namespace ZoDream.Shared.Parser
         private int[] GetWindowRect(IntPtr hwn)
         {
             return Player.GetWindowRect(hwn);
+        }
+
+        private int[] GetClientRect(IntPtr hwn)
+        {
+            return Player.GetClientRect(hwn);
         }
 
         private void SetBasePosition(int x, int y)

@@ -11,6 +11,7 @@ namespace ZoDream.Shared.Player
         public IntPtr FindWindow(string? clsName, string windowName);
         public void FocusWindow(IntPtr hwnd);
         public int[] GetWindowRect(IntPtr hwnd);
+        public int[] GetClientRect(IntPtr hwnd);
         public ushort GetScanKey(Key key);
         public void LostFocus();
 

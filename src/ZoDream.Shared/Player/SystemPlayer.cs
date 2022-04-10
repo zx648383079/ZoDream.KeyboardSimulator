@@ -303,6 +303,13 @@ namespace ZoDream.Shared.Player
             return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
         }
 
+        public int[] GetClientRect(IntPtr hwnd)
+        {
+            var rect = new Rect();
+            WindowNativeMethods.GetClientRect(hwnd, ref rect);
+            return new int[] { rect.Left, rect.Top, rect.Right, rect.Bottom };
+        }
+
         public ushort GetScanKey(Key key)
         {
             return (ushort)InputNativeMethods.MapVirtualKey((uint)key, (uint)MappingType.VK_TO_VSC);
