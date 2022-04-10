@@ -286,7 +286,7 @@ namespace ZoDream.Shared.Player
 
         public IntPtr FindWindow(string? clsName, string windowName)
         {
-            return windowHandle = WindowNativeMethods.FindWindow(clsName, windowName);
+            return windowHandle = WindowNativeMethods.FindWindow(string.IsNullOrWhiteSpace(clsName) ? null : clsName, windowName);
         }
         public void FocusWindow(IntPtr hwnd)
         {

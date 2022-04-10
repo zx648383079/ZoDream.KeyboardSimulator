@@ -47,6 +47,7 @@ namespace ZoDream.Shared.Parser
             g.Move = new Action<int, int>(MoveTo);
             g.MoveTween = new Action<object[]>(MoveTween);
             g.Click = new Action<int>(Click);
+            g.KeyPress = new Action<string>(Input);
             g.Input = new Action<string>(Input);
             g.Delay = new Action<int>(Delay);
             g.Scroll = new Action<int>(Scroll);

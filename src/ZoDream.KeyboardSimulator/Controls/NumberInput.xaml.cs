@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -77,6 +78,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             DependencyProperty.Register("Value", typeof(int), typeof(NumberInput), new PropertyMetadata(0, OnValueChanged));
 
         public event ValueChangedEventHandler<int>? ValueChanged;
+        private CancellationTokenSource TokenSource = new();
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -110,18 +112,32 @@ namespace ZoDream.KeyboardSimulator.Controls
 
         private void NumberTb_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var val = Convert.ToInt32((sender as TextBox).Text);
-            if (val < Min)
+            TokenSource.Cancel();
+            TokenSource = new CancellationTokenSource();
+            Task.Factory.StartNew(() =>
             {
-                val = Min;
-            }
-            else if (Max > 0 && val > Max)
-            {
-                val = Max;
-            }
-            Value = val;
-            NumberTb.Text = val.ToString();
-            ValueChanged?.Invoke(this, val);
+                Thread.Sleep(2000);
+                if (TokenSource.IsCancellationRequested)
+                {
+                    return;
+                }
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    var oldVal = Value;
+                    var val = Convert.ToInt32((sender as TextBox)!.Text);
+                    if (val < Min)
+                    {
+                        val = Min;
+                    }
+                    else if (Max > 0 && val > Max)
+                    {
+                        val = Max;
+                    }
+                    Value = val;
+                    NumberTb.Text = val.ToString();
+                    ValueChanged?.Invoke(this, Value);
+                });
+            }, TokenSource.Token);
         }
     }
 }

@@ -11,7 +11,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -22,9 +21,8 @@
             <Button x:Name="SpotBtn" Click="FindBtn_Click"  Content="&#xE1E3;" Style="{DynamicResource IconBtn}" ToolTip="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
             <Button x:Name="OptionBtn" Click="OptionBtn_Click" Content="&#xE115;" Style="{DynamicResource IconBtn}" ToolTip="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
         </StackPanel>
-        <control:OptionPanel x:Name="OptionTb" Grid.Row="1" Visibility="{Binding OptionVisible, Converter={StaticResource TrueConverter}}"/>
-        <control:LineTextBox x:Name="ContentTb" Grid.Row="2" 
+        <control:LineTextBox x:Name="ContentTb" Grid.Row="1" 
                              IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>
-        <TextBlock Grid.Row="3" Text="{Binding Message}" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
+        <TextBlock Grid.Row="2" Text="{Binding Message}" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
     </Grid>
 </Window>

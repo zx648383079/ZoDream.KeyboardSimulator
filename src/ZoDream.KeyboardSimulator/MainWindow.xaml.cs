@@ -86,7 +86,6 @@ namespace ZoDream.KeyboardSimulator
         private void RecordBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Paused = false;
-            ViewModel.Generator.Option = OptionTb.Value;
             ViewModel.Generator.Reset();
             ViewModel.Recorder.Start();
         }
@@ -96,7 +95,10 @@ namespace ZoDream.KeyboardSimulator
             ViewModel.Paused = true;
             ViewModel.Recorder.Stop();
             _cancellationTokenSource.Cancel();
-            ContentTb.InsertLine(ViewModel.Generator.ToString());
+            if (MessageBox.Show("是否保存记录？将追加到脚本中？", "提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                ContentTb.InsertLine(ViewModel.Generator.ToString());
+            }
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
@@ -128,7 +130,15 @@ namespace ZoDream.KeyboardSimulator
 
         private void OptionBtn_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.OptionVisible = !ViewModel.OptionVisible;
+            var model = new SettingViewModel(ViewModel.Generator.Option)
+            {
+            };
+            var page = new SettingWindow(model);
+            page.Show();
+            model.PropertyChanged += (_, e) =>
+            {
+                ViewModel.Generator.Option = model.ToOption();
+            };
         }
     }
 }
