@@ -6,6 +6,7 @@
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
        Title="设置" Height="450" Width="800" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
@@ -34,15 +35,18 @@
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="界面">
+            <TabItem Header="录制">
                 <ScrollViewer>
-                    <GroupBox Header="界面显示">
+                    <GroupBox Header="录制设置">
                         <StackPanel>
                             <TextBlock Text="合并间隔" Style="{StaticResource HeaderTb}"/>
                             <ctl:NumberInput x:Name="SpaceTb" Value="{Binding MaxSpace, Mode=TwoWay}" Min="10" Max="100" 
                                              HorizontalAlignment="Left"/>
                             <TextBlock Text="记录移动" Style="{StaticResource HeaderTb}"/>
                             <ctl:SwitchInput x:Name="MoveTb"  Value="{Binding HasMove, Mode=TwoWay}"  Grid.Column="3" OffLabel="关闭" OnLabel="开启"/>
+
+                            <TextBlock Text="相对坐标" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="BaseTb" Height="30" Grid.Column="3" ValueChanged="BaseTb_ValueChanged"/>
                         </StackPanel>
                     </GroupBox>
                 </ScrollViewer>

@@ -12,14 +12,19 @@ namespace ZoDream.KeyboardSimulator.ViewModels
 
         public SettingViewModel()
         {
-
+            Source = new ParserOption();
         }
 
         public SettingViewModel(ParserOption option)
         {
+            Source = option;
             MaxSpace = option.MaxSpace;
             HasMove = option.HasMove;
+            BaseX = option.BaseX;
+            BaseY = option.BaseY;
         }
+
+        private ParserOption Source;
 
         private int maxSpace = 150;
 
@@ -37,14 +42,30 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             set => Set(ref hasMove, value);
         }
 
+        private int baseX = 0;
+
+        public int BaseX
+        {
+            get => baseX;
+            set => Set(ref baseX, value);
+        }
+
+        private int baseY = 0;
+
+        public int BaseY
+        {
+            get => baseY;
+            set => Set(ref baseY, value);
+        }
+
 
         public ParserOption ToOption()
         {
-            return new ParserOption()
-            {
-                MaxSpace = MaxSpace,
-                HasMove = HasMove
-            };
+            Source.MaxSpace = MaxSpace;
+            Source.HasMove = HasMove;
+            Source.BaseX = BaseX;
+            Source.BaseY = BaseY;
+            return Source;
         }
     }
 }

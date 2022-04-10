@@ -8,6 +8,9 @@
              x:Name="root"
              d:DesignHeight="40" d:DesignWidth="200">
     <Grid>
-        <TextBox x:Name="ValueTb" MinLines="1" IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}" TextChanged="ValueTb_TextChanged" KeyDown="ValueTb_KeyDown"/>
+        <TextBox x:Name="ValueTb" MinLines="1"
+                 VerticalContentAlignment="Center"
+                 IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}" 
+                 TextChanged="ValueTb_TextChanged" KeyDown="ValueTb_KeyDown"/>
     </Grid>
 </UserControl>

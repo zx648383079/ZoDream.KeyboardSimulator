@@ -28,5 +28,17 @@ namespace ZoDream.KeyboardSimulator.Pages
         }
 
         public SettingViewModel ViewModel;
+
+        private void BaseTb_ValueChanged(object sender, int[] _)
+        {
+            var point = BaseTb.GetIntArr(2);
+            ViewModel.BaseX = point[0];
+            ViewModel.BaseY = point[1];
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            BaseTb.SetIntArr(ViewModel.BaseX, ViewModel.BaseY);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace ZoDream.Shared.Parser
         public Token Type { get; set; }
         public string Content { get; set; } = string.Empty;
 
-        public string[]? Parameters { get; set; }
+        public object[]? Parameters { get; set; }
 
         public int Line { get; set; } = -1;
 
@@ -30,7 +30,7 @@ namespace ZoDream.Shared.Parser
             Content = val;
         }
 
-        public TokenStmt(Token t, string val, string[]? param) : this(t, val)
+        public TokenStmt(Token t, string val, object[]? param) : this(t, val)
         {
             Parameters = param;
         }
@@ -41,7 +41,7 @@ namespace ZoDream.Shared.Parser
         }
         public static TokenStmt Call(string fn, params object[] param)
         {
-            return new TokenStmt(Token.FnCall, fn, param.Select(i => i.ToString()).ToArray());
+            return new TokenStmt(Token.FnCall, fn, param);
         }
     }
 }

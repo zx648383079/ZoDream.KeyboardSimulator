@@ -149,7 +149,7 @@ namespace ZoDream.Shared.OS.WinApi.Helpers
                 Type = (uint)InputType.Keyboard,
                 Keyboard = new KeyboardInput
                 {
-                    KeyCode = (ushort)wVk,
+                    KeyCode = (ushort)wVk, // DirectInput 要求必须同时填写 KeyCode 和 Scan
                     Scan = (ushort)(useScanCode ? wScan & 0xFFU : 0),
                     Flags = (uint)flag,
                     Time = 0,

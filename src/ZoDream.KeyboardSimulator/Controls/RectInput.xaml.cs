@@ -133,6 +133,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 Value = real;
             }
             ValueTb.Text = string.Join(Separator, real);
+            ValueTb.SelectionStart = ValueTb.Text.Length;
         }
 
 
@@ -149,7 +150,8 @@ namespace ZoDream.KeyboardSimulator.Controls
                 }
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    var items = ValueTb.Text.Split(new string[] { Separator }, StringSplitOptions.None).Select(i => Convert.ToInt32(i.Trim())).ToArray();
+                    var items = ValueTb.Text.Split(new string[] { Separator }, StringSplitOptions.None)
+                    .Select(i => string.IsNullOrWhiteSpace(i) ? 0 : Convert.ToInt32(i.Trim())).ToArray();
                     UpdateValue(items);
                     ValueChanged?.Invoke(this, Value);
                 });
@@ -165,12 +167,15 @@ namespace ZoDream.KeyboardSimulator.Controls
                 {
                     return;
                 }
-                if (ValueTb.SelectionStart < 0)
+                var i = ValueTb.SelectionStart;
+                if (i < 0)
                 {
-                    ValueTb.Text += Separator; 
+                    ValueTb.Text += Separator;
+                    ValueTb.SelectionStart = i;
                 } else
                 {
-                    ValueTb.Text = ValueTb.Text.Substring(0, ValueTb.SelectionStart) + Separator + ValueTb.Text.Substring(ValueTb.SelectionStart);   
+                    ValueTb.Text = ValueTb.Text.Substring(0, i) + Separator + ValueTb.Text.Substring(i);
+                    ValueTb.SelectionStart = i + Separator.Length;
                 }
             }
         }

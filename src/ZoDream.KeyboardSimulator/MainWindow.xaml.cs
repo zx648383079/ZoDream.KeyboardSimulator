@@ -79,9 +79,7 @@ namespace ZoDream.KeyboardSimulator
 
         private void OptionBtn_Click(object sender, RoutedEventArgs e)
         {
-            var model = new SettingViewModel(ViewModel.Option)
-            {
-            };
+            var model = new SettingViewModel(ViewModel.Option);
             var page = new SettingWindow(model);
             page.Show();
             model.PropertyChanged += (_, e) =>

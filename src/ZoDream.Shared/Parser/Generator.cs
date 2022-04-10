@@ -255,13 +255,13 @@ namespace ZoDream.Shared.Parser
             }
         }
 
-        public string RenderParameter(params string[]? items)
+        public string RenderParameter(params object[]? items)
         {
             if (items == null)
             {
                 return string.Empty;
             }
-            return string.Join(",", items.Select(i => Str.IsInt(i) ? i : $"\"{i}\""));
+            return string.Join(",", items.Select(i => i is int ? i : $"\"{i}\""));
         }
 
         public string Render(IEnumerable<TokenStmt> tokens)
@@ -290,7 +290,7 @@ namespace ZoDream.Shared.Parser
             var items = new List<TokenStmt>();
             if (e.Point != null)
             {
-                items.Add(TokenStmt.Call("Move", e.Point.X, e.Point.Y));
+                items.Add(TokenStmt.Call("Move", e.Point.X - Option.BaseX, e.Point.Y - Option.BaseY));
             }
             for (int i = 0; i < e.ClickCount; i++)
             {

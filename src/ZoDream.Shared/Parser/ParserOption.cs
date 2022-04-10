@@ -15,5 +15,10 @@ namespace ZoDream.Shared.Parser
         /// 记录鼠标移动
         /// </summary>
         public bool HasMove { get; set; } = false;
+        /// <summary>
+        /// 基本坐标
+        /// </summary>
+        public int BaseX { get; set; } = 0;
+        public int BaseY { get; set; } = 0;
     }
 }
