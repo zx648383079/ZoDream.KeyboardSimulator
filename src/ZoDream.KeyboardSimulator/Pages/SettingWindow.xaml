@@ -40,7 +40,7 @@
                     <GroupBox Header="录制设置">
                         <StackPanel>
                             <TextBlock Text="合并间隔" Style="{StaticResource HeaderTb}"/>
-                            <ctl:NumberInput x:Name="SpaceTb" Value="{Binding MaxSpace, Mode=TwoWay}" Min="10" Max="100" 
+                            <ctl:NumberInput x:Name="SpaceTb" Value="{Binding MaxSpace, Mode=TwoWay}" Min="10"
                                              HorizontalAlignment="Left"/>
                             <TextBlock Text="记录移动" Style="{StaticResource HeaderTb}"/>
                             <ctl:SwitchInput x:Name="MoveTb"  Value="{Binding HasMove, Mode=TwoWay}"  Grid.Column="3" OffLabel="关闭" OnLabel="开启"/>

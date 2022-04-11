@@ -3,6 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.OS.WinApi;
+using ZoDream.Shared.OS.WinApi.Models;
 using ZoDream.Shared.Parser;
 using ZoDream.Shared.Utils;
 
@@ -16,7 +17,7 @@ namespace ZoDream.Tests
         {
             var key = Key.W;
             Assert.AreEqual(InputNativeMethods.MapVirtualKey((uint)key,
-                (uint)MappingType.VK_TO_VSC), 0x11u);
+                (uint)MapKeyType.VK_TO_VSC), 0x11u);
         }
 
         [TestMethod]

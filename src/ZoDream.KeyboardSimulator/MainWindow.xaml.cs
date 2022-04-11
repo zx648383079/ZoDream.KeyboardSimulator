@@ -1,9 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using ZoDream.KeyboardSimulator.Pages;
 using ZoDream.KeyboardSimulator.ViewModels;
+using ZoDream.Language.Loggers;
+using ZoDream.Shared.OS.WinApi.Helpers;
 
 namespace ZoDream.KeyboardSimulator
 {
@@ -16,31 +20,94 @@ namespace ZoDream.KeyboardSimulator
         {
             InitializeComponent();
             DataContext = ViewModel;
-            ViewModel.Compiler.TokenChanged += Compiler_TokenChanged;
         }
 
+        const string PLAY_TAG = "zre_play";
+        const string STOP_TAG = "zre_stop";
         public MainViewModel ViewModel = new();
+        private HotKeyHelper? HotKey;
         private CancellationTokenSource _cancellationTokenSource = new();
 
-        private void Compiler_TokenChanged(object sender, Shared.Parser.TokenStmt value)
+        #region 注册快捷键
+        private void BindHotKey()
         {
-            ViewModel.ShowMessage($"Run Line: {value.Line}");
+            var hwnd = new WindowInteropHelper(this).Handle;
+            HotKey = new HotKeyHelper(hwnd);
+            var hWndSource = HwndSource.FromHwnd(hwnd);
+            // 添加处理程序
+            if (hWndSource != null)
+            {
+                hWndSource.AddHook(WndProc);
+            }
+            HotKey?.RegisterHotKey(PLAY_TAG, Shared.Input.Key.F10);
+            HotKey?.RegisterHotKey(STOP_TAG, Shared.Input.Key.F11);
+        }
+
+        /// <summary>
+        /// 窗体回调函数，接收所有窗体消息的事件处理函数
+        /// </summary>
+        /// <param name="hWnd">窗口句柄</param>
+        /// <param name="msg">消息</param>
+        /// <param name="wideParam">附加参数1</param>
+        /// <param name="longParam">附加参数2</param>
+        /// <param name="handled">是否处理</param>
+        /// <returns>返回句柄</returns>
+        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wideParam, IntPtr longParam, ref bool handled)
+        {
+            var name = HotKey?.ParseHook(msg, wideParam, longParam);
+            if (name != null && string.IsNullOrEmpty(name))
+            {
+                switch (name)
+                {
+                    case PLAY_TAG:
+                        Play();
+                        break;
+                    case STOP_TAG:
+                        Stop();
+                        break;
+                }
+                handled = true;
+            }
+            return IntPtr.Zero;
+        }
+
+        #endregion
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // BindHotKey();
+            var logger = new EventLogger();
+            logger.OnLog += (s, e) =>
+            {
+                ViewModel.ShowMessage(s);
+            };
+            ViewModel.Compiler.Logger = logger;
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
+            Play();
+        }
+
+        private void Play()
+        {
+            var script = ContentTb.Content;
+            if (string.IsNullOrWhiteSpace(script))
+            {
+                ViewModel.ShowMessage("脚本内容为空");
+                return;
+            }
             ViewModel.Paused = false;
             _cancellationTokenSource = new CancellationTokenSource();
-            var script = ContentTb.Content;
             Task.Factory.StartNew(() => {
                 try
                 {
                     ViewModel.Compiler.Compile(script, _cancellationTokenSource.Token);
                     ViewModel.Paused = true;
                 }
-                catch (System.Exception ex)
+                catch (System.Exception)
                 {
-                    ViewModel.ShowMessage(ex.Message);
+                    // ViewModel.ShowMessage(ex.Message);
                 }
             }, _cancellationTokenSource.Token);
         }
@@ -61,9 +128,13 @@ namespace ZoDream.KeyboardSimulator
 
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
+            Stop();
+        }
+
+        private void Stop()
+        {
             ViewModel.Paused = true;
             _cancellationTokenSource.Cancel();
-            
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)

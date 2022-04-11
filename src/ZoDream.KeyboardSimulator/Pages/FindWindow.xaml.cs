@@ -245,8 +245,8 @@ namespace ZoDream.KeyboardSimulator.Pages
             var newRect = CvtNewTb.GetIntArr(4);
             var oldPoint = CvtOldPointTb.GetIntArr(2);
             CvtNewPointTb.SetIntArr(
-                (oldRect[2] != 0 ? ((oldPoint[0] + oldRect[0]) / oldRect[2]) : 0) - newRect[0], 
-                (oldRect[3] != 0 ? ((oldPoint[1] + oldRect[1]) / oldRect[3]) : 0) - newRect[1] 
+                (oldRect[2] > 0 ? ((oldPoint[0] + oldRect[0]) * newRect[2] / oldRect[2]) : 0) - newRect[0], 
+                (oldRect[3] > 0 ? ((oldPoint[1] + oldRect[1]) * newRect[3] / oldRect[3]) : 0) - newRect[1] 
             );
         }
 

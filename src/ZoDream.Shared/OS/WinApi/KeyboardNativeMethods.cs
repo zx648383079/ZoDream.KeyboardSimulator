@@ -81,7 +81,7 @@ namespace ZoDream.Shared.OS.WinApi
         /// <param name="chars"></param>
         /// <returns></returns>
         internal static void TryGetCharFromKeyboardState(int virtualKeyCode, int scanCode, int fuState, IntPtr dwhkl,
-            out char[] chars)
+            out char[]? chars)
         {
             var pwszBuff = new StringBuilder(64);
             var keyboardState = KeyboardState.GetCurrent();

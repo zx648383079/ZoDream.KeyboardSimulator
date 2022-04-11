@@ -7,7 +7,8 @@
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         mc:Ignorable="d"
         Title="Keyboard Simulator" Height="450" Width="800" WindowStartupLocation="CenterScreen"
-        Unloaded="Window_Unloaded">
+        Unloaded="Window_Unloaded"
+        Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
@@ -23,6 +24,6 @@
         </StackPanel>
         <ctl:LineTextBox x:Name="ContentTb" Grid.Row="1" 
                              IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>
-        <TextBlock Grid.Row="2" Text="{Binding Message}" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
+        <TextBlock Grid.Row="2" Text="{Binding Message}"/>
     </Grid>
 </Window>

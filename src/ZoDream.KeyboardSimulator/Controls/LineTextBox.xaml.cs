@@ -49,18 +49,57 @@ namespace ZoDream.KeyboardSimulator.Controls
 
         // Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
         public new static readonly DependencyProperty ContentProperty =
-            DependencyProperty.Register("Content", typeof(string), typeof(LineTextBox), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("Content", typeof(string), typeof(LineTextBox), new PropertyMetadata(string.Empty, (d, e) =>
+            {
+                (d as LineTextBox).SafeAsync((string)e.NewValue);
+            }));
+
+        private void SafeAsync(string val)
+        {
+            if (ContentTb.Text == val)
+            {
+                return;
+            }
+            ContentTb.Text = val;
+        }
 
 
         public void InsertLine(string line)
         {
-            var val = Content;
-            if (string.IsNullOrWhiteSpace(val))
+            var i = ContentTb.SelectionStart;
+            var text = ContentTb.Text;
+            if (i < 0)
             {
-                Content = line;
-                return;
+                i = text.Length;
+            } else if (i > text.Length)
+            {
+                i = text.Length;
             }
-            Content = $"{val}\n{line}";
+            if (i > 0 && text[i - 1] != '\n' && text[i-1] != '\r')
+            {
+                line = '\n' + line;
+            }
+            Insert(line);
+        }
+
+        public void Insert(string val)
+        {
+            var i = ContentTb.SelectionStart;
+            var text = ContentTb.Text;
+            if (i > 0)
+            {
+                ContentTb.Text = text.Substring(0, i) + val + text.Substring(i);
+                ContentTb.SelectionStart = i + val.Length;
+            } else if (i == 0)
+            {
+                ContentTb.Text = val + text;
+                ContentTb.SelectionStart = i + val.Length;
+            } else
+            {
+                ContentTb.Text = text + val;
+                ContentTb.SelectionStart = ContentTb.Text.Length;
+            }
+            Content = ContentTb.Text;
         }
 
         private void ContentTb_TextChanged(object sender, TextChangedEventArgs e)
@@ -77,6 +116,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 sb.AppendLine((i + 1).ToString());
             }
             LineTb.Text = sb.ToString();
+            Content = ContentTb.Text;
         }
 
         private void ContentTb_PreviewDragOver(object sender, DragEventArgs e)
@@ -95,19 +135,26 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                var file = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
-                if (string.IsNullOrEmpty(file))
-                {
-                    return;
-                }
-                Content = await ZoDream.Language.Storage.File.ReadAsync(file);
+                return;
             }
+            var items = (IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop);
+            if (items == null)
+            {
+                return;
+            }
+            OpenFile(items.First());
         }
 
         private void ContentTb_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Tab)
+            {
+                e.Handled = true;
+                Insert("    ");
+                return;
+            }
             if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl)
                 || e.KeyboardDevice.IsKeyDown(Key.RightCtrl))
             {
@@ -123,7 +170,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             }
         }
 
-        private async void OpenFile()
+        private void OpenFile()
         {
             var picker = new Microsoft.Win32.OpenFileDialog
             {
@@ -135,10 +182,15 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            Content = await ZoDream.Language.Storage.File.ReadAsync(picker.FileName);
+            OpenFile(picker.FileName);
         }
 
-        private async void SaveAs()
+        public async void OpenFile(string fileName)
+        {
+            Content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
+        }
+
+        private void SaveAs()
         {
             var picker = new Microsoft.Win32.SaveFileDialog
             {
@@ -150,7 +202,12 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 return;
             }
-            await ZoDream.Language.Storage.File.WriteAsync(picker.FileName, ContentTb.Text);
+            SaveFile(picker.FileName);
+        }
+
+        public async void SaveFile(string fileName)
+        {
+            await ZoDream.Language.Storage.File.WriteAsync(fileName, ContentTb.Text);
         }
     }
 }

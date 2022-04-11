@@ -44,7 +44,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             Message = message;
             Task.Factory.StartNew(() =>
             {
-                Thread.Sleep(3000);
+                Thread.Sleep(10000);
                 if (token.IsCancellationRequested)
                 {
                     return;

@@ -1,11 +1,13 @@
 ﻿using Neo.IronLua;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ZoDream.Language.Loggers;
 using ZoDream.Shared.Input;
 using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.Player;
@@ -25,11 +27,11 @@ namespace ZoDream.Shared.Parser
             Player = player;
         }
 
+        public ILogger? Logger;
         private IPlayer Player;
         private CancellationToken CancelToken = default;
         private int BaseX = 0;
         private int BaseY = 0;
-        public event TokenChangedEventHandler? TokenChanged;
         private IDictionary<string, Key> KeyMaps = new Dictionary<string, Key>()
         {
             {"0", Key.D0 },
@@ -54,47 +56,73 @@ namespace ZoDream.Shared.Parser
             {"/", Key.Divide },
             {"`", Key.OemTilde },
             {"Esc", Key.Escape },
+            {"Backspace", Key.Back },
         };
-
+        
         public void Compile(string code, CancellationToken token = default)
         {
             CancelToken = token;
             using var lua = new Lua();
             dynamic g = lua.CreateEnvironment<LuaGlobal>();
             // 注册方法 g.print = new Action<object>();
-            g.FindWindow = new Func<string, string, IntPtr>(FindWindow);
-            g.FocusWindow = new Action<IntPtr>(FocusWindow);
-            g.GetWindowRect = new Func<IntPtr, int[]>(GetWindowRect);
-            g.GetClientRect = new Func<IntPtr, int[]>(GetClientRect);
+            g.FindWindow = new Func<string, string, int>(FindWindow);
+            g.FocusWindow = new Action<int>(FocusWindow);
+            g.GetWindowRect = new Func<int, int[]>(GetWindowRect);
+            g.GetClientRect = new Func<int, int[]>(GetClientRect);
             g.SetBasePosition = new Action<int, int>(SetBasePosition);
             g.MoveTo = new Action<int, int>(MoveTo);
             g.Move = new Action<int, int>(MoveTo);
-            g.MoveTween = new Action<object[]>(MoveTween);
-            g.Click = new Action<object>(Click);
+            g.MoveTween = new Action<int, int, int>(MoveTween);
+            g.Click = new Action<object, int?>(Click);
             g.MouseDown = new Action<string>(MouseDown);
             g.MouseUp = new Action<string>(MouseUp);
-            g.KeyPress = new Action<string>(Input);
+            g.KeyPress = new Action<string, int?>(Input);
             g.KeyDown = new Action<string>(KeyDown);
             g.KeyUp = new Action<string>(KeyUp);
-            g.Input = new Action<string>(Input);
+            g.Input = new Action<string, int?>(Input);
             g.Delay = new Action<int>(Delay);
             g.Scroll = new Action<int>(Scroll);
             g.HotKey = new Action<string[]>(HotKey);
+            g.Log = new Action<object>(ConsoleLog);
             g.GetPixelColor = new Func<int, int, string>(GetPixelColor);
             g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
             g.IsRectColor = new Func<int, int, int, int, string, bool>(IsRectColor);
-            var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions() { 
-                DebugEngine = new LuaCancelTokenDebug(token)
-            });
+
             try
             {
+                var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions()
+                {
+                    DebugEngine = new LuaCancelTokenDebug(token)
+                });
                 g.dochunk(chunk); // execute the chunk
+
+            }
+            catch (LuaParseException e)
+            {
+                var error = $"Lua Parse Expception: {e.Message}, Line:{e.Line}, Column:{e.Column}";
+                Logger?.Error(error);
+                throw e;
+            }
+            catch (LuaRuntimeException e)
+            {
+                var error = $"Lua Runtime Expception: {e.StackTrace}";
+                Logger?.Error(error);
+                throw e;
+            }
+            catch (LuaCancelTokenException e)
+            {
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Expception: {0}", e.Message);
+                Logger?.Error($"Lua Expception: {e.Message}");
                 throw e;
             }
+        }
+
+        private void ConsoleLog(object msg)
+        {
+            Logger?.Log(msg.ToString());
         }
 
         private bool IsRectColor(int x, int y, int endX, int endY, string color)
@@ -196,24 +224,53 @@ namespace ZoDream.Shared.Parser
             return GetPixelColor(x, y).ToLower() == color.Replace("#", "").ToLower();
         }
 
-        private void Click(object button)
+        private void Click(object? button, int? count)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
+            if (button == null)
+            {
+                Player.MouseClick();
+                return;
+            }
             if (button is int)
             {
-                Player.MouseClick((int)button);
+                MouseClick(MouseButton.Left, (int)button);
                 return;
             }
             var b = button.ToString();
             if (Str.IsInt(b))
             {
-                Player.MouseClick(Convert.ToInt32(b));
+                MouseClick(MouseButton.Left, Convert.ToInt32(b));
                 return;
             }
-            Player.MouseClick(FormatButton(b));
+            MouseClick(FormatButton(b), count == null || count < 1 ? 1 : (int)count);
+        }
+
+        private void MouseClick(MouseButton button, int count)
+        {
+            Loop(() =>
+            {
+                Player.MouseClick(button);
+            }, count);
+        }
+
+        private void Loop(Action func, int count = 1)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (i > 0)
+                {
+                    Delay(50);
+                }
+                if (CancelToken.IsCancellationRequested)
+                {
+                    throw new LuaCancelTokenException();
+                }
+                func();
+            }
         }
 
         private void Delay(int time)
@@ -225,49 +282,54 @@ namespace ZoDream.Shared.Parser
             }
         }
 
-        private void Input(string key)
+        private void Input(string key, int? count)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            Player.KeyPress(FormatKey(key));
+            var k = FormatKey(key);
+            var c = count == null || count < 1 ? 1 : (int)count;
+            Loop(() =>
+            {
+                Player.KeyPress(k);
+            }, c);
         }
 
-        private IntPtr FindWindow(string cls, string name)
+        private int FindWindow(string cls, string name)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            return Player.FindWindow(cls, name);
+            return (int)Player.FindWindow(cls, name);
         }
 
-        private void FocusWindow(IntPtr hwn)
+        private void FocusWindow(int hwn)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            Player.FocusWindow(hwn);
+            Player.FocusWindow(new IntPtr(hwn));
         }
 
-        private int[] GetWindowRect(IntPtr hwn)
+        private int[] GetWindowRect(int hwn)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            return Player.GetWindowRect(hwn);
+            return Player.GetWindowRect(new IntPtr(hwn));
         }
 
-        private int[] GetClientRect(IntPtr hwn)
+        private int[] GetClientRect(int hwn)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            return Player.GetClientRect(hwn);
+            return Player.GetClientRect(new IntPtr(hwn));
         }
 
         private void SetBasePosition(int x, int y)
@@ -289,34 +351,29 @@ namespace ZoDream.Shared.Parser
             Player.MouseMoveTo(x + BaseX, y + BaseY);
         }
 
-        private void MoveTween(object[] param)
+        private void MoveTween(int x, int y, int time = 0)
         {
             if (CancelToken.IsCancellationRequested)
             {
                 throw new LuaCancelTokenException();
             }
-            if (param.Length < 2)
+            if (time <= 0)
             {
-                return;
-            }
-            var x = Convert.ToDouble(param[0]);
-            var y = Convert.ToDouble(param[1]);
-            if (param.Length == 2)
-            {
-                Player.MouseMoveTo(x, y);
+                MoveTo(x, y);
                 return;
             }
             var point = MouseNativeMethods.GetMousePosition();
-            var time = Convert.ToInt32(param[2]);
             var stepTime = 15;
             var step = time / stepTime;
             if (step < 2)
             {
-                Player.MouseMoveTo(x, y);
+                MoveTo(x, y);
                 return;
             }
-            var stepX = (x - point.X) / step;
-            var stepY = (y - point.Y) / step;
+            var realX = x + BaseX;
+            var realY = y + BaseY;
+            var stepX = (realX - point.X) / step;
+            var stepY = (realY - point.Y) / step;
             var startX = (double)point.X;
             var startY = (double)point.Y;
             while (true)
@@ -328,16 +385,16 @@ namespace ZoDream.Shared.Parser
                 }
                 startX += stepX;
                 startY += stepY;
-                if ((stepX < 0 && startX < x) || (stepX > 0 && startX > x))
+                if ((stepX < 0 && startX < realX) || (stepX > 0 && startX > realX))
                 {
-                    startX = x;
+                    startX = realX;
                 }
-                if ((stepY < 0 && startY < y) || (stepY > 0 && startY > y))
+                if ((stepY < 0 && startY < realY) || (stepY > 0 && startY > realY))
                 {
-                    startY = y;
+                    startY = realY;
                 }
                 Player.MouseMoveTo(startX, startY);
-                if (startX == x && startY == y)
+                if (startX == realX && startY == realY)
                 {
                     break;
                 }
@@ -373,7 +430,7 @@ namespace ZoDream.Shared.Parser
             if (Str.IsInt(k)) {
                 return (Key)Str.ToInt(k);
             }
-            return (Key)Enum.Parse(typeof(Key), k);
+            return (Key)Enum.Parse(typeof(Key), k.Length == 1 ? k.ToUpper() : k);
         }
 
         public void Dispose()

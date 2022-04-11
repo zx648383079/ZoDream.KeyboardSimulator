@@ -16,6 +16,8 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="MinusBtn" Content="-" Click="MinusBtn_Click"/>
         <TextBox x:Name="NumberTb" Grid.Column="1" MaxLines="1" 
+                 InputLanguageManager.InputLanguage="en-US"
+                 InputLanguageManager.RestoreInputLanguage="True"
                  TextAlignment="Center" TextChanged="NumberTb_TextChanged"/>
         <Button x:Name="PlusBtn" Content="+" Grid.Column="2" Click="PlusBtn_Click"/>
     </Grid>

@@ -8,8 +8,7 @@
              x:Name="root"
              d:DesignHeight="40" d:DesignWidth="200">
     <Grid>
-        <TextBox x:Name="ValueTb" MinLines="1"
-                 VerticalContentAlignment="Center"
+        <TextBox x:Name="ValueTb" MaxLines="1"
                  IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}"
                  InputLanguageManager.InputLanguage="en-US"
                  InputLanguageManager.RestoreInputLanguage="True"

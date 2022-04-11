@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ZoDream.KeyboardSimulator.Events;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.KeyboardSimulator.Controls
 {
@@ -82,8 +83,17 @@ namespace ZoDream.KeyboardSimulator.Controls
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var tb = d as NumberInput;
-            tb.NumberTb.Text = e.NewValue.ToString();
+            (d as NumberInput)?.UpdateValue(e.NewValue);
+        }
+
+        private void UpdateValue(object val)
+        {
+            var v = val.ToString();
+            if (v ==null || NumberTb.Text.Trim() == v)
+            {
+                return;
+            }
+            NumberTb.Text = v;
         }
 
         private void MinusBtn_Click(object sender, RoutedEventArgs e)
@@ -93,8 +103,8 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 val = Min;
             }
-            Value = Convert.ToInt32(val);
             NumberTb.Text = val.ToString();
+            Value = Convert.ToInt32(val);
             ValueChanged?.Invoke(this, Value);
         }
 
@@ -105,8 +115,8 @@ namespace ZoDream.KeyboardSimulator.Controls
             {
                 val = Max;
             }
-            Value = Convert.ToInt32(val);
             NumberTb.Text = val.ToString();
+            Value = Convert.ToInt32(val);
             ValueChanged?.Invoke(this, Value);
         }
 
@@ -124,7 +134,7 @@ namespace ZoDream.KeyboardSimulator.Controls
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     var oldVal = Value;
-                    var val = Convert.ToInt32((sender as TextBox)!.Text);
+                    var val = Str.ToInt((sender as TextBox)!.Text);
                     if (val < Min)
                     {
                         val = Min;
@@ -133,8 +143,8 @@ namespace ZoDream.KeyboardSimulator.Controls
                     {
                         val = Max;
                     }
-                    Value = val;
                     NumberTb.Text = val.ToString();
+                    Value = val;
                     ValueChanged?.Invoke(this, Value);
                 });
             }, TokenSource.Token);

@@ -171,7 +171,7 @@ namespace ZoDream.KeyboardSimulator.Controls
 
         private void ValueTb_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter || e.Key == Key.Tab)
+            if (e.Key == Key.Tab)
             {
                 e.Handled = true;
                 if (ValueTb.Text.Split(new string[] { Separator }, StringSplitOptions.None).Length >= Column)
@@ -188,6 +188,10 @@ namespace ZoDream.KeyboardSimulator.Controls
                     ValueTb.Text = ValueTb.Text.Substring(0, i) + Separator + ValueTb.Text.Substring(i);
                     ValueTb.SelectionStart = i + Separator.Length;
                 }
+            } else if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                UpdateFromText(true);
             }
         }
 

@@ -5,8 +5,12 @@ using System.Text;
 
 namespace ZoDream.Shared.OS.WinApi
 {
-    internal static class HotkeysNativeMethods
+    public static class HotKeysNativeMethods
     {
+        /// <summary>
+        /// 热键消息，在用户键入被RegisterHotKey函数注册的热键时发送
+        /// </summary>
+        public const int WM_HOTKEY = 0x312;
         /// <summary>
         ///     Defines a system-wide hot key.
         /// </summary>
@@ -31,7 +35,7 @@ namespace ZoDream.Shared.OS.WinApi
         ///     If the function fails, the return value is zero. To get extended error information, call GetLastError.
         /// </returns>
         [DllImport("user32.dll")]
-        public static extern int RegisterHotKey(IntPtr hwnd, int id, int fsModifiers, int vk);
+        public static extern bool RegisterHotKey(IntPtr hwnd, int id, int fsModifiers, int vk);
 
         /// <summary>
         ///     Frees a hot key previously registered by the calling thread.
@@ -49,5 +53,26 @@ namespace ZoDream.Shared.OS.WinApi
         /// </returns>
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hwnd, int id);
+        /// <summary>
+        /// 向原子表中添加全局原子
+        /// </summary>
+        /// <param name="lpString"></param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern short GlobalAddAtom(string lpString);
+        /// <summary>
+        /// 在表中搜索全局原子
+        /// </summary>
+        /// <param name="lpString"></param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern short GlobalFindAtom(string lpString);
+        /// <summary>
+        /// 在表中删除全局原子
+        /// </summary>
+        /// <param name="nAtom"></param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern short GlobalDeleteAtom(string nAtom);
     }
 }
