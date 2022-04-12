@@ -241,14 +241,43 @@ namespace ZoDream.KeyboardSimulator.Pages
 
         private void ConvertPoint()
         {
+            var oldPoint = CvtOldPointTb.GetIntArr(2);
+            if (CvtAbsInput.Value)
+            {
+                ConvertAbsPoint(oldPoint[0], oldPoint[1]);
+            } else
+            {
+                ConvertPoint(oldPoint[0], oldPoint[1]);
+            }
+        }
+        /// <summary>
+        /// 转化相对坐标
+        /// </summary>
+        /// <param name="oldX"></param>
+        /// <param name="oldY"></param>
+        private void ConvertPoint(int oldX, int oldY)
+        {
             var oldRect = CvtOldTb.GetIntArr(4);
             var newRect = CvtNewTb.GetIntArr(4);
-            var oldPoint = CvtOldPointTb.GetIntArr(2);
+            var x = oldRect[2] > 0 ? (oldX * newRect[2] / oldRect[2]) : 0;
+            var y = oldRect[3] > 0 ? (oldY * newRect[3] / oldRect[3]) : 0;
             CvtNewPointTb.SetIntArr(
-                (oldRect[2] > 0 ? ((oldPoint[0] + oldRect[0]) * newRect[2] / oldRect[2]) : 0) - newRect[0], 
-                (oldRect[3] > 0 ? ((oldPoint[1] + oldRect[1]) * newRect[3] / oldRect[3]) : 0) - newRect[1] 
+                x,
+                y
             );
+            CvtNewAbsTb.SetIntArr(x + newRect[0], y + newRect[1]);
         }
+        /// <summary>
+        /// 转化绝对坐标
+        /// </summary>
+        /// <param name="oldX"></param>
+        /// <param name="oldY"></param>
+        private void ConvertAbsPoint(int oldX, int oldY)
+        {
+            var oldRect = CvtOldTb.GetIntArr(4);
+            ConvertPoint(oldX - oldRect[0], oldY - oldRect[1]);
+        }
+
 
         private void CvtOldPointTb_ValueChanged(object sender, int[] _)
         {
@@ -314,6 +343,12 @@ namespace ZoDream.KeyboardSimulator.Pages
             var point = new PointStruct();
             MouseNativeMethods.GetCursorPos(ref point);
             LoadPointColor(point.X, point.Y, true);
+        }
+
+        private void CvtAbsInput_ValueChanged(object sender, bool value)
+        {
+            CvtOldLabel.Text = value ? "原绝对坐标" : "原相对坐标";
+            ConvertPoint();
         }
     }
 }

@@ -77,9 +77,17 @@ namespace ZoDream.KeyboardSimulator.Controls
 
         // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(RectInput), new PropertyMetadata(false));
+            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(RectInput), new PropertyMetadata(false, (d, e) =>
+            {
+                (d as RectInput)?.UpdateLanguage((bool)e.NewValue);
+            }));
 
-
+        private void UpdateLanguage(bool val)
+        {
+            InputLanguageManager.SetInputLanguage(ValueTb, val ?
+                InputLanguageManager.Current.CurrentInputLanguage
+                : new System.Globalization.CultureInfo("en-US"));
+        }
 
         public event ValueChangedEventHandler<int[]>? ValueChanged;
         private CancellationTokenSource TokenSource = new();

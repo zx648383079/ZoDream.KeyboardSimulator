@@ -159,6 +159,7 @@
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Text="原坐标系统" Style="{StaticResource HeaderTb}"/>
@@ -167,11 +168,14 @@
                             <TextBlock Text="现坐标系统" Grid.Row="2" Style="{StaticResource HeaderTb}"/>
                             <TextBlock Text="Left,Top,Width,Height" Grid.Row="2" Grid.Column="1" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="CvtNewTb" Column="4" Grid.Row="3" Grid.ColumnSpan="2"/>
-                            <TextBlock Text="原坐标" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
+                            <TextBlock x:Name="CvtOldLabel" Text="原相对坐标" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="CvtOldPointTb" ValueChanged="CvtOldPointTb_ValueChanged" Grid.Row="4" Grid.Column="1"/>
                             <Button x:Name="CvtBtn" Content="转换" Click="CvtBtn_Click" Grid.Row="5"/>
-                            <TextBlock Text="新坐标" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
+                            <ctl:SwitchInput x:Name="CvtAbsInput" ValueChanged="CvtAbsInput_ValueChanged" Grid.Row="5" Grid.Column="1" OnLabel="绝对坐标" OffLabel="相对坐标"/>
+                            <TextBlock Text="新相对坐标" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="CvtNewPointTb" IsReadOnly="True" Grid.Row="6" Grid.Column="1"/>
+                            <TextBlock Text="新绝对坐标" Grid.Row="7" Style="{StaticResource HeaderTb}"/>
+                            <ctl:RectInput x:Name="CvtNewAbsTb" IsReadOnly="True" Grid.Row="7" Grid.Column="1"/>
                         </Grid>
                     </GroupBox>
                 </ScrollViewer>
