@@ -20,5 +20,9 @@ namespace ZoDream.Shared.Parser
         /// </summary>
         public int BaseX { get; set; } = 0;
         public int BaseY { get; set; } = 0;
+
+        public int MaxDelay { get; set; } = 10;
+
+        public bool IsLogVisible { get; set; } = false;
     }
 }

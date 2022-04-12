@@ -27,6 +27,14 @@ namespace ZoDream.Tests
             Assert.AreEqual((Key)Enum.Parse(typeof(Key), k), Key.OemPeriod);
         }
 
+        [TestMethod]
+        public void TestGenerate()
+        {
+            var gzo = new Generator();
+            gzo.Add(TokenStmt.Call("MouseDown", MouseButton.Left));
+            gzo.Add(TokenStmt.Call("MouseUp", MouseButton.Left));
+            Assert.IsTrue(gzo.ToString().Contains("Click"));
+        }
 
     }
 }

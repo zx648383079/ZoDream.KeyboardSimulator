@@ -22,6 +22,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             HasMove = option.HasMove;
             BaseX = option.BaseX;
             BaseY = option.BaseY;
+            MaxDelay = option.MaxDelay;
+            IsLogVisible = option.IsLogVisible;
         }
 
         private ParserOption Source;
@@ -58,6 +60,22 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             set => Set(ref baseY, value);
         }
 
+        private int isMaxDelay;
+
+        public int MaxDelay
+        {
+            get => isMaxDelay;
+            set => Set(ref isMaxDelay, value);
+        }
+
+        private bool isLogVisible;
+
+        public bool IsLogVisible
+        {
+            get => isLogVisible;
+            set => Set(ref isLogVisible, value);
+        }
+
 
         public ParserOption ToOption()
         {
@@ -65,6 +83,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             Source.HasMove = HasMove;
             Source.BaseX = BaseX;
             Source.BaseY = BaseY;
+            Source.MaxDelay = MaxDelay;
+            Source.IsLogVisible = IsLogVisible;
             return Source;
         }
     }

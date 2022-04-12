@@ -74,7 +74,7 @@ namespace ZoDream.Shared.Parser
                 return;
             }
             AddDelay(e.HappenTime);
-            Add(EventToToken(e));
+            Add(EventToToken(e), true);
         }
 
         private void AddDelay(DateTime? date)
@@ -102,7 +102,7 @@ namespace ZoDream.Shared.Parser
                 return;
             }
             AddDelay(e.HappenTime);
-            Add(EventToToken(e));
+            Add(EventToToken(e), true);
         }
 
         public void Add(MouseEventArgs e)
@@ -146,7 +146,7 @@ namespace ZoDream.Shared.Parser
 
         public void AddIfStmt(double x, double y, double endX, double endY, string hash)
         {
-            Add(RenderIfToken(x, y, endX, endY, hash));
+            Add(RenderIfToken(x, y, endX, endY, hash), true);
         }
 
         private void AddIfMove(TokenStmt token)
@@ -180,8 +180,7 @@ namespace ZoDream.Shared.Parser
                 TokenItems.Add(token);
                 return;
             }
-            if (token.Parameters.Length != end.Parameters.Length
-                || end.Parameters.Length != 1 || token.Parameters[0] != end.Parameters[0])
+            if (!IsSameParam(token.Parameters, end.Parameters))
             {
                 TokenItems.Add(token);
                 return;
@@ -207,10 +206,42 @@ namespace ZoDream.Shared.Parser
             }
         }
 
+        private bool IsSameParam(object[]? a, object[]? b)
+        {
+            if (a == b)
+            {
+                return true;
+            }
+            var len = a == null ? 0 : a.Length;
+            var len2 = b == null ? 0 : b.Length;
+            if (len != len2)
+            {
+                return false;
+            }
+            for (int i = 0; i < len; i++)
+            {
+                if (a![i].ToString() != b![i].ToString())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public void Add(IEnumerable<TokenStmt> tokens)
+        {
+            Add(tokens, false);
+        }
+
+        private void Add(IEnumerable<TokenStmt> tokens, bool filterEmpty)
         {
             foreach (var item in tokens)
             {
+                if (filterEmpty && item.Type == Token.EndFn 
+                    && string.IsNullOrEmpty(item.Content) && item.Parameters == null)
+                {
+                    continue;
+                }
                 Add(item);
             }
         }

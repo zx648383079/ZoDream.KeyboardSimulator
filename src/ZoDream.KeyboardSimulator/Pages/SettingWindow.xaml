@@ -31,7 +31,15 @@
             <TabItem Header="常规">
                 <ScrollViewer>
                     <GroupBox Header="视觉体验">
-
+                        <StackPanel>
+                            <TextBlock Text="倒计时/s" Style="{StaticResource HeaderTb}"/>
+                            <ctl:NumberInput x:Name="CountdownTb" Value="{Binding MaxDelay, Mode=TwoWay}" Min="1"
+                                             HorizontalAlignment="Left"/>
+                            <TextBlock Text="输出日志显示" Style="{StaticResource HeaderTb}"/>
+                            <ctl:SwitchInput x:Name="LogTb"
+                                              Value="{Binding IsLogVisible, Mode=TwoWay}"
+                                             HorizontalAlignment="Left"/>
+                        </StackPanel>
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>

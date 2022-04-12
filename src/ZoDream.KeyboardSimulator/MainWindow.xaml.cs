@@ -22,13 +22,14 @@ namespace ZoDream.KeyboardSimulator
             DataContext = ViewModel;
         }
 
-        const string PLAY_TAG = "zre_play";
-        const string STOP_TAG = "zre_stop";
+        
         public MainViewModel ViewModel = new();
-        private HotKeyHelper? HotKey;
         private CancellationTokenSource _cancellationTokenSource = new();
 
         #region 注册快捷键
+        const string PLAY_TAG = "zre_play";
+        const string STOP_TAG = "zre_stop";
+        private HotKeyHelper? HotKey;
         private void BindHotKey()
         {
             var hwnd = new WindowInteropHelper(this).Handle;
@@ -60,7 +61,7 @@ namespace ZoDream.KeyboardSimulator
                 switch (name)
                 {
                     case PLAY_TAG:
-                        Play();
+                        TapPlay();
                         break;
                     case STOP_TAG:
                         Stop();
@@ -80,24 +81,35 @@ namespace ZoDream.KeyboardSimulator
             logger.OnLog += (s, e) =>
             {
                 ViewModel.ShowMessage(s);
+                LogTb.AppendLine(s);
             };
             ViewModel.Compiler.Logger = logger;
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            Play();
+            TapPlay();
         }
 
-        private void Play()
+        private void TapPlay()
         {
-            var script = ContentTb.Content;
-            if (string.IsNullOrWhiteSpace(script))
+            if (string.IsNullOrWhiteSpace(ContentTb.Content))
             {
                 ViewModel.ShowMessage("脚本内容为空");
                 return;
             }
             ViewModel.Paused = false;
+            CountdownBtn.Play(ViewModel.Option.MaxDelay);
+        }
+
+        private void Play()
+        {
+            var script = ContentTb.Content;
+            if (string.IsNullOrWhiteSpace(ContentTb.Content))
+            {
+                ViewModel.ShowMessage("脚本内容为空");
+                return;
+            }
             _cancellationTokenSource = new CancellationTokenSource();
             Task.Factory.StartNew(() => {
                 try
@@ -156,7 +168,22 @@ namespace ZoDream.KeyboardSimulator
             model.PropertyChanged += (_, e) =>
             {
                 ViewModel.Option = model.ToOption();
+                LogTb.Visibility = ViewModel.Option.IsLogVisible ? Visibility.Visible : Visibility.Collapsed;
+                if (ViewModel.Option.IsLogVisible)
+                {
+                    LogTb.Height = ActualHeight / 3;
+                }
             };
+        }
+
+        private void CountdownBtn_Ended(object sender, RoutedEventArgs e)
+        {
+            CountdownBtn.Visibility = Visibility.Collapsed;
+            if (ViewModel.Paused)
+            {
+                return;
+            }
+            Play();
         }
     }
 }

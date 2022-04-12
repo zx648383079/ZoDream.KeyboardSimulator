@@ -6,13 +6,14 @@
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator"
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         mc:Ignorable="d"
-        Title="Keyboard Simulator" Height="450" Width="800" WindowStartupLocation="CenterScreen"
+        Title="Keyboard Simulator" Height="500" Width="800" WindowStartupLocation="CenterScreen"
         Unloaded="Window_Unloaded"
         Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -24,6 +25,11 @@
         </StackPanel>
         <ctl:LineTextBox x:Name="ContentTb" Grid.Row="1" 
                              IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>
-        <TextBlock Grid.Row="2" Text="{Binding Message}"/>
+        <ctl:CountdownLabel x:Name="CountdownBtn" 
+                            FontSize="50"
+                            Visibility="Collapsed"
+                            Grid.Row="1" Grid.RowSpan="2" Ended="CountdownBtn_Ended"/>
+        <ctl:ConsoleContainer x:Name="LogTb" Grid.Row="2" Visibility="Collapsed"/>
+        <TextBlock Grid.Row="3" Text="{Binding Message}"/>
     </Grid>
 </Window>

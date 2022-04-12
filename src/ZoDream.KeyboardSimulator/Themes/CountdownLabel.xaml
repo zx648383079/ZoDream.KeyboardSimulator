@@ -1,0 +1,73 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+                    xmlns:cvt="clr-namespace:ZoDream.KeyboardSimulator.Converters">
+    <CubicEase x:Key="TransferEase" EasingMode="EaseOut"/>
+    <cvt:StrConverter x:Key="StrFormat"/>
+    <Style TargetType="{x:Type local:CountdownLabel}">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontSize" Value="32"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:CountdownLabel}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Opacity="{TemplateBinding Opacity}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="00:00:00" 
+                                                         To="1"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.RenderTransform).(ScaleTransform.ScaleX)"/>
+                                        <DoubleAnimation Duration="0" 
+                                                         To="1"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.RenderTransform).(ScaleTransform.ScaleY)"/>
+                                        <DoubleAnimation Duration="0" 
+                                                         To="1"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.Opacity)"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Transfer">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="00:00:01" 
+                                                         From="1"
+                                                         To="2"
+                                                         EasingFunction="{StaticResource TransferEase}"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.RenderTransform).(ScaleTransform.ScaleX)"/>
+                                        <DoubleAnimation Duration="00:00:01" 
+                                                         From="1"
+                                                         To="2"
+                                                         EasingFunction="{StaticResource TransferEase}"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.RenderTransform).(ScaleTransform.ScaleY)"/>
+                                        <DoubleAnimation Duration="00:00:01"
+                                                         From="1"
+                                                         To="0"
+                                                         EasingFunction="{StaticResource TransferEase}"
+                                                         Storyboard.TargetName="R_ValueTb"
+                                                         Storyboard.TargetProperty="(TextBlock.Opacity)"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <TextBlock x:Name="R_ValueTb"
+                                   Text="{TemplateBinding Current,Converter={StaticResource StrFormat}}"
+                            Foreground="{TemplateBinding Foreground}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
