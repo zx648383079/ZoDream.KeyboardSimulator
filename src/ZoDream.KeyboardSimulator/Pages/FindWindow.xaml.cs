@@ -74,7 +74,7 @@ namespace ZoDream.KeyboardSimulator.Pages
         private void LoadWindowInfo()
         {
             var point = new PointStruct();
-            Shared.OS.WinApi.MouseNativeMethods.GetCursorPos(ref point);
+            MouseNativeMethods.GetCursorPos(ref point);
             var hwd = WindowNativeMethods.WindowFromPoint(point);
             HwdTb.Text = hwd.ToString();
             if (hwd == IntPtr.Zero)
@@ -115,7 +115,7 @@ namespace ZoDream.KeyboardSimulator.Pages
             {
                 return;
             }
-            var point = Shared.OS.WinApi.MouseNativeMethods.GetMousePosition();
+            var point = MouseNativeMethods.GetMousePosition();
             if (LastPoint != null && LastPoint == point)
             {
                 return;
@@ -208,9 +208,9 @@ namespace ZoDream.KeyboardSimulator.Pages
         {
             CursorInfo vCurosrInfo;
             vCurosrInfo.cbSize = Marshal.SizeOf(typeof(CursorInfo));
-            Shared.OS.WinApi.MouseNativeMethods.GetCursorInfo(out vCurosrInfo);
-            if ((vCurosrInfo.flags & Shared.OS.WinApi.MouseNativeMethods.CURSOR_SHOWING) !=
-                Shared.OS.WinApi.MouseNativeMethods.CURSOR_SHOWING)
+            MouseNativeMethods.GetCursorInfo(out vCurosrInfo);
+            if ((vCurosrInfo.flags & MouseNativeMethods.CURSOR_SHOWING) !=
+                MouseNativeMethods.CURSOR_SHOWING)
             {
                 return;
             }
@@ -285,6 +285,35 @@ namespace ZoDream.KeyboardSimulator.Pages
             var point = CurrentTb.GetIntArr(2);
             var basePoint = BaseTb.GetIntArr(2);
             LoadPointColor(point[0] + basePoint[0], point[1] + basePoint[1], false);
+        }
+
+        private void PreviewImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+            if (e.LeftButton != MouseButtonState.Pressed)
+            {
+                return;
+            }
+            IsMouseUp = false;
+            Cursor = Cursors.Cross;
+            PreviewImage.CaptureMouse();
+        }
+
+        private void PreviewImage_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (IsMouseUp)
+            {
+                return;
+            }
+            IsMouseUp = true;
+            Cursor = Cursors.Arrow;
+            PreviewImage.ReleaseMouseCapture();
+            var point = new PointStruct();
+            MouseNativeMethods.GetCursorPos(ref point);
+            LoadPointColor(point.X, point.Y, true);
         }
     }
 }

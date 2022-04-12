@@ -51,8 +51,16 @@
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="PreviewImage"/>
-                                <ctl:SwitchInput x:Name="AutoLoadTb" Grid.Column="1"
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Image x:Name="PreviewImage" 
+                                       MouseLeftButtonDown="PreviewImage_MouseLeftButtonDown"
+                                    MouseUp="PreviewImage_MouseUp"  Grid.RowSpan="2"/>
+                                <ctl:SwitchInput x:Name="AutoLoadTb" 
+                                                 Grid.Row="1"
+                                                 Grid.Column="1"
                                                  Value="True"
                                                  VerticalAlignment="Bottom"
                                                  ValueChanged="AutoLoadTb_ValueChanged" OnLabel="自动获取" OffLabel="手动输入"/>
