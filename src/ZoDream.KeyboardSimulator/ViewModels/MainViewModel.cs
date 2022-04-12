@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,6 +13,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
 {
     public class MainViewModel: BindableBase, IDisposable
     {
+
+        public readonly string OptionFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "setting.xml");
 
         public Compiler Compiler = new();
 
@@ -57,6 +60,58 @@ namespace ZoDream.KeyboardSimulator.ViewModels
         public void Dispose()
         {
             Compiler.Dispose();
+        }
+
+        public Task LoadOptionAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (!File.Exists(OptionFileName))
+                {
+                    return;
+                }
+                try
+                {
+                    using var reader = Language.Storage.File.Reader(OptionFileName);
+                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ParserOption));
+                    var res = serializer.Deserialize(reader);
+                    if (res != null)
+                    {
+                        Option = (ParserOption)res;
+                    }
+                }
+                catch (Exception)
+                {
+                    ShowMessage("setting.xml load failure");
+                }
+            });
+        }
+
+        private CancellationTokenSource SaveToken = new();
+
+        public Task SaveOptionAsync()
+        {
+            SaveToken.Cancel();
+            SaveToken = new CancellationTokenSource();
+            return Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(5000);
+                if (SaveToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                try
+                {
+                    using var writer = Language.Storage.File.Writer(OptionFileName);
+                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ParserOption));
+                    serializer.Serialize(writer, Option);
+                }
+                catch (Exception)
+                {
+                    ShowMessage("setting.xml save failure");
+                }
+            }, SaveToken.Token);
+           
         }
     }
 }

@@ -74,9 +74,11 @@ namespace ZoDream.KeyboardSimulator
 
         #endregion
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // BindHotKey();
+            await ViewModel.LoadOptionAsync();
+            UpdateLogBox();
             var logger = new EventLogger();
             logger.OnLog += (s, e) =>
             {
@@ -168,12 +170,18 @@ namespace ZoDream.KeyboardSimulator
             model.PropertyChanged += (_, e) =>
             {
                 ViewModel.Option = model.ToOption();
-                LogTb.Visibility = ViewModel.Option.IsLogVisible ? Visibility.Visible : Visibility.Collapsed;
-                if (ViewModel.Option.IsLogVisible)
-                {
-                    LogTb.Height = ActualHeight / 3;
-                }
+                UpdateLogBox();
+                ViewModel.SaveOptionAsync();
             };
+        }
+
+        private void UpdateLogBox()
+        {
+            LogTb.Visibility = ViewModel.Option.IsLogVisible ? Visibility.Visible : Visibility.Collapsed;
+            if (ViewModel.Option.IsLogVisible)
+            {
+                LogTb.Height = ActualHeight / 3;
+            }
         }
 
         private void CountdownBtn_Ended(object sender, RoutedEventArgs e)
