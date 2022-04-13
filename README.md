@@ -18,6 +18,12 @@
 5. `ctrl + s` 进行脚本保存
 6. 基于`Lua`实现脚本功能
 
+## 页面功能
+
+1. 主界面：编辑、打开文件、保存文件、执行、日志输出
+2. 录制界面：录制开关、暂停、停止插入代码
+3. 拾取界面： 拾取坐标颜色，默认自动拾取鼠标，可以输入坐标拾取，也可以从图片拖动拾取释放的坐标；拾取区域颜色(IsRectColor用到)；拾取窗口句柄及窗口信息；坐标转化，支持文件批量转化，文件拖入原坐标输入框即可（转化关键词Move|MoveTo）
+4. 设置界面：
 
 ## 示例
 
@@ -30,7 +36,7 @@ local rect = GetClientRect(hwn)
 SetBasePosition(rect[0], rect[1])
 MoveTo(1111, 801)
 Delay(1000)
-if (!IsPixelColor(0, 0, "ffffff"))
+if IsPixelColor(0, 0, "ffffff") == false
 then
     Click()
 end
@@ -40,20 +46,22 @@ end
 
 请参考 [`lua`](http://www.lua.org/) 文档
 
+[一些方法声明文件](doc/base.lua)
+
 |添加方法|说明|示例|
 |:--|:--|:--|
-|FindWindow(string className, string windowName): IntPtr|获取窗口句柄||
-|FocusWindow(IntPtr hwnd)|激活窗口|
-|GetWindowRect(IntPtr hwnd): int[left,top,width,height]|获取窗口的坐标，包括标题栏及外边框|
-|GetClientRect(IntPtr hwnd): int[left,top,width,height]|获取窗口的坐标,不包括标题栏及外边框|
+|FindWindow(string className, string windowName): int|获取窗口句柄||
+|FocusWindow(int hwnd)|激活窗口|
+|GetWindowRect(int hwnd): int[left,top,width,height]|获取窗口的坐标，包括标题栏及外边框|
+|GetClientRect(int hwnd): int[left,top,width,height]|获取窗口的坐标,不包括标题栏及外边框|
 |SetBasePosition(int x, int y)|设置全局坐标，影响其他方法的 `x、y`|
 |MoveTo(int x, int y)|移动鼠标到，受全局坐标影响|
 |Move(int x, int y)|同上|
-|MoveTween(int x, int y, int step)|慢慢移动到|
+|MoveTween(int x, int y, int time)|慢慢移动到|
 |Click(int count)|左击几次鼠标||
 |Delay(int milliseconds)|延迟多少毫秒|
 |MouseDown(string button)|按下鼠标, 默认`Left`，可选值`Left,Right,Middle,XButton1,XButton2`||
-|MouseUp(string button)|按下鼠标||
+|MouseUp(string button)|释放鼠标||
 |Scroll(int offset)|滚动滑轮|`Scroll(10)`|
 |HotKey(...string[] keys)|输入组合键，支持0x或数字或按键名，数字为`VK`|`HotKey(0xA2,0x41)` 等于`HotKey(LeftCtrl,A)` |
 |Input(string key)|输入按键，数字为直接作为 `scancode` 输入|`Input(A)` 等于 `Input(0x30)`|

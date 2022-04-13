@@ -354,15 +354,28 @@ namespace ZoDream.KeyboardSimulator.Pages
                 return;
             }
             var content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
-            var res = Regex.Replace(content, @"(Move|MoveTo)\(([\d, -]+?)\)", match =>
+            var res = Regex.Replace(content,
+                @"(Move|MoveTo|MoveTween|GetPixelColor|IsPixelColor|IsRectColor)\(([^\(\)]+?)\)", match =>
             {
-                if (!match.Success || !match.Groups[2].Value.Contains(','))
+                if (!match.Success)
                 {
                     return match.Value;
                 }
-                var args = match.Groups[2].Value.Split(',').Select(i => Str.ToInt(i)).ToArray();
-                var res = ConvertPoint(args[0], args[1], oldRect, newRect, oldIsAbs);
-                return $"{match.Groups[1].Value}({res[0]},{res[1]})";
+                var args = match.Groups[2].Value.Split(',');
+                if (args.Length < 2)
+                {
+                    return match.Value;
+                }
+                var res = ConvertPoint(Str.ToInt(args[0]), Str.ToInt(args[1]), oldRect, newRect, oldIsAbs);
+                args[0] = res[0].ToString();
+                args[1] = res[1].ToString();
+                if (match.Groups[1].Value == "IsRectColor" && args.Length >= 4)
+                {
+                    res = ConvertPoint(Str.ToInt(args[2]), Str.ToInt(args[3]), oldRect, newRect, oldIsAbs);
+                    args[2] = res[2].ToString();
+                    args[3] = res[3].ToString();
+                }
+                return $"{match.Groups[1].Value}({string.Join(",", args)})";
             });
             App.Current.Dispatcher.Invoke(() =>
             {
