@@ -26,7 +26,7 @@ end
 function GetClientRect(hwnd)
 
 end
----设置全局坐标,影响其他方法的, y
+---设置全局坐标,影响其他方法的x, y
 ---@param x number
 ---@param y number
 function SetBasePosition(x, y)
@@ -49,6 +49,10 @@ end
 ---@param y number
 ---@param time number #使用多少毫秒从当前位置移动到xy
 function MoveTween(x, y, time)
+
+end
+---点击鼠标左键
+function Click()
 
 end
 ---左击几次鼠标
@@ -125,14 +129,14 @@ end
 ---获取某一点的颜色值
 ---@param x number
 ---@param y number
----@return string #小写，示例 ff00cc
+---@return string #大写，示例 FF00CC
 function GetPixelColor(x, y)
 
 end
 ---判断某一点的颜色值是否是
 ---@param x number
 ---@param y number
----@param color string #示例 FFFFFF
+---@param color string #支持大小写及带# 示例 FFFFFF/#FFFFFF/ffffff
 ---@return boolean
 function IsPixelColor(x, y, color)
 

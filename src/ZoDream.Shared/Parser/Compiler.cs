@@ -221,7 +221,7 @@ namespace ZoDream.Shared.Parser
             {
                 throw new LuaCancelTokenException();
             }
-            return GetPixelColor(x, y).ToLower() == color.Replace("#", "").ToLower();
+            return GetPixelColor(x, y) == color.Replace("#", "").ToUpper();
         }
 
         private void Click(object? button, int? count)

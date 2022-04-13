@@ -67,6 +67,6 @@ end
 |Input(string key)|输入按键，数字为直接作为 `scancode` 输入|`Input(A)` 等于 `Input(0x30)`|
 |KeyDown(string key)|按下键，数字为直接作为 `scancode` 输入||
 |KeyUp(string key)|释放键，数字为直接作为 `scancode` 输入||
-|GetPixelColor(int x, int y)|获取某一点的颜色值|`GetPixelColor(0,0) => ff00cc`
+|GetPixelColor(int x, int y)|获取某一点的颜色值|`GetPixelColor(0,0) => FF00CC`
 |IsPixelColor(int x, int y, string color)|判断某一点的颜色值是否是|`IsPixelColor(0,0, "ff00cc"`|
 |IsRectColor(int x, int y, int endX, int endY, string color)|判断某个区域是否是这个颜色值，请使用自带拾取工具获取||
