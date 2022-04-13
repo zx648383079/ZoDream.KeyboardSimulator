@@ -104,6 +104,11 @@ namespace ZoDream.KeyboardSimulator.Controls
             }).ToArray());
         }
 
+        public void SetIntArr(int[] items)
+        {
+            UpdateValue(items);
+        }
+
         public int[] GetIntArr(int[]? items, int count)
         {
             var real = new int[count];

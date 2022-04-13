@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +22,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.OS.WinApi.Models;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.KeyboardSimulator.Pages
 {
@@ -239,45 +242,6 @@ namespace ZoDream.KeyboardSimulator.Pages
             ConvertPoint();
         }
 
-        private void ConvertPoint()
-        {
-            var oldPoint = CvtOldPointTb.GetIntArr(2);
-            if (CvtAbsInput.Value)
-            {
-                ConvertAbsPoint(oldPoint[0], oldPoint[1]);
-            } else
-            {
-                ConvertPoint(oldPoint[0], oldPoint[1]);
-            }
-        }
-        /// <summary>
-        /// 转化相对坐标
-        /// </summary>
-        /// <param name="oldX"></param>
-        /// <param name="oldY"></param>
-        private void ConvertPoint(int oldX, int oldY)
-        {
-            var oldRect = CvtOldTb.GetIntArr(4);
-            var newRect = CvtNewTb.GetIntArr(4);
-            var x = oldRect[2] > 0 ? (oldX * newRect[2] / oldRect[2]) : 0;
-            var y = oldRect[3] > 0 ? (oldY * newRect[3] / oldRect[3]) : 0;
-            CvtNewPointTb.SetIntArr(
-                x,
-                y
-            );
-            CvtNewAbsTb.SetIntArr(x + newRect[0], y + newRect[1]);
-        }
-        /// <summary>
-        /// 转化绝对坐标
-        /// </summary>
-        /// <param name="oldX"></param>
-        /// <param name="oldY"></param>
-        private void ConvertAbsPoint(int oldX, int oldY)
-        {
-            var oldRect = CvtOldTb.GetIntArr(4);
-            ConvertPoint(oldX - oldRect[0], oldY - oldRect[1]);
-        }
-
 
         private void CvtOldPointTb_ValueChanged(object sender, int[] _)
         {
@@ -349,6 +313,125 @@ namespace ZoDream.KeyboardSimulator.Pages
         {
             CvtOldLabel.Text = value ? "原绝对坐标" : "原相对坐标";
             ConvertPoint();
+        }
+
+        private void CvtOldPointTb_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;
+        }
+
+        private void CvtOldPointTb_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return;
+            }
+            var items = (IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop);
+            if (items == null)
+            {
+                return;
+            }
+            ConvertFile(items);
+        }
+
+        private async void ConvertFile(IEnumerable<string> items)
+        {
+            var oldRect = CvtOldTb.GetIntArr(4);
+            var newRect = CvtNewTb.GetIntArr(4);
+            var isAbs = CvtAbsInput.Value;
+            foreach (var item in items)
+            {
+                await ConvertFile(item, oldRect, newRect, isAbs);
+            }
+        }
+
+        private async Task ConvertFile(string fileName, int[] oldRect, int[] newRect,
+            bool oldIsAbs = false)
+        {
+            if (!File.Exists(fileName))
+            {
+                return;
+            }
+            var content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
+            var res = Regex.Replace(content, @"(Move|MoveTo)\(([\d, -]+?)\)", match =>
+            {
+                if (!match.Success || !match.Groups[2].Value.Contains(','))
+                {
+                    return match.Value;
+                }
+                var args = match.Groups[2].Value.Split(',').Select(i => Str.ToInt(i)).ToArray();
+                var res = ConvertPoint(args[0], args[1], oldRect, newRect, oldIsAbs);
+                return $"{match.Groups[1].Value}({res[0]},{res[1]})";
+            });
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var picker = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "选择保存路径",
+                    Filter = "脚本文件|*.lua|所有文件|*.*",
+                    FileName = System.IO.Path.GetFileName(fileName),
+                };
+                if (picker.ShowDialog() != true)
+                {
+                    return;
+                }
+                _ = ZoDream.Language.Storage.File.WriteAsync(picker.FileName, res);
+            });
+        }
+
+        private async Task ConvertFile(string fileName)
+        {
+            await ConvertFile(fileName, CvtOldTb.GetIntArr(4), CvtNewTb.GetIntArr(4), CvtAbsInput.Value);
+        }
+
+        private void ConvertPoint()
+        {
+            var oldPoint = CvtOldPointTb.GetIntArr(2);
+            if (CvtAbsInput.Value)
+            {
+                ConvertAbsPoint(oldPoint[0], oldPoint[1]);
+            }
+            else
+            {
+                ConvertPoint(oldPoint[0], oldPoint[1]);
+            }
+        }
+        /// <summary>
+        /// 转化相对坐标
+        /// </summary>
+        /// <param name="oldX"></param>
+        /// <param name="oldY"></param>
+        private void ConvertPoint(int oldX, int oldY)
+        {
+            var oldRect = CvtOldTb.GetIntArr(4);
+            var newRect = CvtNewTb.GetIntArr(4);
+            var res = ConvertPoint(oldX, oldY, oldRect, newRect);
+            CvtNewPointTb.SetIntArr(res);
+            CvtNewAbsTb.SetIntArr(res[0] + newRect[0], res[1] + newRect[1]);
+        }
+
+        private int[] ConvertPoint(int oldX, int oldY, int[] oldRect, int[] newRect, 
+            bool oldIsAbs = false)
+        {
+            if (oldIsAbs)
+            {
+                oldX -= oldRect[0];
+                oldY -= oldRect[1];
+            }
+            var x = oldRect[2] > 0 ? (oldX * newRect[2] / oldRect[2]) : 0;
+            var y = oldRect[3] > 0 ? (oldY * newRect[3] / oldRect[3]) : 0;
+            return new int[] { x, y };
+        }
+        /// <summary>
+        /// 转化绝对坐标
+        /// </summary>
+        /// <param name="oldX"></param>
+        /// <param name="oldY"></param>
+        private void ConvertAbsPoint(int oldX, int oldY)
+        {
+            var oldRect = CvtOldTb.GetIntArr(4);
+            ConvertPoint(oldX - oldRect[0], oldY - oldRect[1]);
         }
     }
 }

@@ -169,7 +169,11 @@
                             <TextBlock Text="Left,Top,Width,Height" Grid.Row="2" Grid.Column="1" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="CvtNewTb" Column="4" Grid.Row="3" Grid.ColumnSpan="2"/>
                             <TextBlock x:Name="CvtOldLabel" Text="原相对坐标" Grid.Row="4" Style="{StaticResource HeaderTb}"/>
-                            <ctl:RectInput x:Name="CvtOldPointTb" ValueChanged="CvtOldPointTb_ValueChanged" Grid.Row="4" Grid.Column="1"/>
+                            <ctl:RectInput x:Name="CvtOldPointTb" 
+                                           ValueChanged="CvtOldPointTb_ValueChanged"
+                                           PreviewDragOver="CvtOldPointTb_PreviewDragOver"
+                                           PreviewDrop="CvtOldPointTb_PreviewDrop"
+                                           Grid.Row="4" Grid.Column="1"/>
                             <Button x:Name="CvtBtn" Content="转换" Click="CvtBtn_Click" Grid.Row="5"/>
                             <ctl:SwitchInput x:Name="CvtAbsInput" ValueChanged="CvtAbsInput_ValueChanged" Grid.Row="5" Grid.Column="1" OnLabel="绝对坐标" OffLabel="相对坐标"/>
                             <TextBlock Text="新相对坐标" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
