@@ -372,8 +372,8 @@ namespace ZoDream.KeyboardSimulator.Pages
                 if (match.Groups[1].Value == "IsRectColor" && args.Length >= 4)
                 {
                     res = ConvertPoint(Str.ToInt(args[2]), Str.ToInt(args[3]), oldRect, newRect, oldIsAbs);
-                    args[2] = res[2].ToString();
-                    args[3] = res[3].ToString();
+                    args[2] = res[0].ToString();
+                    args[3] = res[1].ToString();
                 }
                 return $"{match.Groups[1].Value}({string.Join(",", args)})";
             });
