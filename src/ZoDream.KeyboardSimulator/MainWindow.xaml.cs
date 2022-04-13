@@ -83,7 +83,10 @@ namespace ZoDream.KeyboardSimulator
             logger.OnLog += (s, e) =>
             {
                 ViewModel.ShowMessage(s);
-                LogTb.AppendLine(s);
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    LogTb.AppendLine(s);
+                });
             };
             ViewModel.Compiler.Logger = logger;
         }
@@ -129,9 +132,10 @@ namespace ZoDream.KeyboardSimulator
 
         private void RecordBtn_Click(object sender, RoutedEventArgs e)
         {
-            var page = new RecordWindow(ViewModel.Option);
+            var model = new RecordViewModel(ViewModel.Option);
+            var page = new PlayWindow(model);
             page.Show();
-            page.OnFinish += (_, e) =>
+            model.OnFinish += (_, e) =>
             {
                 if (MessageBox.Show("是否保存记录？将追加到脚本中？", "提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {

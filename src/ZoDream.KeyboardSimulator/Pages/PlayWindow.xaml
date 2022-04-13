@@ -1,4 +1,4 @@
-﻿<Window x:Class="ZoDream.KeyboardSimulator.Pages.RecordWindow"
+﻿<Window x:Class="ZoDream.KeyboardSimulator.Pages.PlayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
         mc:Ignorable="d"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="录制" Height="58" Width="200" WindowStyle="None" Topmost="True" 
+        Title="执行组件" Height="58" Width="200" WindowStyle="None" Topmost="True" 
         ShowInTaskbar="False" ResizeMode="NoResize" 
         Background="#ccd5f0" AllowsTransparency="True" WindowStartupLocation="CenterScreen">
     <Window.Template>
@@ -35,9 +35,9 @@
             <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="1" Orientation="Horizontal">
-            <ctl:IconButton x:Name="PlayBtn" Icon="&#xE102;" Label="开始录制" Click="PlayBtn_Click"/>
-            <ctl:IconButton x:Name="PauseBtn" Icon="&#xE103;" Label="暂停录制" Visibility="Collapsed" Click="PauseBtn_Click"/>
-            <ctl:IconButton x:Name="StopBtn" Icon="&#xE15B;" Label="完成录制" Visibility="Collapsed" Click="StopBtn_Click"/>
+            <ctl:IconButton x:Name="PlayBtn" Icon="&#xE102;" Label="开始" Click="PlayBtn_Click"/>
+            <ctl:IconButton x:Name="PauseBtn" Icon="&#xE103;" Label="暂停" Visibility="Collapsed" Click="PauseBtn_Click"/>
+            <ctl:IconButton x:Name="StopBtn" Icon="&#xE15B;" Label="停止" Visibility="Collapsed" Click="StopBtn_Click"/>
         </StackPanel>
         <ctl:IconButton x:Name="CloseBtn" Icon="&#xE894;" Label="关闭" Click="CloseBtn_Click" Grid.Column="3"/>
     </Grid>

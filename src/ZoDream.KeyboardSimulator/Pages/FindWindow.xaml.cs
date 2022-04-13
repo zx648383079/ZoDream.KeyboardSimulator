@@ -100,7 +100,7 @@ namespace ZoDream.KeyboardSimulator.Pages
 
         private void TabBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            IsLoading = (sender as TabControl)!.SelectedIndex == 0;
+            IsLoading = (sender as TabControl)!.SelectedIndex == 0 && AutoLoadTb.Value;
             LastPoint = null;
         }
 
