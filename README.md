@@ -46,7 +46,7 @@ end
 
 请参考 [`lua`](http://www.lua.org/) 文档
 
-[一些方法声明文件](doc/base.lua)
+[一些方法声明文件](src/ZoDream.KeyboardSimulator/snippet.lua)
 
 |添加方法|说明|示例|
 |:--|:--|:--|

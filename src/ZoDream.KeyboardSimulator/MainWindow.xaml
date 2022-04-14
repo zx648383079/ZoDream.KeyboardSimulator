@@ -5,10 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator"
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="Keyboard Simulator" Height="500" Width="800" WindowStartupLocation="CenterScreen"
         Unloaded="Window_Unloaded"
         Loaded="Window_Loaded">
+    <Window.Resources>
+        <RoutedUICommand x:Key="OpenFile" Text="打开文件" />
+        <RoutedUICommand x:Key="SaveFile" Text="保存文件" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+O" Command="{StaticResource OpenFile}" />
+        <KeyBinding Gesture="Ctrl+S" Command="{StaticResource SaveFile}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource OpenFile}" Executed="CommandBinding_OpenFile"></CommandBinding>
+        <CommandBinding Command="{StaticResource SaveFile}" Executed="CommandBinding_SaveFile"></CommandBinding>
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
@@ -23,8 +36,12 @@
             <ctl:IconButton x:Name="SpotBtn" Click="FindBtn_Click" Icon="&#xE1E3;" Label="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
             <ctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
         </StackPanel>
-        <ctl:LineTextBox x:Name="ContentTb" Grid.Row="1" 
-                             IsReadOnly="{Binding Paused, Converter={StaticResource BoolConverter}}"/>
+        <avalonEdit:TextEditor
+				Name="CodeEditor"
+                Grid.Row="1"
+				FontSize="10pt"
+                ShowLineNumbers="True"
+			></avalonEdit:TextEditor>
         <ctl:CountdownLabel x:Name="CountdownBtn" 
                             FontSize="50"
                             Visibility="Collapsed"

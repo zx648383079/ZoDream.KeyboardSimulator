@@ -1,9 +1,14 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Xml;
 using ZoDream.KeyboardSimulator.Pages;
 using ZoDream.KeyboardSimulator.ViewModels;
 using ZoDream.Language.Loggers;
@@ -78,6 +83,8 @@ namespace ZoDream.KeyboardSimulator
         {
             // BindHotKey();
             await ViewModel.LoadOptionAsync();
+            await ViewModel.Server.LoadAsync();
+            LoadCode();
             UpdateLogBox();
             var logger = new EventLogger();
             logger.OnLog += (s, e) =>
@@ -91,6 +98,58 @@ namespace ZoDream.KeyboardSimulator
             ViewModel.Compiler.Logger = logger;
         }
 
+        #region 代码提示
+        private CompletionWindow? completionWindow;
+
+        private void LoadCode()
+        {
+            CodeEditor.TextArea.TextEntered += TextArea_TextEntered;
+            CodeEditor.TextArea.TextEntering += TextArea_TextEntering;
+            var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lua.xshd");
+            if (!File.Exists(fileName))
+            {
+                return;
+            }
+            using var reader = XmlReader.Create(fileName);
+            var xshd = HighlightingLoader.LoadXshd(reader);
+            CodeEditor.SyntaxHighlighting = HighlightingLoader.Load(xshd, HighlightingManager.Instance);
+        }
+
+        private void TextArea_TextEntering(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (e.Text.Length > 0 && completionWindow != null)
+            {
+                if (!char.IsLetterOrDigit(e.Text[0]))
+                {
+                    // Whenever a non-letter is typed while the completion window is open,
+                    // insert the currently selected element.
+                    completionWindow.CompletionList.RequestInsertion(e);
+                }
+            }
+        }
+
+        private void TextArea_TextEntered(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            var items = ViewModel.Server.Find(e.Text);
+            if (items.Count < 1)
+            {
+                return;
+            }
+            completionWindow = new CompletionWindow(CodeEditor.TextArea);
+            // provide AvalonEdit with the data:
+            var data = completionWindow.CompletionList.CompletionData;
+            foreach (var item in items)
+            {
+                data.Add(item);
+            }
+            completionWindow.Show();
+            completionWindow.Closed += delegate {
+                completionWindow = null;
+            };
+        }
+        #endregion
+
+
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
             TapPlay();
@@ -98,7 +157,7 @@ namespace ZoDream.KeyboardSimulator
 
         private void TapPlay()
         {
-            if (string.IsNullOrWhiteSpace(ContentTb.Content))
+            if (string.IsNullOrWhiteSpace(CodeEditor.Text))
             {
                 ViewModel.ShowMessage("脚本内容为空");
                 return;
@@ -109,8 +168,8 @@ namespace ZoDream.KeyboardSimulator
 
         private void Play()
         {
-            var script = ContentTb.Content;
-            if (string.IsNullOrWhiteSpace(ContentTb.Content))
+            var script = CodeEditor.Text;
+            if (string.IsNullOrWhiteSpace(script))
             {
                 ViewModel.ShowMessage("脚本内容为空");
                 return;
@@ -139,7 +198,7 @@ namespace ZoDream.KeyboardSimulator
             {
                 if (MessageBox.Show("是否保存记录？将追加到脚本中？", "提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    ContentTb.InsertLine(e);
+                    CodeEditor.Document.Insert(0, e);
                 }
             };
         }
@@ -196,6 +255,38 @@ namespace ZoDream.KeyboardSimulator
                 return;
             }
             Play();
+        }
+
+        private void CommandBinding_SaveFile(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            var picker = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "选择保存路径",
+                Filter = "脚本文件|*.lua|所有文件|*.*",
+                FileName = string.IsNullOrEmpty(ViewModel.FileName) ? "未知脚本" : Path.GetFileName(ViewModel.FileName),
+            };
+            if (picker.ShowDialog() != true)
+            {
+                return;
+            }
+            ViewModel.FileName = picker.FileName;
+            CodeEditor.Save(picker.FileName);
+        }
+
+        private void CommandBinding_OpenFile(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            var picker = new Microsoft.Win32.OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "脚本文件|*.lua|所有文件|*.*",
+                Title = "选择文件"
+            };
+            if (picker.ShowDialog() != true)
+            {
+                return;
+            }
+            ViewModel.FileName = picker.FileName;
+            CodeEditor.Load(picker.FileName);
         }
     }
 }

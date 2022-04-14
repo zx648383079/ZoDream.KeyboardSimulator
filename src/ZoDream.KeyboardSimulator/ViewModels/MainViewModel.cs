@@ -20,6 +20,10 @@ namespace ZoDream.KeyboardSimulator.ViewModels
 
         public ParserOption Option = new();
 
+        public LanguageServer Server = new();
+
+        public string FileName { get; set; } = string.Empty;
+
         private bool paused = true;
 
         public bool Paused

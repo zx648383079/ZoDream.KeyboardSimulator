@@ -36,5 +36,13 @@ namespace ZoDream.Tests
             Assert.IsTrue(gzo.ToString().Contains("Click"));
         }
 
+        [TestMethod]
+        public void TestServe()
+        {
+            //var server = new LanguageServer();
+            //server.LoadAsync().GetAwaiter().GetResult();
+            //Assert.IsTrue(server.SnippetItems.Count > 0);
+        }
+
     }
 }
