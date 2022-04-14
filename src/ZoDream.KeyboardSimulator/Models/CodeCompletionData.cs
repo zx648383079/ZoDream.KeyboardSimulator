@@ -32,10 +32,18 @@ namespace ZoDream.KeyboardSimulator.Models
         public object Description { get; set; }
 
         public double Priority { get; set; }
+        /// <summary>
+        /// 移动光标
+        /// </summary>
+        public int Offset { get; set; }
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment.Offset - 1, completionSegment.Length + 1, Text);
+            if (Offset > 0)
+            {
+                // textArea.Caret.Offset = completionSegment.Offset + Offset;
+            }
         }
     }
 }
