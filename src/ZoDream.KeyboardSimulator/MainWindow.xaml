@@ -41,6 +41,8 @@
                 Grid.Row="1"
 				FontSize="10pt"
                 ShowLineNumbers="True"
+                PreviewDragOver="CodeEditor_PreviewDragOver"
+                PreviewDrop="CodeEditor_PreviewDrop"
 			></avalonEdit:TextEditor>
         <ctl:CountdownLabel x:Name="CountdownBtn" 
                             FontSize="50"

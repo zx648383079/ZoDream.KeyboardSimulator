@@ -2,8 +2,10 @@
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -179,11 +181,13 @@ namespace ZoDream.KeyboardSimulator
                 try
                 {
                     ViewModel.Compiler.Compile(script, _cancellationTokenSource.Token);
-                    ViewModel.Paused = true;
                 }
                 catch (System.Exception)
                 {
                     // ViewModel.ShowMessage(ex.Message);
+                } finally
+                {
+                    ViewModel.Paused = true;
                 }
             }, _cancellationTokenSource.Token);
         }
@@ -198,7 +202,7 @@ namespace ZoDream.KeyboardSimulator
             {
                 if (MessageBox.Show("是否保存记录？将追加到脚本中？", "提示", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    CodeEditor.Document.Insert(0, e);
+                    CodeEditor.Document.Insert(CodeEditor.TextArea.Caret.Offset, e);
                 }
             };
         }
@@ -269,12 +273,15 @@ namespace ZoDream.KeyboardSimulator
             {
                 return;
             }
-            ViewModel.FileName = picker.FileName;
-            CodeEditor.Save(picker.FileName);
+            SaveFile(picker.FileName);
         }
 
         private void CommandBinding_OpenFile(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
+            if (!ViewModel.Paused)
+            {
+                return;
+            }
             var picker = new Microsoft.Win32.OpenFileDialog
             {
                 Multiselect = true,
@@ -285,8 +292,49 @@ namespace ZoDream.KeyboardSimulator
             {
                 return;
             }
-            ViewModel.FileName = picker.FileName;
-            CodeEditor.Load(picker.FileName);
+            OpenFile(picker.FileName);
+        }
+
+        private void CodeEditor_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            if (ViewModel.Paused)
+            {
+                e.Effects = DragDropEffects.Link;
+                e.Handled = true;
+            }
+        }
+
+        private void CodeEditor_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (!ViewModel.Paused)
+            {
+                return;
+            }
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return;
+            }
+            var items = (IEnumerable<string>)e.Data.GetData(DataFormats.FileDrop);
+            if (items == null)
+            {
+                return;
+            }
+            OpenFile(items.First());
+        }
+
+        public void OpenFile(string fileName)
+        {
+            ViewModel.FileName = fileName;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+            CodeEditor.Load(fileName);
+        }
+        public void SaveFile(string fileName)
+        {
+            ViewModel.FileName = fileName;
+            CodeEditor.Save(fileName);
         }
     }
 }

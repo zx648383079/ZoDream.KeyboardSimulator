@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	  <UseWindowsForms>true</UseWindowsForms>
-	  <Version>1.2</Version>
+	  <Version>1.3</Version>
     <Authors>zodream</Authors>
     <Company>zodream.cn</Company>
     <Copyright>Copyright © 2022 zodream.cn</Copyright>

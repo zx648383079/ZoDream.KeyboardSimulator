@@ -185,11 +185,6 @@ namespace ZoDream.KeyboardSimulator.Controls
             OpenFile(picker.FileName);
         }
 
-        public async void OpenFile(string fileName)
-        {
-            Content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
-        }
-
         private void SaveAs()
         {
             var picker = new Microsoft.Win32.SaveFileDialog
@@ -205,6 +200,11 @@ namespace ZoDream.KeyboardSimulator.Controls
             SaveFile(picker.FileName);
         }
 
+
+        public async void OpenFile(string fileName)
+        {
+            Content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
+        }
         public async void SaveFile(string fileName)
         {
             await ZoDream.Language.Storage.File.WriteAsync(fileName, ContentTb.Text);

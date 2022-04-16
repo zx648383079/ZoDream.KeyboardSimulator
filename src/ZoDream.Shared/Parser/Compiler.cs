@@ -53,7 +53,7 @@ namespace ZoDream.Shared.Parser
             {"\\", Key.OemBackslash },
             {",", Key.OemComma },
             {".", Key.OemPeriod },
-            {"/", Key.Divide },
+            {"/", Key.OemQuestion },
             {"`", Key.OemTilde },
             {"Esc", Key.Escape },
             {"Backspace", Key.Back },
