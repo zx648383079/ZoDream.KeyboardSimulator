@@ -94,7 +94,7 @@ namespace ZoDream.KeyboardSimulator
                 ViewModel.ShowMessage(s);
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    LogTb.AppendLine(s);
+                    LogTb.AppendLine(s, ViewModel.Option.IsLogTime);
                 });
             };
             ViewModel.Compiler.Logger = logger;

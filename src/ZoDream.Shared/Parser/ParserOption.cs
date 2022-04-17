@@ -24,5 +24,9 @@ namespace ZoDream.Shared.Parser
         public int MaxDelay { get; set; } = 10;
 
         public bool IsLogVisible { get; set; } = false;
+        /// <summary>
+        /// 是否显示日志时间
+        /// </summary>
+        public bool IsLogTime { get; set; } = false;
     }
 }

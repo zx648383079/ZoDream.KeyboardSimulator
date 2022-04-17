@@ -112,6 +112,7 @@ namespace ZoDream.Shared.Parser
             }
             catch (LuaCancelTokenException e)
             {
+                Logger?.Info("Execution has been cancelled");
                 return;
             }
             catch (Exception e)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ZoDream.Language.Loggers
 {
@@ -16,6 +17,7 @@ namespace ZoDream.Language.Loggers
         {
             Level = level;
         }
+        private bool isLoading = false;
         public LogLevel Level { get; private set; }
 
         public event LogEventHandler? OnLog;
@@ -47,7 +49,17 @@ namespace ZoDream.Language.Loggers
 
         public void Progress(long current, long total)
         {
-            OnProgress?.Invoke(current, total);
+            if (isLoading)
+            {
+                return;
+            }
+            isLoading = true;
+            Task.Factory.StartNew(() =>
+            {
+
+                OnProgress?.Invoke(current, total);
+                isLoading = false;
+            });
         }
 
         public void Waining(string message)

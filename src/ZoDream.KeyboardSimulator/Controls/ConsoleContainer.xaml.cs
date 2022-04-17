@@ -47,6 +47,18 @@ namespace ZoDream.KeyboardSimulator.Controls
             ScrollToEnd();
         }
 
+        public void AppendLine(string line, bool hasTime)
+        {
+            if (hasTime)
+            {
+                var now = DateTime.Now;
+                AppendLine($"[{now.Hour}:{now.Minute}:{now.Second}]{line}");
+            } else
+            {
+                AppendLine(line);
+            }
+        }
+
         public void ReplaceLine(string line)
         {
             ContentTb.Text = ContentTb.Text.Substring(0, lastLineStart) + line + "\n";
@@ -56,6 +68,23 @@ namespace ZoDream.KeyboardSimulator.Controls
         public void ScrollToEnd()
         {
             ContentTb.ScrollToEnd();
+        }
+
+        public void Clear()
+        {
+            ContentTb.Text = string.Empty;
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            switch ((sender as MenuItem).Header)
+            {
+                case "清空":
+                    Clear();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

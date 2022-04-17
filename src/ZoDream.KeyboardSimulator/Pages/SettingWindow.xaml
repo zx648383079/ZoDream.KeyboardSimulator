@@ -39,6 +39,10 @@
                             <ctl:SwitchInput x:Name="LogTb"
                                               Value="{Binding IsLogVisible, Mode=TwoWay}"
                                              HorizontalAlignment="Left"/>
+                            <TextBlock Text="日志时间显示" Style="{StaticResource HeaderTb}"/>
+                            <ctl:SwitchInput x:Name="LogTimeTb"
+                                              Value="{Binding IsLogTime, Mode=TwoWay}"
+                                             HorizontalAlignment="Left"/>
                         </StackPanel>
                     </GroupBox>
                 </ScrollViewer>
