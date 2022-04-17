@@ -152,6 +152,16 @@ end
 function IsRectColor(x, y, endX, endY, color)
 
 end
+
+---比较颜色深度范围
+---@param color string
+---@param min string? 颜色深例如 #000000
+---@param max string? 颜色浅例如 #ffffff
+---@return boolean
+function InColor(color, min, max)
+
+end
+
 ---调试输出,输出到日志中
 ---@param msg any
 function Log(msg)

@@ -70,3 +70,9 @@ end
 |GetPixelColor(int x, int y)|获取某一点的颜色值|`GetPixelColor(0,0) => FF00CC`
 |IsPixelColor(int x, int y, string color)|判断某一点的颜色值是否是|`IsPixelColor(0,0, "ff00cc"`|
 |IsRectColor(int x, int y, int endX, int endY, string color)|判断某个区域是否是这个颜色值，请使用自带拾取工具获取||
+|InColor(string color, string min, string max)|比较颜色的深度范围||
+
+
+## 存在问题
+
+1. 鼠标移动偶然卡顿导致点不到地方

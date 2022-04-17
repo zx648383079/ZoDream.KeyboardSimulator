@@ -27,7 +27,7 @@ namespace ZoDream.Shared.Parser
             Player = player;
         }
 
-        public ILogger? Logger;
+        public ILogger? Logger { get; set; }
         private IPlayer Player;
         private CancellationToken CancelToken = default;
         private int BaseX = 0;
@@ -62,6 +62,7 @@ namespace ZoDream.Shared.Parser
         public void Compile(string code, CancellationToken token = default)
         {
             CancelToken = token;
+            Player.Logger = Logger;
             using var lua = new Lua();
             dynamic g = lua.CreateEnvironment<LuaGlobal>();
             // 注册方法 g.print = new Action<object>();
@@ -87,7 +88,7 @@ namespace ZoDream.Shared.Parser
             g.GetPixelColor = new Func<int, int, string>(GetPixelColor);
             g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
             g.IsRectColor = new Func<int, int, int, int, string, bool>(IsRectColor);
-
+            g.InColor = new Func<string, string?, string?, bool>(InColor);
             try
             {
                 var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions()
@@ -123,6 +124,22 @@ namespace ZoDream.Shared.Parser
         private void ConsoleLog(object msg)
         {
             Logger?.Log(msg.ToString());
+        }
+
+        private bool InColor(string color, string? min, string? max)
+        {
+            var c = ColorHelper.From(color);
+            if (!string.IsNullOrWhiteSpace(min) && 
+                ColorHelper.Compare(c, ColorHelper.From(min!)) < 0)
+            {
+                return false;
+            }
+            if (!string.IsNullOrWhiteSpace(max) &&
+                ColorHelper.Compare(c, ColorHelper.From(max!, Color.White)) > 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool IsRectColor(int x, int y, int endX, int endY, string color)
@@ -211,8 +228,7 @@ namespace ZoDream.Shared.Parser
             {
                 throw new LuaCancelTokenException();
             }
-            var color = Player.GetPixelColor(x + BaseX, y + BaseY);
-            return ColorTranslator.ToHtml(color).Substring(1);
+            return ColorHelper.To(Player.GetPixelColor(x + BaseX, y + BaseY));
         }
 
         private bool IsPixelColor(int x, int y, string color)
@@ -221,7 +237,7 @@ namespace ZoDream.Shared.Parser
             {
                 throw new LuaCancelTokenException();
             }
-            return GetPixelColor(x, y) == color.Replace("#", "").ToUpper();
+            return GetPixelColor(x, y) == ColorHelper.Format(color);
         }
 
         private void Click(object? button, int? count)

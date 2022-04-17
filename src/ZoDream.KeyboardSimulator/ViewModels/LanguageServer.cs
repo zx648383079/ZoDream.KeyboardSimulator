@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using ZoDream.KeyboardSimulator.Models;
 
@@ -23,6 +24,8 @@ namespace ZoDream.KeyboardSimulator.ViewModels
         public List<CodeCompletionData> SnippetItems { get; set; } = new();
         public List<CodeCompletionData> FuncItems { get; set; } = new();
         public List<CodeCompletionData> TempFuncItems { get; set; } = new();
+
+        private bool IsLoading = false;
 
         public IList<CodeCompletionData> Find(string text)
         {
@@ -64,9 +67,9 @@ namespace ZoDream.KeyboardSimulator.ViewModels
                 {
                     return;
                 }
+                IsLoading = true;
                 using var reader = Language.Storage.File.Reader(fileName);
                 var desc = new StringBuilder();
-                
                 while (true)
                 {
                     var line = reader.ReadLine();
@@ -95,18 +98,26 @@ namespace ZoDream.KeyboardSimulator.ViewModels
                     }
                     desc.AppendLine(line.Substring(match.Value.Length));
                 }
+                IsLoading = false;
             });
         }
 
         public Task LoadTextAsync(string text)
         {
-            TempFuncItems.Clear();
+            if (IsLoading)
+            {
+                return Task.FromResult(0);
+            }
+            IsLoading = true;
             return Task.Factory.StartNew(() =>
             {
                 if (string.IsNullOrWhiteSpace(text))
                 {
+                    TempFuncItems.Clear();
+                    IsLoading = false;
                     return;
                 }
+                var items = new List<CodeCompletionData>();
                 var lines = text.Split(new char[] {'\n'});
                 var desc = new StringBuilder();
                 foreach (var lineText in lines)
@@ -120,7 +131,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
                     var match = funcRegex.Match(line);
                     if (match != null && match.Success)
                     {
-                        Add(match.Groups[1].Value, desc.ToString(), true);
+                        items.Add(Render(match.Groups[1].Value, desc.ToString()));
                         desc.Clear();
                         continue;
                     }
@@ -132,8 +143,12 @@ namespace ZoDream.KeyboardSimulator.ViewModels
                     }
                     desc.AppendLine(line.Substring(match.Value.Length));
                 }
+                TempFuncItems = items;
+                Thread.Sleep(20000);
+                IsLoading = false;
             });
         }
+
 
         /// <summary>
         /// 添加方法
@@ -143,13 +158,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
         /// <param name="isTemp"></param>
         public void Add(string func, string desc, bool isTemp)
         {
-            var item = new CodeCompletionData($"{func}()")
-            {
-                Description = desc,
-                Content = func,
-                Offset = func.Length + 1,
-                FilterFlag = func.ToLower()
-            };
+            var item = Render(func, desc);
             if (isTemp)
             {
                 TempFuncItems.Add(item);
@@ -157,6 +166,27 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             {
                 FuncItems.Add(item);
             }
+        }
+
+        public CodeCompletionData Render(string func, string desc)
+        {
+            return new CodeCompletionData($"{func}()")
+            {
+                Description = desc,
+                Content = func,
+                Offset = func.Length + 1,
+                FilterFlag = func.ToLower()
+            };
+        }
+
+        public CodeCompletionData Render(string name, string block, int offset)
+        {
+            return new CodeCompletionData(block)
+            {
+                Content = name,
+                FilterFlag = name,
+                Offset = offset
+            };
         }
 
         /// <summary>
@@ -167,12 +197,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
         /// <param name="offset"></param>
         public void Add(string name, string block, int offset)
         {
-            SnippetItems.Add(new CodeCompletionData(block)
-            {
-                Content = name,
-                FilterFlag = name,
-                Offset = offset
-            });
+            SnippetItems.Add(Render(name, block, offset));
         }
     }
 }

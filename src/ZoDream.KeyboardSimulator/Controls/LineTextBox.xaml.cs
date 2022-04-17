@@ -51,7 +51,7 @@ namespace ZoDream.KeyboardSimulator.Controls
         public new static readonly DependencyProperty ContentProperty =
             DependencyProperty.Register("Content", typeof(string), typeof(LineTextBox), new PropertyMetadata(string.Empty, (d, e) =>
             {
-                (d as LineTextBox).SafeAsync((string)e.NewValue);
+                (d as LineTextBox)!.SafeAsync((string)e.NewValue);
             }));
 
         private void SafeAsync(string val)
@@ -129,7 +129,7 @@ namespace ZoDream.KeyboardSimulator.Controls
             e.Handled = true;
         }
 
-        private async void ContentTb_PreviewDrop(object sender, DragEventArgs e)
+        private void ContentTb_PreviewDrop(object sender, DragEventArgs e)
         {
             if (IsReadOnly)
             {

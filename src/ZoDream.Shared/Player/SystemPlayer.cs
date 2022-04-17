@@ -9,6 +9,7 @@ using System.Drawing;
 using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.OS.WinApi.Models;
 using ZoDream.Shared.OS.WinApi.Helpers;
+using ZoDream.Language.Loggers;
 
 namespace ZoDream.Shared.Player
 {
@@ -16,6 +17,8 @@ namespace ZoDream.Shared.Player
     {
 
         private IntPtr windowHandle = IntPtr.Zero;
+
+        public ILogger? Logger { get; set; }
 
         public void Dispose()
         {
@@ -47,7 +50,6 @@ namespace ZoDream.Shared.Player
             //var inputList = builder.AddKeyDown(key).ToArray();
             //SendSimulatedInput(inputList);
             //SendSimulatedInput(builder.RenderKeyUp(inputList));
-
         }
 
         public void KeyPress(params Key[] keys)
@@ -263,17 +265,18 @@ namespace ZoDream.Shared.Player
             SendSimulatedInput(inputList);
         }
 
-        private void SendSimulatedInput(InputStruct[] inputs)
+        private bool SendSimulatedInput(InputStruct[] inputs)
         {
             if (inputs.Length < 1)
             {
-                return;
+                return true;
             }
             var successful = InputNativeMethods.SendInput(inputs);
             if (successful != inputs.Length)
             {
-                // 执行没有完全成功
+                Logger?.Waining($"SendInput:{successful}/{inputs.Length}");
             }
+            return successful != inputs.Length;
         }
 
         public void Focus(string windowName)

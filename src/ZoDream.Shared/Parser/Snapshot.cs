@@ -77,7 +77,7 @@ namespace ZoDream.Shared.Parser
             GetRectLine(x, y, endX, endY, (i, j) =>
             {
                 var color = bitmap.GetPixel(i, j);
-                var gray = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
+                var gray = (int)ColorHelper.Deep(color);
                 sb.Append(gray);
             });
             return Str.MD5Encode(sb.ToString());

@@ -107,6 +107,7 @@ namespace ZoDream.KeyboardSimulator
         {
             CodeEditor.TextArea.TextEntered += TextArea_TextEntered;
             CodeEditor.TextArea.TextEntering += TextArea_TextEntering;
+            CodeEditor.TextChanged += TextArea_TextChanged;
             var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lua.xshd");
             if (!File.Exists(fileName))
             {
@@ -117,6 +118,11 @@ namespace ZoDream.KeyboardSimulator
             CodeEditor.SyntaxHighlighting = HighlightingLoader.Load(xshd, HighlightingManager.Instance);
         }
 
+
+        private void TextArea_TextChanged(object? sender, EventArgs e)
+        {
+            ViewModel.Server.LoadTextAsync(CodeEditor.Text);
+        }
         private void TextArea_TextEntering(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             if (e.Text.Length > 0 && completionWindow != null)

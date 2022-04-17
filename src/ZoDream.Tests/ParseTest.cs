@@ -39,6 +39,7 @@ namespace ZoDream.Tests
         [TestMethod]
         public void TestServe()
         {
+            Assert.AreEqual(ColorHelper.Compare("000000", "ffffff"), -1);
             //var server = new LanguageServer();
             //server.LoadAsync().GetAwaiter().GetResult();
             //Assert.IsTrue(server.SnippetItems.Count > 0);
