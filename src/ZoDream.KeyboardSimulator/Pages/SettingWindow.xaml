@@ -59,6 +59,22 @@
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="关于">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
+                        <TextBlock Text="Keyboard Simulator" FontSize="30"/>
+                        <TextBlock Text="v1.3"/>
+                        <ctl:HyperlinkButton Content="Copyright © 2022 zodream.cn" 
+                                             NavigateUri="https://github.com/zx648383079/ZoDream.KeyboardSimulator"
+                                             HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

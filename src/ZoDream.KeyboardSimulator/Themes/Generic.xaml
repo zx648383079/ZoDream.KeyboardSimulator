@@ -6,7 +6,10 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/IconButton.xaml"/>
         <ResourceDictionary Source="/Themes/CountdownLabel.xaml"/>
+        <ResourceDictionary Source="/Themes/HyperlinkButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     
+
+
 </ResourceDictionary>
