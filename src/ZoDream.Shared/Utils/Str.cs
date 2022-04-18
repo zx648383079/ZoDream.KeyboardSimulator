@@ -48,5 +48,10 @@ namespace ZoDream.Shared.Utils
         {
             return Regex.IsMatch(source, @"^(0x[\dA-Za-z]+)|(\d+)$");
         }
+
+        public static string TwoPad(object v)
+        {
+            return v.ToString().PadLeft(2, '0');
+        }
     }
 }

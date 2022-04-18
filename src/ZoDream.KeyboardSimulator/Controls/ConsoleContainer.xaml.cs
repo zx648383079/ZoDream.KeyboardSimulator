@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZoDream.Shared.Utils;
 
 namespace ZoDream.KeyboardSimulator.Controls
 {
@@ -51,8 +52,7 @@ namespace ZoDream.KeyboardSimulator.Controls
         {
             if (hasTime)
             {
-                var now = DateTime.Now;
-                AppendLine($"[{now.Hour}:{now.Minute}:{now.Second}]{line}");
+                AppendLine($"[{Time.FormatTime()}]{line}");
             } else
             {
                 AppendLine(line);
