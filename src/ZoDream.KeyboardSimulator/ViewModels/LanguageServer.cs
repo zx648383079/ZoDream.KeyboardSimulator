@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ZoDream.KeyboardSimulator.Models;
+using ZoDream.Language.Storage;
 
 namespace ZoDream.KeyboardSimulator.ViewModels
 {
@@ -68,7 +69,7 @@ namespace ZoDream.KeyboardSimulator.ViewModels
                     return;
                 }
                 IsLoading = true;
-                using var reader = Language.Storage.File.Reader(fileName);
+                using var reader = LocationStorage.Reader(fileName);
                 var desc = new StringBuilder();
                 while (true)
                 {

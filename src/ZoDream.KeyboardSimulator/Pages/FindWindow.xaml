@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
@@ -58,7 +59,7 @@
                                 <Image x:Name="PreviewImage" 
                                        MouseLeftButtonDown="PreviewImage_MouseLeftButtonDown"
                                     MouseUp="PreviewImage_MouseUp"  Grid.RowSpan="2"/>
-                                <ctl:SwitchInput x:Name="AutoLoadTb" 
+                                <sctl:SwitchInput x:Name="AutoLoadTb" 
                                                  Grid.Row="1"
                                                  Grid.Column="1"
                                                  Value="True"
@@ -175,7 +176,7 @@
                                            PreviewDrop="CvtOldPointTb_PreviewDrop"
                                            Grid.Row="4" Grid.Column="1"/>
                             <Button x:Name="CvtBtn" Content="转换" Click="CvtBtn_Click" Grid.Row="5"/>
-                            <ctl:SwitchInput x:Name="CvtAbsInput" ValueChanged="CvtAbsInput_ValueChanged" Grid.Row="5" Grid.Column="1" OnLabel="绝对坐标" OffLabel="相对坐标"/>
+                            <sctl:SwitchInput x:Name="CvtAbsInput" ValueChanged="CvtAbsInput_ValueChanged" Grid.Row="5" Grid.Column="1" OnLabel="绝对坐标" OffLabel="相对坐标"/>
                             <TextBlock Text="新相对坐标" Grid.Row="6" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="CvtNewPointTb" IsReadOnly="True" Grid.Row="6" Grid.Column="1"/>
                             <TextBlock Text="新绝对坐标" Grid.Row="7" Style="{StaticResource HeaderTb}"/>

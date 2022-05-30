@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator.Pages"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
@@ -24,6 +25,9 @@
             <Style TargetType="ScrollViewer">
                 <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
             </Style>
+            <Style TargetType="sctl:NumberInput">
+                <Setter Property="MinWidth" Value="80"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -33,14 +37,14 @@
                     <GroupBox Header="视觉体验">
                         <StackPanel>
                             <TextBlock Text="倒计时/s" Style="{StaticResource HeaderTb}"/>
-                            <ctl:NumberInput x:Name="CountdownTb" Value="{Binding MaxDelay, Mode=TwoWay}" Min="1"
+                            <sctl:NumberInput x:Name="CountdownTb" Value="{Binding MaxDelay, Mode=TwoWay}" Min="1"
                                              HorizontalAlignment="Left"/>
                             <TextBlock Text="输出日志显示" Style="{StaticResource HeaderTb}"/>
-                            <ctl:SwitchInput x:Name="LogTb"
+                            <sctl:SwitchInput x:Name="LogTb"
                                               Value="{Binding IsLogVisible, Mode=TwoWay}"
                                              HorizontalAlignment="Left"/>
                             <TextBlock Text="日志时间显示" Style="{StaticResource HeaderTb}"/>
-                            <ctl:SwitchInput x:Name="LogTimeTb"
+                            <sctl:SwitchInput x:Name="LogTimeTb"
                                               Value="{Binding IsLogTime, Mode=TwoWay}"
                                              HorizontalAlignment="Left"/>
                         </StackPanel>
@@ -52,10 +56,10 @@
                     <GroupBox Header="录制设置">
                         <StackPanel>
                             <TextBlock Text="合并间隔" Style="{StaticResource HeaderTb}"/>
-                            <ctl:NumberInput x:Name="SpaceTb" Value="{Binding MaxSpace, Mode=TwoWay}" Min="10"
+                            <sctl:NumberInput x:Name="SpaceTb" Value="{Binding MaxSpace, Mode=TwoWay}" Min="10"
                                              HorizontalAlignment="Left"/>
                             <TextBlock Text="记录移动" Style="{StaticResource HeaderTb}"/>
-                            <ctl:SwitchInput x:Name="MoveTb"  Value="{Binding HasMove, Mode=TwoWay}"  Grid.Column="3" OffLabel="关闭" OnLabel="开启"/>
+                            <sctl:SwitchInput x:Name="MoveTb"  Value="{Binding HasMove, Mode=TwoWay}"  Grid.Column="3" OffLabel="关闭" OnLabel="开启"/>
 
                             <TextBlock Text="相对坐标" Style="{StaticResource HeaderTb}"/>
                             <ctl:RectInput x:Name="BaseTb" Height="30" Grid.Column="3" ValueChanged="BaseTb_ValueChanged"/>
@@ -72,8 +76,8 @@
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center">
                         <TextBlock Text="Keyboard Simulator" FontSize="30"/>
-                        <TextBlock Text="v1.3"/>
-                        <ctl:HyperlinkButton Content="Copyright © 2022 zodream.cn" 
+                        <TextBlock Text="v1.4"/>
+                        <sctl:HyperlinkButton Content="Copyright © 2022 zodream.cn" 
                                              NavigateUri="https://github.com/zx648383079/ZoDream.KeyboardSimulator"
                                              HorizontalAlignment="Left"/>
                     </StackPanel>

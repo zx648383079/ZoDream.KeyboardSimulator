@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using ZoDream.Language.Storage;
 using ZoDream.Shared.OS.WinApi;
 using ZoDream.Shared.OS.WinApi.Models;
 using ZoDream.Shared.Utils;
@@ -264,9 +265,9 @@ namespace ZoDream.KeyboardSimulator.Pages
             page.Activate();
         }
 
-        private void AutoLoadTb_ValueChanged(object sender, bool value)
+        private void AutoLoadTb_ValueChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
         {
-            IsLoading = value;
+            IsLoading = e.NewValue;
         }
 
         private void CurrentTb_ValueChanged(object sender, int[] value)
@@ -309,9 +310,9 @@ namespace ZoDream.KeyboardSimulator.Pages
             LoadPointColor(point.X, point.Y, true);
         }
 
-        private void CvtAbsInput_ValueChanged(object sender, bool value)
+        private void CvtAbsInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<bool> e)
         {
-            CvtOldLabel.Text = value ? "原绝对坐标" : "原相对坐标";
+            CvtOldLabel.Text = e.NewValue ? "原绝对坐标" : "原相对坐标";
             ConvertPoint();
         }
 
@@ -353,7 +354,7 @@ namespace ZoDream.KeyboardSimulator.Pages
             {
                 return;
             }
-            var content = await ZoDream.Language.Storage.File.ReadAsync(fileName);
+            var content = await LocationStorage.ReadAsync(fileName);
             var res = Regex.Replace(content,
                 @"(Move|MoveTo|MoveTween|GetPixelColor|IsPixelColor|IsRectColor)\(([^\(\)]+?)\)", match =>
             {
@@ -389,7 +390,7 @@ namespace ZoDream.KeyboardSimulator.Pages
                 {
                     return;
                 }
-                _ = ZoDream.Language.Storage.File.WriteAsync(picker.FileName, res);
+                _ = LocationStorage.WriteAsync(picker.FileName, res);
             });
         }
 
@@ -446,5 +447,6 @@ namespace ZoDream.KeyboardSimulator.Pages
             var oldRect = CvtOldTb.GetIntArr(4);
             ConvertPoint(oldX - oldRect[0], oldY - oldRect[1]);
         }
+
     }
 }

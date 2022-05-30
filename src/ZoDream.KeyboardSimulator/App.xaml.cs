@@ -13,5 +13,17 @@ namespace ZoDream.KeyboardSimulator
     /// </summary>
     public partial class App : Application
     {
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            if (e.Args.Length == 0)
+            {
+                return;
+            }
+            EnterFileName = e.Args[0];
+        }
+
+        internal static string EnterFileName = string.Empty;
     }
 }

@@ -83,6 +83,7 @@ namespace ZoDream.KeyboardSimulator
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            OpenFile(App.EnterFileName);
             // BindHotKey();
             await ViewModel.LoadOptionAsync();
             await ViewModel.Server.LoadAsync();

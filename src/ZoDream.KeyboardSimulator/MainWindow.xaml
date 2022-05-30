@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZoDream.KeyboardSimulator"
+        xmlns:sctl="clr-namespace:ZoDream.Shared.Controls;assembly=ZoDream.Shared.Controls"
         xmlns:ctl="clr-namespace:ZoDream.KeyboardSimulator.Controls"
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
@@ -30,11 +31,11 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <ctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="回放" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <ctl:IconButton x:Name="RecordBtn" Click="RecordBtn_Click" Icon="&#xE2AD;" Label="录制" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <ctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
-            <ctl:IconButton x:Name="SpotBtn" Click="FindBtn_Click" Icon="&#xE1E3;" Label="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
-            <ctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <sctl:IconButton x:Name="PlayBtn" Click="PlayBtn_Click" Icon="&#xE102;" Label="回放" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <sctl:IconButton x:Name="RecordBtn" Click="RecordBtn_Click" Icon="&#xE2AD;" Label="录制" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <sctl:IconButton x:Name="StopBtn" Click="StopBtn_Click" Icon="&#xE103;" Label="停止" Visibility="{Binding Paused, Converter={StaticResource FalseConverter}}"/>
+            <sctl:IconButton x:Name="SpotBtn" Click="FindBtn_Click" Icon="&#xE1E3;" Label="拾取" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
+            <sctl:IconButton x:Name="OptionBtn" Click="OptionBtn_Click" Icon="&#xE115;" Label="设置" Visibility="{Binding Paused, Converter={StaticResource TrueConverter}}"/>
         </StackPanel>
         <avalonEdit:TextEditor
 				Name="CodeEditor"
@@ -48,7 +49,7 @@
                             FontSize="50"
                             Visibility="Collapsed"
                             Grid.Row="1" Grid.RowSpan="2" Ended="CountdownBtn_Ended"/>
-        <ctl:ConsoleContainer x:Name="LogTb" Grid.Row="2" Visibility="Collapsed"/>
+        <sctl:ConsolePanel x:Name="LogTb" Grid.Row="2" Visibility="Collapsed"/>
         <TextBlock Grid.Row="3" Text="{Binding Message}"/>
     </Grid>
 </Window>

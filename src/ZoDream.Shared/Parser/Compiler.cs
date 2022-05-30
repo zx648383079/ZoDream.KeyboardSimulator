@@ -63,6 +63,7 @@ namespace ZoDream.Shared.Parser
         {
             CancelToken = token;
             Player.Logger = Logger;
+            SetBasePosition(0, 0);
             using var lua = new Lua();
             dynamic g = lua.CreateEnvironment<LuaGlobal>();
             // 注册方法 g.print = new Action<object>();

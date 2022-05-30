@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net6.0-windows;net48</TargetFrameworks>
-	  <LangVersion>9.0</LangVersion>
+    <TargetFramework>net6.0-windows</TargetFramework>
+	  <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	  <UseWindowsForms>true</UseWindowsForms>
-	  <Version>1.3</Version>
+	  <Version>1.4</Version>
     <Authors>zodream</Authors>
     <Company>zodream.cn</Company>
     <Copyright>Copyright © 2022 zodream.cn</Copyright>
@@ -24,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\shared\ZoDream.Shared.Controls\ZoDream.Shared.Controls.csproj" />
+    <ProjectReference Include="..\ZoDream.Language\ZoDream.Language.csproj" />
     <ProjectReference Include="..\ZoDream.Shared\ZoDream.Shared.csproj" />
   </ItemGroup>
 
