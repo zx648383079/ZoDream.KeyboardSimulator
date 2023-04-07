@@ -3,7 +3,6 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -43,14 +42,16 @@ namespace ZoDream.KeyboardSimulator
             HotKey = new HotKeyHelper(hwnd);
             var hWndSource = HwndSource.FromHwnd(hwnd);
             // 添加处理程序
-            if (hWndSource != null)
-            {
-                hWndSource.AddHook(WndProc);
-            }
+            hWndSource?.AddHook(WndProc);
             HotKey?.RegisterHotKey(PLAY_TAG, Shared.Input.Key.F10);
             HotKey?.RegisterHotKey(STOP_TAG, Shared.Input.Key.F11);
         }
 
+        private void UnbindHotKey()
+        {
+            HotKey?.UnRegisterHotKey(PLAY_TAG);
+            HotKey?.UnRegisterHotKey(STOP_TAG);
+        }
         /// <summary>
         /// 窗体回调函数，接收所有窗体消息的事件处理函数
         /// </summary>
@@ -228,6 +229,7 @@ namespace ZoDream.KeyboardSimulator
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.Dispose();
+            // UnbindHotKey();
         }
 
         private void FindBtn_Click(object sender, RoutedEventArgs e)
@@ -245,7 +247,7 @@ namespace ZoDream.KeyboardSimulator
             {
                 ViewModel.Option = model.ToOption();
                 UpdateLogBox();
-                ViewModel.SaveOptionAsync();
+                _= ViewModel.SaveOptionAsync();
             };
         }
 

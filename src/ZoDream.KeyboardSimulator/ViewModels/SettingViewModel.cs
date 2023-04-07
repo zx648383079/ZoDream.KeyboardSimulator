@@ -25,6 +25,9 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             MaxDelay = option.MaxDelay;
             IsLogVisible = option.IsLogVisible;
             IsLogTime = option.IsLogTime;
+            PlayHotKey = option.PlayHotKey;
+            RecordHotKey = option.RecordHotKey;
+            StopHotKey = option.StopHotKey;
         }
 
         private ParserOption Source;
@@ -85,6 +88,28 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             set => Set(ref isLogTime, value);
         }
 
+        private string playHotKey = string.Empty;
+
+        public string PlayHotKey {
+            get => playHotKey;
+            set => Set(ref playHotKey, value);
+        }
+
+
+        private string recordHotKey = string.Empty;
+
+        public string RecordHotKey {
+            get => recordHotKey;
+            set => Set(ref recordHotKey, value);
+        }
+
+        private string stopHotKey = string.Empty;
+
+        public string StopHotKey {
+            get => stopHotKey;
+            set => Set(ref stopHotKey, value);
+        }
+
 
         public ParserOption ToOption()
         {
@@ -95,6 +120,9 @@ namespace ZoDream.KeyboardSimulator.ViewModels
             Source.MaxDelay = MaxDelay;
             Source.IsLogVisible = IsLogVisible;
             Source.IsLogTime = isLogTime;
+            Source.PlayHotKey = playHotKey;
+            Source.RecordHotKey = recordHotKey;
+            Source.StopHotKey = stopHotKey;
             return Source;
         }
     }

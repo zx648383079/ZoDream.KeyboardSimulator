@@ -67,6 +67,20 @@
                     </GroupBox>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="快捷键">
+                <ScrollViewer>
+                    <GroupBox Header="快捷键设置">
+                        <StackPanel>
+                            <TextBlock Text="执行" Style="{StaticResource HeaderTb}"/>
+                            <ctl:KeyInput Keys="{Binding PlayHotKey}"/>
+                            <TextBlock Text="录制" Style="{StaticResource HeaderTb}"/>
+                            <ctl:KeyInput Keys="{Binding RecordHotKey}"/>
+                            <TextBlock Text="停止执行/录制" Style="{StaticResource HeaderTb}"/>
+                            <ctl:KeyInput Keys="{Binding StopHotKey}"/>
+                         </StackPanel>
+                    </GroupBox>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Header="关于">
                 <Grid>
                     <Grid.RowDefinitions>

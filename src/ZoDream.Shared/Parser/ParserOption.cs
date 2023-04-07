@@ -28,5 +28,10 @@ namespace ZoDream.Shared.Parser
         /// 是否显示日志时间
         /// </summary>
         public bool IsLogTime { get; set; } = false;
+
+        public string PlayHotKey { get; set; } = string.Empty;
+        public string RecordHotKey { get; set; } = string.Empty;
+        public string StopHotKey { get; set; } = string.Empty;
+
     }
 }

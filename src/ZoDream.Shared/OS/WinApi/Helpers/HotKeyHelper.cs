@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Xml.Linq;
 using ZoDream.Shared.Input;
 
 namespace ZoDream.Shared.OS.WinApi.Helpers
@@ -95,5 +95,13 @@ namespace ZoDream.Shared.OS.WinApi.Helpers
             return string.Empty;
         }
 
+        public void UnRegisterHotKey(string name)
+        {
+            if (!HotKeyId.ContainsKey(name))
+            {
+                return;
+            }
+            HotKeysNativeMethods.UnregisterHotKey(WindowHandle, HotKeyId[name]);
+        }
     }
 }

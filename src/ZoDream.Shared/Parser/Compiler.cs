@@ -90,6 +90,7 @@ namespace ZoDream.Shared.Parser
             g.IsPixelColor = new Func<int, int, string, bool>(IsPixelColor);
             g.IsRectColor = new Func<int, int, int, int, string, bool>(IsRectColor);
             g.InColor = new Func<string, string?, string?, bool>(InColor);
+            g.RunExe = new Func<string, string?, bool>(RunExe);
             try
             {
                 var chunk = lua.CompileChunk(code, "source.lua", new LuaCompileOptions()
@@ -126,6 +127,24 @@ namespace ZoDream.Shared.Parser
         private void ConsoleLog(object msg)
         {
             Logger?.Log(msg.ToString());
+        }
+
+        private bool RunExe(string fileName, string? args)
+        {
+            if (string.IsNullOrWhiteSpace(args))
+            {
+                args = string.Empty;
+            }
+            try
+            {
+                var process = Process.Start(fileName, args);
+                return process != null;
+            }
+            catch (Exception ex)
+            {
+                Logger?.Error(ex.ToString());
+                return false;
+            }
         }
 
         private bool InColor(string color, string? min, string? max)

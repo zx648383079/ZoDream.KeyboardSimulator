@@ -42,6 +42,8 @@ then
 end
 ```
 
+[一个游戏测试脚本](examples/game.lua)
+
 ## 语法规则
 
 请参考 [`lua`](http://www.lua.org/) 文档
@@ -71,3 +73,4 @@ end
 |IsPixelColor(int x, int y, string color)|判断某一点的颜色值是否是|`IsPixelColor(0,0, "ff00cc"`|
 |IsRectColor(int x, int y, int endX, int endY, string color)|判断某个区域是否是这个颜色值，请使用自带拾取工具获取||
 |InColor(string color, string min, string max)|比较颜色的深度范围||
+|RunExe(string fileName, string? args): bool|运行启动指定程序|`RunExe("explorer", "D:\\")`|
